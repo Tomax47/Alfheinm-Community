@@ -25,7 +25,7 @@ public class RegisterController {
             return "/user/auth/register_page";
         }
 
-        return "user/profile_page";
+        return "redirect:/profile";
     }
 
     @PostMapping("/register")
