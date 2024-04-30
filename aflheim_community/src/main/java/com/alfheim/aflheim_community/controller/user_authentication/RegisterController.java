@@ -8,6 +8,6 @@ public class RegisterController {
 
     @GetMapping("/register")
     public String getRegistrationForm() {
-        return "/authentication/register_page";
+        return "/user_auth/register_page";
     }
 }

@@ -9,6 +9,11 @@ public class LoginController {
 
     @GetMapping("/login")
     public String getLoginForm() {
-        return "/authentication/login_page";
+        return "/user_auth/login_page";
+    }
+
+    @GetMapping("/login/password/recover")
+    public String getForgotPasswordPage() {
+        return "user_auth/forgot_password_page";
     }
 }
