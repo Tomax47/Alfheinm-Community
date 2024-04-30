@@ -3,8 +3,11 @@ package com.alfheim.aflheim_community.dto.user;
 import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.User;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.print.DocFlavor;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 @Getter
@@ -24,6 +27,14 @@ public class UserDto {
     private String number;
     private String occupation;
     private String gender;
+    private String role;
+    private String country;
+    private String city;
+    private String region;
+    private String zip;
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    private Date birthdate;
+    private String profilePicture;
 
     public static UserDto from(User user) {
         return UserDto.builder()
@@ -36,6 +47,13 @@ public class UserDto {
                 .number(user.getNumber())
                 .occupation(user.getOccupation())
                 .gender(user.getGender())
+                .role(user.getRole())
+                .country(user.getCountry())
+                .city(user.getCity())
+                .region(user.getRegion())
+                .zip(user.getZip())
+                .birthdate(user.getBirthdate())
+                .profilePicture(user.getProfilePicture())
                 .build();
     }
 
