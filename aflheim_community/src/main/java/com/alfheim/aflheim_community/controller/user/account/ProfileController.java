@@ -67,8 +67,6 @@ public class ProfileController {
     public String deleteUserProfile(@PathVariable("username") String username,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        System.out.println("asfasdasdasdad");
-
         if (isSameUserAuth(username, userDetails)) {
             int deleteUser = profileService.deleteUserProfile(username);
 

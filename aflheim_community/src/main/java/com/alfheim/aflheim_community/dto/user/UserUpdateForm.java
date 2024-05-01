@@ -19,7 +19,7 @@ import java.util.Date;
 public class UserUpdateForm {
 
     private MultipartFile profilePicture;
-//    private String password; TODO: ADD IT LATER ON
+    //    private String password; TODO: ADD IT LATER ON
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only alphabetic characters")
     private String name;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Surname must contain only alphabetic characters")

@@ -11,6 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Component
@@ -35,11 +38,15 @@ public class RegistrationServiceImpl implements RegistrationService{
                 .state(String.valueOf(State.NOT_CONFIRMED))
                 .role(String.valueOf(Role.Visitor))
                 .gender(String.valueOf(Gender.NOT_SPECIFIED))
-                .name(null)
-                .surname(null)
-                .address(null)
-                .number(null)
-                .occupation(null)
+                .birthdate(Date.valueOf(LocalDate.now()))
+                .name("Viking")
+                .surname("Vikingson")
+                .address("Valhalla")
+                .number("000 000 0000")
+                .occupation("Adventurer")
+                .city("Valhalla")
+                .region("Val")
+                .zip("9")
                 .build();
 
         try {
