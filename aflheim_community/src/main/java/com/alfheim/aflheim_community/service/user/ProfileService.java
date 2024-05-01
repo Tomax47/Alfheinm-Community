@@ -10,4 +10,6 @@ public interface ProfileService {
     boolean isUsernameUnique(String username);
 
     UserDto getProfileDetails(String userEmail);
+
+    int deleteUserProfile(String username);
 }

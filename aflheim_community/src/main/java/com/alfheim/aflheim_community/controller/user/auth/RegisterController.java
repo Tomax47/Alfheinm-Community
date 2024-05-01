@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -17,11 +18,12 @@ public class RegisterController {
     private RegistrationService registrationService;
 
     @GetMapping("/register")
-    public String getRegistrationForm() {
+    public String getRegistrationForm(Model model) {
 
         // Auth. Filter
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            model.addAttribute("isAuthenticated", false);
             return "/user/auth/register_page";
         }
 

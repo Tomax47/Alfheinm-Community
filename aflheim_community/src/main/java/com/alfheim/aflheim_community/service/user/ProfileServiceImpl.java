@@ -62,4 +62,21 @@ public class ProfileServiceImpl implements ProfileService {
 
         return UserDto.from(user);
     }
+
+    @Override
+    public int deleteUserProfile(String username) {
+        User user = userRepo.findByUsername(username).get();
+
+        if (user != null) {
+            try {
+                userRepo.delete(user);
+                return 1;
+            } catch (Exception e) {
+                // Something went wrong
+                return 2;
+            }
+        }
+        // User not found
+        return 0;
+    }
 }

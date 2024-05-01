@@ -6,18 +6,13 @@ import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class ProfileController {
@@ -27,11 +22,15 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String getUserProfilePage(Model model,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                     Principal principal) {
 
         UserDto userDto = profileService.getProfileDetails(userDetails.getUserEmail());
+        boolean isAuthenticated = principal != null;
+        model.addAttribute("isAuthenticated", isAuthenticated);
+
         model.addAttribute("user", userDto);
-        return "user/profile_page";
+        return "user/profile/profile_page";
     }
 
     @PostMapping("/profile/update")
@@ -46,5 +45,42 @@ public class ProfileController {
             // TODO: HANDLE IT BETTER
             return "redirect:/profile?error";
         }
+    }
+
+    @GetMapping("/profile/{username}/deleteAccount")
+    public String getDeletePage(@PathVariable("username") String username,
+                                Model model) {
+        model.addAttribute("username", username);
+        model.addAttribute("isAuthenticated", true);
+        return "user/profile/delete_profile_page";
+    }
+
+    @GetMapping("/profile/{username}/delete")
+    public String deleteUserProfile(@PathVariable("username") String username,
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        System.out.println("asfasdasdasdad");
+
+        if (isSameUserAuth(username, userDetails)) {
+            int deleteUser = profileService.deleteUserProfile(username);
+
+            // TODO : HANDLE THE ERRORS IN A MORE SPECIFIC WAY
+            if (deleteUser == 1) {
+                // Deletion succeeded
+                return "redirect:/logout";
+            } else {
+                // Something went wrong
+                return "redirect:/profile";
+            }
+        } else {
+            // UNAUTHORIZED REQUEST
+            System.out.println("UNAUTHORIZED");
+            return "redirect:/";
+        }
+
+    }
+
+    private boolean isSameUserAuth(String username, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails.getUsername().equals(username);
     }
 }
