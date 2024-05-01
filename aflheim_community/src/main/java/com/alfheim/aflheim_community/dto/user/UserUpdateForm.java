@@ -3,6 +3,7 @@ package com.alfheim.aflheim_community.dto.user;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -17,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserUpdateForm {
 
-    private String profilePicture;
+    private MultipartFile profilePicture;
 //    private String password; TODO: ADD IT LATER ON
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only alphabetic characters")
     private String name;
@@ -40,4 +41,21 @@ public class UserUpdateForm {
     private String region;
     @Pattern(regexp = "^[0-9]+$", message = "Zip code must contain only numbers")
     private String zip;
+
+    public static UserUpdateForm getUpdateForm(UserDto userDto) {
+        return UserUpdateForm.builder()
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .address(userDto.getAddress())
+                .number(userDto.getNumber())
+                .occupation(userDto.getOccupation())
+                .gender(userDto.getGender())
+                .country(userDto.getCountry())
+                .city(userDto.getCity())
+                .region(userDto.getRegion())
+                .zip(userDto.getZip())
+                .birthdate(userDto.getBirthdate())
+                .profilePicture(null)
+                .build();
+    }
 }

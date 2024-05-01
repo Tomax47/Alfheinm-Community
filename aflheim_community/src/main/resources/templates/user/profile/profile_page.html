@@ -46,10 +46,10 @@
     <div class="card shadow border-0 text-center p-0">
         <div class="profile-cover rounded-top" data-background="https://image.jimcdn.com/app/cms/image/transf/none/path/s2217cd0bb1220415/image/i1bbdd1338d8b58eb/version/1690764459/viking-longship.jpg" style="background: url(https://image.jimcdn.com/app/cms/image/transf/none/path/s2217cd0bb1220415/image/i1bbdd1338d8b58eb/version/1690764459/viking-longship.jpg);"></div>
         <div class="card-body pb-5">
-            <img src="https://ew.com/thmb/0JEymQZ3DaEuOuAANKDlwgybLrY=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/v5_09_10202016_jh_20898-2000-cf2c722454e043c984a8b6db8e31a910.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
-            <h4 class="h3 fw-bold" th:text="${'@' + user.getUsername()}"></h4>
-            <h5 class="fw-normal" th:text="${user.getEmail()}"></h5>
-            <p class="text-gray mb-4" th:text="${user.getRole()}"></p>
+            <img th:src="${userDto.getProfilePicture()}" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+            <h4 class="h3 fw-bold" th:text="${'@' + userDto.getUsername()}"></h4>
+            <h5 class="fw-normal" th:text="${userDto.getEmail()}"></h5>
+            <p class="text-gray mb-4" th:text="${userDto.getRole()}"></p>
 
             <!-- TODO: SHOW ONLY IN CASE THIS IS A VISITOR ACCOUNT -->
             <a class="btn btn-sm btn-yellow-200 d-inline-flex align-items-center me-2" href="#">
@@ -58,14 +58,14 @@
             </a>
 
             <!-- TODO: ADD THE DELETE FUNCTIONALITY-->
-            <a class="btn btn-sm btn-danger" th:href="@{/profile/{username}/deleteAccount(username=${user.getUsername()})}">Delete My Account</a>
+            <a class="btn btn-sm btn-danger" th:href="@{/profile/{username}/deleteAccount(username=${userDto.getUsername()})}">Delete My Account</a>
         </div>
 
         <!-- #### UPDATE ACCOUNT'S INFORMATION -->
         <div class="card card-body border-0 shadow mb-4">
             <h2 class="h5 mb-4">General information</h2>
             <!-- ###### UPDATING FORM ####### -->
-            <form role="form" th:action="@{/profile/update}" th:object="${user}" method="post">
+            <form role="form" th:action="@{/profile/update}" th:object="${user}" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div>
@@ -127,7 +127,8 @@
                             <label for="profilePicture">Profile Picture</label>
                             <input class="form-control"
                                    id="profilePicture"
-                                   type="text"
+                                   type="file"
+                                   accept=".jpg, .jpeg, .png"
                                    th:field="*{profilePicture}">
                             <p th:if="${#fields.hasErrors('profilePicture')}" class="text-danger" th:errors="*{profilePicture}"></p>
                         </div>

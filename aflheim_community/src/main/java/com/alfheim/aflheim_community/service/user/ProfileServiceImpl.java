@@ -6,6 +6,7 @@ import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.repository.UserRepo;
 
+import com.alfheim.aflheim_community.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private FileStorageService fileStorageService;
     @Override
     public UserDto updateAccount(UserUpdateForm userUpdateForm, String email) {
 
@@ -36,6 +40,18 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         try {
+
+            if (userUpdateForm.getProfilePicture() != null &&
+                    // TODO: TRANSFER THIS FUNCTIONALITY FOR JS ON THE FRONTEND
+                    userUpdateForm.getProfilePicture().getContentType().equals("image/jpeg") ||
+                    userUpdateForm.getProfilePicture().getContentType().equals("image/png")
+            ) {
+
+                String imageStorageName = fileStorageService.saveFile(userUpdateForm.getProfilePicture());
+
+                // TODO: DELETE THE CURRENT IMG OF THE USER FROM THE TABLE IF HE HAS ONE AND REPLACE IT WITH THE NEW ONE
+                user.setProfilePicture(fileStorageService.findByStorageName(imageStorageName));
+            }
             User updatedUser = userRepo.save(user);
             return UserDto.from(updatedUser);
 

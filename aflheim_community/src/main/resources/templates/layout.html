@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-6 collapse-brand">
                         <a href="#">
-                            <img src="../../assets/img/brand/dark.svg" alt="menuimage">
+<!--                            <img src="../../assets/img/brand/dark.svg" alt="menuimage">-->
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
@@ -41,24 +41,21 @@
                 <li class="nav-item">
                     <a href="/events" class="nav-link">Events</a>
                 </li>
-                <li class="nav-item" th:if="${!isAuthenticated}">
+                <li class="nav-item">
                     <a href="/about" class="nav-link">About</a>
                 </li>
-                <li class="nav-item" th:if="${isAuthenticated}">
-                    <a href="/#" class="nav-link">My Publications</a>
-                </li>
-                <li class="nav-item" th:if="${isAuthenticated}">
+                <li class="nav-item">
                     <a href="/profile" class="nav-link">Profile</a>
                 </li>
             </ul>
         </div>
 
-        <a th:if="${!isAuthenticated}" href="/login">
+        <a href="/login">
             <button class="btn btn-outline-secondary w-6" type="button">Sign In</button>
         </a>
-        <a th:if="${isAuthenticated}" href="/logout">
-            <button class="btn btn-outline-secondary w-6" type="button">Logout</button>
-        </a>
+<!--        <a th:if="${isAuthenticated}" href="/logout">-->
+<!--            <button class="btn btn-outline-secondary w-6" type="button">Logout</button>-->
+<!--        </a>-->
 
         <a href="/#">
             <button class="btn btn-secondary w-6 ml-1" type="button">Publish</button>

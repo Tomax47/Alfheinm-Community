@@ -37,6 +37,15 @@ public class UserDto {
     private String profilePicture;
 
     public static UserDto from(User user) {
+
+        String profilePictureUrl = "";
+
+        if (user.getProfilePicture() != null) {
+            profilePictureUrl += "http://localhost:8080/files/" + user.getProfilePicture().getFileStorageName();
+        } else {
+            profilePictureUrl = "/assets/img/default-avatar.jpg";
+        }
+
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -53,7 +62,7 @@ public class UserDto {
                 .region(user.getRegion())
                 .zip(user.getZip())
                 .birthdate(user.getBirthdate())
-                .profilePicture(user.getProfilePicture())
+                .profilePicture(profilePictureUrl)
                 .build();
     }
 

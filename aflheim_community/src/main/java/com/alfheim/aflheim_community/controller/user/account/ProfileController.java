@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 
+import static com.alfheim.aflheim_community.dto.user.UserUpdateForm.getUpdateForm;
+
 @Controller
 public class ProfileController {
 
@@ -25,11 +27,16 @@ public class ProfileController {
                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                      Principal principal) {
 
+        // Getting the user
         UserDto userDto = profileService.getProfileDetails(userDetails.getUserEmail());
+
+        // Checking the aut state
         boolean isAuthenticated = principal != null;
         model.addAttribute("isAuthenticated", isAuthenticated);
 
-        model.addAttribute("user", userDto);
+        // Passing in the dto and the form
+        model.addAttribute("userDto", userDto);
+        model.addAttribute("user", getUpdateForm(userDto));
         return "user/profile/profile_page";
     }
 
@@ -37,6 +44,7 @@ public class ProfileController {
     public String updateProfileInformation(@Valid @ModelAttribute("user") UserUpdateForm userUpdateForm,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
+        System.out.println(userUpdateForm.getProfilePicture().getContentType());
         UserDto user = profileService.updateAccount(userUpdateForm, userDetails.getUserEmail());
 
         if (user != null) {
