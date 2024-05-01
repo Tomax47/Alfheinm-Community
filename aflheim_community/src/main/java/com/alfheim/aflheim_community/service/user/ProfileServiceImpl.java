@@ -4,6 +4,7 @@ import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
 import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.User;
+import com.alfheim.aflheim_community.repository.UserConfirmationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 
 import com.alfheim.aflheim_community.service.file.FileStorageService;
@@ -18,6 +19,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private AccountConfirmationService accountConfirmationService;
+
     @Override
     public UserDto updateAccount(UserUpdateForm userUpdateForm, String email) {
 
@@ -94,5 +99,21 @@ public class ProfileServiceImpl implements ProfileService {
         }
         // User not found
         return 0;
+    }
+
+    @Override
+    public boolean confirmAccount(String code) {
+
+        String email = accountConfirmationService.getEmailToConfirm(code);
+
+        if (email != null) {
+            User user = userRepo.findByEmail(email).get();
+            user.setState("CONFIRMED");
+
+            userRepo.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

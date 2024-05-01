@@ -12,4 +12,6 @@ public interface ProfileService {
     UserDto getProfileDetails(String userEmail);
 
     int deleteUserProfile(String username);
+
+    boolean confirmAccount(String code);
 }

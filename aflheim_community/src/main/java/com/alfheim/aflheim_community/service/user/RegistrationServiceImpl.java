@@ -19,6 +19,9 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private AccountConfirmationService accountConfirmationService;
+
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -42,6 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         try {
             // TODO : WORK ON THE VARIOUS POSSIBLE ERRORS HANDLING
             userRepo.save(user);
+            accountConfirmationService.sendConfirmationEmail(user.getEmail());
             return 1;
         } catch (Exception e) {
             // Fatal error
