@@ -55,4 +55,11 @@ public class ProfileServiceImpl implements ProfileService {
 
         return false;
     }
+
+    @Override
+    public UserDto getProfileDetails(String userEmail) {
+        User user = userRepo.findByEmail(userEmail).get();
+
+        return UserDto.from(user);
+    }
 }

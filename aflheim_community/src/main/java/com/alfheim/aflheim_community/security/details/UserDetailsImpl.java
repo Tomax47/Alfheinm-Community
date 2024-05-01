@@ -18,10 +18,6 @@ public class UserDetailsImpl implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()));
     }
-
-    public UserDto getUserDto() {
-        return UserDto.from(user);
-    }
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -31,6 +27,8 @@ public class UserDetailsImpl implements UserDetails {
     public String getUsername() {
         return user.getUsername();
     }
+
+    public String getUserEmail() { return user.getEmail(); }
 
     @Override
     public boolean isAccountNonExpired() {

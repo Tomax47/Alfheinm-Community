@@ -8,4 +8,6 @@ public interface ProfileService {
     public UserDto updateAccount(UserUpdateForm userUpdateForm, String email);
 
     boolean isUsernameUnique(String username);
+
+    UserDto getProfileDetails(String userEmail);
 }
