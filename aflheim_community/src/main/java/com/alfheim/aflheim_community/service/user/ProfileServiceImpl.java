@@ -123,8 +123,7 @@ public class ProfileServiceImpl implements ProfileService {
             userRepo.save(user);
 
             // Expiring the confirmation record
-            // accountConfirmationService.expireRecord(userConfirmationRecord);
-            accountConfirmationService.deleteRecord(userConfirmationRecord);
+            accountConfirmationService.expireRecord(userConfirmationRecord);
 
             return true;
         } else {

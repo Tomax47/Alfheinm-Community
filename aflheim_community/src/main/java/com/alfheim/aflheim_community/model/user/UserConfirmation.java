@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,4 +22,6 @@ public class UserConfirmation {
     private String code;
     private String userEmail;
     private RecordState state;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }
