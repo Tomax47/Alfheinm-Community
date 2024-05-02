@@ -30,13 +30,19 @@ public class ProfileServiceImpl implements ProfileService {
         user.setName(userUpdateForm.getName());
         user.setSurname(userUpdateForm.getSurname());
         user.setAddress(userUpdateForm.getAddress());
-        user.setOccupation(userUpdateForm.getOccupation());
         user.setNumber(userUpdateForm.getNumber());
         user.setCountry(userUpdateForm.getCountry());
         user.setCity(userUpdateForm.getCity());
         user.setRegion(userUpdateForm.getRegion());
         user.setZip(userUpdateForm.getZip());
-        user.setBirthdate(userUpdateForm.getBirthdate());
+
+        if (userUpdateForm.getOccupation() != null) {
+            user.setOccupation(userUpdateForm.getOccupation());
+        }
+
+        if (userUpdateForm.getBirthdate() != null) {
+            user.setBirthdate(userUpdateForm.getBirthdate());
+        }
 
         if (userUpdateForm.getGender().equals("Male")) {
             user.setGender(String.valueOf(Gender.Male));

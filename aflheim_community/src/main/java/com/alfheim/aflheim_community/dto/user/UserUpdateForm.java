@@ -31,7 +31,7 @@ public class UserUpdateForm {
     private Date birthdate;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Occupation must contain only alphabetic characters")
     private String occupation;
-    @Pattern(regexp = "^(Male|Female)$", message = "Gender must be either Male or Female")
+    @Pattern(regexp = "^(Male|Female|None)$", message = "Gender must be either Male, Female, or None")
     private String gender;
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Country must contain only alphabetic characters")
     private String country;

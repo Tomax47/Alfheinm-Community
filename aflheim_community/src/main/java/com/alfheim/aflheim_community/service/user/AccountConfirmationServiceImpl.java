@@ -7,6 +7,8 @@ import com.alfheim.aflheim_community.service.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -25,7 +27,14 @@ public class AccountConfirmationServiceImpl implements AccountConfirmationServic
         String confirmationCode = generateConformationCode();
 
         // Send mail
-        mailService.sendConfirmationEmail(email, confirmationCode);
+        Map<String, String> tokenDetails = new HashMap<>();
+        tokenDetails.put("confirm_code", confirmationCode);
+        System.out.println("111111111111111111111111111111111111");
+        mailService.configureMailSettings("confirmation");
+        System.out.println("22222222222222222222222222222222222");
+        mailService.sendEmail(email, "confirmation", tokenDetails);
+
+        System.out.println("CONFIRMATION CODE GENERATED -> "+tokenDetails.get("confirm_code")+"\n\n");
 
         // Save userEmail & code to the records
         addUserConfirmationRecord(email, confirmationCode);

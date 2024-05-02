@@ -26,49 +26,77 @@ public class MailServiceImpl implements MailService {
 
     @Value("${spring.mail.username}")
     private String mailFrom;
+    private Template confirmationMailTemplate;
+    private Configuration configuration;
+    private Map<String, String> emailTemplates = new HashMap<>();
 
-    private final Template confirmationMailTemplate;
+    public MailServiceImpl() {}
 
-    public MailServiceImpl() {
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
+    @Override
+    public void configureMailSettings(String emailType) {
+        this.configuration = new Configuration(Configuration.VERSION_2_3_30);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateLoader(
                 new SpringTemplateLoader(new ClassRelativeResourceLoader(this.getClass()), "/")
         );
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
         try {
-            this.confirmationMailTemplate = configuration.getTemplate("templates/confirm_mail.ftlh");
+            this.emailTemplates.put("confirmation", "templates/confirm_mail.ftlh");
+            this.emailTemplates.put("reset_password", "templates/reset_password_mail.ftlh");
+
+            if (emailType.equals("confirmation")) {
+                System.out.println("CONFIRMATION STEP CONDITIONAL. TEMPLATE PATH : " + String.valueOf(emailTemplates.get("confirmation")));
+                this.confirmationMailTemplate = configuration.getTemplate(String.valueOf(emailTemplates.get("confirmation")));
+            } else {
+                System.out.println("SETTING TEMPLATE PATH TO RESET PASSWORD");
+                this.confirmationMailTemplate = configuration.getTemplate(String.valueOf(emailTemplates.get("reset_password")));
+            }
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new IllegalArgumentException(e);
         }
     }
     @Override
-    public void sendConfirmationEmail(String email, String code) {
+    public void sendEmail(String email, String emailType, Map<String, String> model) {
 
-        String mailText = getEmailText(code);
+        System.out.println("MAIL RESET PASSWORD CODE GOT [SENDING] -> "+model.get("pass_reset_code")+"\n\n");
 
-        MimeMessagePreparator messagePreparator = getEmail(email, mailText);
-
+        String mailText = getEmailText(emailType, model);
+        MimeMessagePreparator messagePreparator = getEmail(email, emailType,mailText);
         javaMailSender.send(messagePreparator);
     }
 
-    private MimeMessagePreparator getEmail(String email, String mailText) {
+    private MimeMessagePreparator getEmail(String email, String emailType, String mailText) {
 
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom(mailFrom);
             messageHelper.setTo(email);
-            messageHelper.setSubject("Confirm Your Email");
+
+            if (emailType.equals("confirmation")) {
+                messageHelper.setSubject("Confirm Your Email");
+            } else if (emailType.equals("passwordReset")) {
+                messageHelper.setSubject("Reset Your Password");
+            }
+
             messageHelper.setText(mailText, true);
         };
 
         return  messagePreparator;
     }
 
-    private String getEmailText(String code) {
+    private String getEmailText(String emailType, Map<String, String> model) {
 
         Map<String, String> attr = new HashMap<>();
-        attr.put("confirm_code", code);
+
+        if (emailType.equals("confirmation")) {
+            System.out.println("EMAIL TYPE, CINFIRMATION");
+            attr.put("confirm_code", model.get("confirm_code"));
+        } else if (emailType.equals("passwordReset")) {
+            System.out.println("EMAIL TYPE, PASSWORD RESET");
+            attr.put("reset_code", model.get("pass_reset_code"));
+        }
 
         StringWriter writer = new StringWriter();
         try {

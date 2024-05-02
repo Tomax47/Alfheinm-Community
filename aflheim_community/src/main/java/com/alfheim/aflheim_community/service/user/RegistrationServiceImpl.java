@@ -44,6 +44,7 @@ public class RegistrationServiceImpl implements RegistrationService{
                 .address("Valhalla")
                 .number("000 000 0000")
                 .occupation("Adventurer")
+                .country("Midgard")
                 .city("Valhalla")
                 .region("Val")
                 .zip("9")
