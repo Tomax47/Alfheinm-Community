@@ -4,6 +4,7 @@ import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
 import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.User;
+import com.alfheim.aflheim_community.model.user.UserConfirmation;
 import com.alfheim.aflheim_community.repository.UserConfirmationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 
@@ -110,15 +111,24 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public boolean confirmAccount(String code) {
 
-        String email = accountConfirmationService.getEmailToConfirm(code);
+        UserConfirmation userConfirmationRecord = accountConfirmationService.getEmailConfirmationRecord(code).get();
 
-        if (email != null) {
-            User user = userRepo.findByEmail(email).get();
+        if (userConfirmationRecord.getUserEmail() != null &&
+                userConfirmationRecord.getState().toString().equals("ACTIVE")) {
+            // Record exist and isActive
+            User user = userRepo.findByEmail(userConfirmationRecord.getUserEmail()).get();
             user.setState("CONFIRMED");
 
+            // Activating user account
             userRepo.save(user);
+
+            // Expiring the confirmation record
+            // accountConfirmationService.expireRecord(userConfirmationRecord);
+            accountConfirmationService.deleteRecord(userConfirmationRecord);
+
             return true;
         } else {
+            // No record found or not active
             return false;
         }
     }

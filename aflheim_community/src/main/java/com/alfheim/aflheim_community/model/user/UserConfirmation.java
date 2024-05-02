@@ -20,4 +20,5 @@ public class UserConfirmation {
     private Long id;
     private String code;
     private String userEmail;
+    private RecordState state;
 }
