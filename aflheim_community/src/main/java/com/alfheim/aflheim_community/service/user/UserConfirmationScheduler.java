@@ -17,12 +17,12 @@ public class UserConfirmationScheduler {
         this.userConfirmationRepository = userConfirmationRepository;
     }
 
-    @Scheduled(fixedRate = 10000) // 10 minutes
+    @Scheduled(fixedRate = 600000) // 10 minutes
     public void expireOldUserConfirmations() {
         System.out.println("EXPIRING OLD USER CONFIRMATIONS");
         List<UserConfirmation> activeConfirmations = userConfirmationRepository.findByState(RecordState.ACTIVE);
         for (UserConfirmation confirmation : activeConfirmations) {
-            if (confirmation.getCreatedAt().isBefore(LocalDateTime.now().minusSeconds(60))) {
+            if (confirmation.getCreatedAt().isBefore(LocalDateTime.now().minusMinutes(10))) {
                 confirmation.setState(RecordState.EXPIRED);
                 userConfirmationRepository.save(confirmation);
             }

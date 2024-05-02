@@ -12,6 +12,8 @@ import com.alfheim.aflheim_community.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class ProfileServiceImpl implements ProfileService {
 
@@ -130,5 +132,24 @@ public class ProfileServiceImpl implements ProfileService {
             // No record found or not active
             return false;
         }
+    }
+
+    @Override
+    public int resendConfirmationEmail(String email) {
+        // Fetching the user by email
+        Optional<User> user = userRepo.findByEmail(email);
+        if (user.isPresent()) {
+            if (user.get().getState().toString().equals("NOT_CONFIRMED")) {
+
+                // Resending confirmation email
+                accountConfirmationService.sendConfirmationEmail(email);
+                return 1;
+            } else {
+                // User is already confirmed
+                return 2;
+            }
+        }
+        // User ain't found
+        return 0;
     }
 }

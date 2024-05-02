@@ -14,4 +14,6 @@ public interface ProfileService {
     int deleteUserProfile(String username);
 
     boolean confirmAccount(String code);
+
+    int resendConfirmationEmail(String email);
 }

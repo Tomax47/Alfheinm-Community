@@ -38,7 +38,7 @@ public class RegisterController {
         int responseStatus = registrationService.registerUser(registrationForm);
 
         if (responseStatus == 1) {
-            return "redirect:/login";
+            return "redirect:/confirm/process/" + registrationForm.getEmail();
         } else {
             return "redirect:/register?error";
         }
