@@ -67,7 +67,10 @@ public class ProfileController {
     @GetMapping("/profile/{username}/deleteAccount")
     public String getDeletePage(@PathVariable("username") String username,
                                 Model model) {
+
+        String profilePictureUrl = profileService.getProfileDetailsByUsername(username).getProfilePicture();
         model.addAttribute("username", username);
+        model.addAttribute("profilePicUrl", profilePictureUrl);
         model.addAttribute("isAuthenticated", true);
         return "user/profile/delete_profile_page";
     }

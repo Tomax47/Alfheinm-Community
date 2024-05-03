@@ -115,6 +115,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public UserDto getProfileDetailsByUsername(String username) {
+        User user = userRepo.findByUsername(username).get();
+
+        return UserDto.from(user);
+    }
+
+    @Override
     public int deleteUserProfile(String username) {
         User user = userRepo.findByUsername(username).get();
 
