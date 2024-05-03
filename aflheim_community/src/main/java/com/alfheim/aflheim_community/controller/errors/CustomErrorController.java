@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
-    public String getNotFound(HttpServletRequest request) {
+    public String handleError(HttpServletRequest request) {
         Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (statusCode != null && Integer.valueOf(statusCode.toString()) == HttpStatus.NOT_FOUND.value()) {

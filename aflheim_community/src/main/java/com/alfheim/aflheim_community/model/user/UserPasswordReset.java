@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.graalvm.nativeimage.c.type.CConst;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,4 +24,8 @@ public class UserPasswordReset {
     private String resetCode;
     @Column(nullable = false)
     private String userEmail;
+    @Column(nullable = false)
+    private RecordState state;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 }

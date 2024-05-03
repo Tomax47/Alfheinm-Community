@@ -25,7 +25,18 @@ public class PasswordController {
     @PostMapping("/login/password/recover")
     public String sendResetPasswordEmail(@RequestParam("email") String email) {
 
-        passwordResetService.sendConfirmationEmail(email);
+        System.out.println("SENDING PASSWORD RESET EMAIL TO: " + email + " | @CONTROLLER");
+        int results = passwordResetService.sendPasswordResetEmail(email);
+
+        if (results == 0) {
+            // USER AIN'T EXIST, CREATE A NEW ACCOUNT
+            return "redirect:/register";
+        } else if (results == 2) {
+            // USER ALREADY HAS AN ACTIVE RESET REQUEST "CHECK YOUR EMAIL OR TRY AGAIN AFTER 5 MINUTES"
+            return "redirect:/login?error=already_requested";
+        }
+
+        // ELSE, SUCCESSFULLY SENT RESET EMAIL
         return"redirect:/login";
     }
 
@@ -54,10 +65,18 @@ public class PasswordController {
         System.out.println("PASSWORD : " + password);
         int results = passwordResetService.resetUserPassword(verificationToken, password);
 
-        if (results == 1) {
-            return "redirect:/login";
-        } else {
-            return "user/auth/reset_password_page?error";
+        // TODO: HANDLE THE ERRORS IN A BETTER WAY
+        if (results == 0) {
+            // NO REQUEST HAS BEEN FOUND
+            return "redirect:/login/password/recover";
+        } else if (results == 2) {
+            // EXPIRED REQUEST
+            return "redirect:/login/password/recover";
+        } else if (results == 3) {
+            // USER CAN'T BE FOUND
+            return "redirect:/register";
         }
+        // PASSWORD RESET SUCCESSFULLY
+        return "redirect:/login";
     }
 }

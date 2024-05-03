@@ -2,7 +2,7 @@ package com.alfheim.aflheim_community.service.user;
 
 public interface PasswordResetService {
 
-    void sendConfirmationEmail(String email);
+    int sendPasswordResetEmail(String email);
 
     int resetUserPassword(String code, String newPassword);
 
