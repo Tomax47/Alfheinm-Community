@@ -38,9 +38,17 @@ public class RegisterController {
         int responseStatus = registrationService.registerUser(registrationForm);
 
         if (responseStatus == 1) {
+            // Successful registration
             return "redirect:/confirm/process/" + registrationForm.getEmail();
+        } else if (responseStatus == 2) {
+            // Email already exists
+            return "redirect:/register?error=email_exists";
+        } else if (responseStatus == 3) {
+            // Username is taken
+            return "redirect:/register?error=username_is_taken";
         } else {
-            return "redirect:/register?error";
+            // Other internal error
+            return "redirect:/register?error=unknown";
         }
 
     }

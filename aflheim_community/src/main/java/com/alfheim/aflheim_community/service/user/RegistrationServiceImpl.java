@@ -10,11 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.sql.Date;
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Component
 public class RegistrationServiceImpl implements RegistrationService{
@@ -30,13 +27,21 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public int registerUser(UserRegistrationForm userForm) {
 
+        if (userRepo.findByEmail(userForm.getEmail()) != null) {
+            // User already exists "Faster than letting sql refuse the repeated email"
+            return 2;
+        } else if (userRepo.findByEmail(userForm.getEmail()).get().getUsername().equals(userForm.getUsername())) {
+            // Username is taken
+            return 3;
+        }
+
         System.out.println("REACHED REG");
         User user = User.builder()
                 .username(userForm.getUsername())
                 .email(userForm.getEmail())
                 .password(passwordEncoder.encode(userForm.getPassword()))
                 .state(String.valueOf(State.NOT_CONFIRMED))
-                .role(String.valueOf(Role.Visitor))
+                .role(String.valueOf(Role.VISITOR))
                 .gender(String.valueOf(Gender.NOT_SPECIFIED))
                 .birthdate(Date.valueOf(LocalDate.now()))
                 .name("Viking")
