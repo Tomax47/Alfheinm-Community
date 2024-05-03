@@ -27,11 +27,14 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public int registerUser(UserRegistrationForm userForm) {
 
-        if (userRepo.findByEmail(userForm.getEmail()) != null) {
+        if (userRepo.findByEmail(userForm.getEmail()).isPresent()) {
             // User already exists "Faster than letting sql refuse the repeated email"
+            System.out.println("EMAIL ALREADY EXIST -> " + userForm.getEmail());
             return 2;
-        } else if (userRepo.findByEmail(userForm.getEmail()).get().getUsername().equals(userForm.getUsername())) {
+        } else if (!userRepo.findByEmail(userForm.getEmail()).isPresent() &&
+        userRepo.findByUsername(userForm.getUsername()).isPresent()) {
             // Username is taken
+            System.out.println("REGISTRATION FAILED - USERNAME TAKEN");
             return 3;
         }
 

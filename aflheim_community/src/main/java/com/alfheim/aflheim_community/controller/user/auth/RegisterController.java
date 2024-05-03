@@ -8,8 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 @Controller
 public class RegisterController {
@@ -23,6 +27,9 @@ public class RegisterController {
         // Auth. Filter
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+
+            UserRegistrationForm registrationForm = new UserRegistrationForm();
+            model.addAttribute("registrationForm", registrationForm);
             model.addAttribute("isAuthenticated", false);
             return "/user/auth/register_page";
         }
@@ -31,10 +38,19 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public String createAccount(UserRegistrationForm registrationForm) {
+    public String createAccount(@Valid @ModelAttribute("registrationForm") UserRegistrationForm registrationForm,
+                                BindingResult result,
+                                Model model) {
 
-        // TODO : HANDLE THE ERRORS BETTER AND IN A SPECIFIC WAY
+        System.out.println("REGISTRATION REQUEST REACHED");
+        if (result.hasErrors()) {
+            // Fields input errors
+            System.out.println("REGISTRATION ERRORS");
+            model.addAttribute("registrationForm", registrationForm);
+            return "/user/auth/register_page";
+        }
 
+        System.out.println("REGISTRATION PROCEEDING...");
         int responseStatus = registrationService.registerUser(registrationForm);
 
         if (responseStatus == 1) {
