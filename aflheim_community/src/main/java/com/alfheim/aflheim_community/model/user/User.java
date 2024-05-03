@@ -33,8 +33,8 @@ public class User {
     @Column(nullable = true)
     private String surname; // Optional
     @Column(nullable = true)
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private Date birthdate; // Optional
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthdate; // Optional
     @Column(nullable = true, length = 50)
     private String address; // Optional
     @Column(nullable = true, length = 15)

@@ -42,10 +42,8 @@ public class RegisterController {
                                 BindingResult result,
                                 Model model) {
 
-        System.out.println("REGISTRATION REQUEST REACHED");
         if (result.hasErrors()) {
             // Fields input errors
-            System.out.println("REGISTRATION ERRORS");
             model.addAttribute("registrationForm", registrationForm);
             return "/user/auth/register_page";
         }

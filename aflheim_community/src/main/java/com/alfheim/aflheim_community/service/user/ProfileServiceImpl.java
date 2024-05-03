@@ -30,20 +30,41 @@ public class ProfileServiceImpl implements ProfileService {
     public UserDto updateAccount(UserUpdateForm userUpdateForm, String email) {
 
         User user = userRepo.findByEmail(email).get();
-        user.setName(userUpdateForm.getName());
-        user.setSurname(userUpdateForm.getSurname());
-        user.setAddress(userUpdateForm.getAddress());
-        user.setNumber(userUpdateForm.getNumber());
-        user.setCountry(userUpdateForm.getCountry());
-        user.setCity(userUpdateForm.getCity());
-        user.setRegion(userUpdateForm.getRegion());
-        user.setZip(userUpdateForm.getZip());
+
+        System.out.println("\n\nIS NAME NULL? " + userUpdateForm.getName() + ". Check -> "+ (userUpdateForm.getName() == null));
+        if (!userUpdateForm.getName().isBlank()) {
+            user.setName(userUpdateForm.getName());
+        }
+
+        if (!userUpdateForm.getSurname().isBlank()) {
+            user.setSurname(userUpdateForm.getSurname());
+        }
+        if (!userUpdateForm.getAddress().isBlank()) {
+            user.setAddress(userUpdateForm.getAddress());
+        }
+        if (!userUpdateForm.getNumber().isBlank()) {
+            user.setNumber(userUpdateForm.getNumber());
+        }
+        if (!userUpdateForm.getCountry().isBlank()) {
+            user.setCountry(userUpdateForm.getCountry());
+        }
+        if (!userUpdateForm.getCity().isBlank()) {
+            user.setCity(userUpdateForm.getCity());
+        }
+        if (!userUpdateForm.getRegion().isBlank()) {
+            user.setRegion(userUpdateForm.getRegion());
+        }
+        if (!userUpdateForm.getZip().isBlank()) {
+            user.setZip(userUpdateForm.getZip());
+        }
 
         if (userUpdateForm.getOccupation() != null) {
             user.setOccupation(userUpdateForm.getOccupation());
         }
 
+        System.out.println("BIRTHDATE -> "+userUpdateForm.getBirthdate());
         if (userUpdateForm.getBirthdate() != null) {
+            System.out.println("UPDATING BIRTHDATE...");
             user.setBirthdate(userUpdateForm.getBirthdate());
         }
 

@@ -4,6 +4,7 @@ package com.alfheim.aflheim_community.controller.errors;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -23,17 +24,18 @@ public class CustomErrorController implements ErrorController {
             // Internal Server Error 500
             return "error_pages/internal_server_error_page";
 
-        } else if (Integer.valueOf(statusCode.toString()) == HttpStatus.BAD_REQUEST.value()) {
-
-            if (request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI).equals("/profile/update")){
-                // Profile Update Data Input Error
-                // TODO: FIND A WAY TO SHOW THE MESSAGE & PREVENT THE FORM FROM RESENDING
-
-                return "redirect:/profile";
-            }
         }
 
+        // TODO: HANDLE OTHER ERRORS
+
         return "error_pages/internal_server_error_page";
+    }
+
+    @RequestMapping("/error/login/invalid")
+    public String handleIncorrectLoginError(Model model) {
+        System.out.println("CUSTOM ERROR HANDLER FOR INCORRECT CREDENTIALS. SETTING UP INCORRECT CREDENTIALS FLAG");
+        model.addAttribute("incorrectCredentials", true);
+        return "user/auth/login_page";
     }
 
     @Override

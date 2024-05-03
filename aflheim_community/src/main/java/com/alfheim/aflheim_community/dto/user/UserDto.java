@@ -7,6 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.print.DocFlavor;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,8 +34,8 @@ public class UserDto {
     private String city;
     private String region;
     private String zip;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private Date birthdate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthdate;
     private String profilePicture;
 
     public static UserDto from(User user) {
@@ -45,6 +47,11 @@ public class UserDto {
         } else {
             profilePictureUrl = "/assets/img/default-avatar.jpg";
         }
+
+//        LocalDate formattedBirthdate = LocalDate.ofInstant(
+//                user.getBirthdate().toInstant(),
+//                ZoneId.systemDefault());
+
 
         return UserDto.builder()
                 .id(user.getId())

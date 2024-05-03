@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
-import static com.alfheim.aflheim_community.dto.user.UserUpdateForm.getUpdateForm;
 
 @Controller
 public class ProfileController {
@@ -35,14 +35,23 @@ public class ProfileController {
         model.addAttribute("isAuthenticated", isAuthenticated);
 
         // Passing in the dto and the form
+        UserUpdateForm updateForm = new UserUpdateForm();
         model.addAttribute("userDto", userDto);
-        model.addAttribute("user", getUpdateForm(userDto));
+        model.addAttribute("user", updateForm);
         return "user/profile/profile_page";
     }
 
     @PostMapping("/profile/update")
     public String updateProfileInformation(@Valid @ModelAttribute("user") UserUpdateForm userUpdateForm,
+                                           BindingResult result,
+                                           Model model,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("user", userUpdateForm);
+            model.addAttribute("userDto", profileService.getProfileDetails(userDetails.getUserEmail()));
+            return "user/profile/profile_page";
+        }
 
         System.out.println(userUpdateForm.getProfilePicture().getContentType());
         UserDto user = profileService.updateAccount(userUpdateForm, userDetails.getUserEmail());

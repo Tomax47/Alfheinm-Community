@@ -74,7 +74,7 @@
                             <input class="form-control"
                                    id="first_name"
                                    type="text"
-                                   placeholder="Enter your first name"
+                                   th:placeholder="${userDto.getName()}"
                                    th:field="*{name}">
                             <p th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></p>
                         </div>
@@ -86,7 +86,7 @@
                             <input class="form-control"
                                    id="last_name"
                                    type="text"
-                                   placeholder="Also your last name"
+                                   th:placeholder="${userDto.getSurname()}"
                                    th:field="*{surname}">
                             <p th:if="${#fields.hasErrors('surname')}" class="text-danger" th:errors="*{surname}"></p>
                         </div>
@@ -95,7 +95,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6 mb-3">
                         <!-- BIRTHDAY-->
-                        <label for="birthday">Birthday</label>
+                        <label for="birthday" th:text="${'Birthday - ' + userDto.getBirthdate()}"></label>
                         <div class="input-group">
                                         <span class="input-group-text">
                                             <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
@@ -104,7 +104,6 @@
                                    class="form-control datepicker-input"
                                    id="birthday"
                                    type="date"
-                                   th:placeholder="${user.getBirthdate()}"
                                    th:field="*{birthdate}">
                             <p th:if="${#fields.hasErrors('birthdate')}" class="text-danger" th:errors="*{birthdate}"></p>
                             <!-- <div class="datepicker datepicker-dropdown datepicker-orient-left datepicker-orient-bottom" style="left: 80.6px; top: 452.237px;"><div class="datepicker-picker"><div class="datepicker-header"><div class="datepicker-title" style="display: none;"></div><div class="datepicker-controls"><button type="button" class="btn prev-btn">«</button><button type="button" class="btn view-switch">April 2024</button><button type="button" class="btn next-btn">»</button></div></div><div class="datepicker-main"><div class="datepicker-view"><div class="days"><div class="days-of-week"><span class="dow">Su</span><span class="dow">Mo</span><span class="dow">Tu</span><span class="dow">We</span><span class="dow">Th</span><span class="dow">Fr</span><span class="dow">Sa</span></div><div class="datepicker-grid"><span class="datepicker-cell day prev" data-date="1711832400000">31</span><span class="datepicker-cell day" data-date="1711918800000">1</span><span class="datepicker-cell day" data-date="1712005200000">2</span><span class="datepicker-cell day" data-date="1712091600000">3</span><span class="datepicker-cell day" data-date="1712178000000">4</span><span class="datepicker-cell day" data-date="1712264400000">5</span><span class="datepicker-cell day" data-date="1712350800000">6</span><span class="datepicker-cell day" data-date="1712437200000">7</span><span class="datepicker-cell day" data-date="1712523600000">8</span><span class="datepicker-cell day" data-date="1712610000000">9</span><span class="datepicker-cell day" data-date="1712696400000">10</span><span class="datepicker-cell day" data-date="1712782800000">11</span><span class="datepicker-cell day" data-date="1712869200000">12</span><span class="datepicker-cell day" data-date="1712955600000">13</span><span class="datepicker-cell day" data-date="1713042000000">14</span><span class="datepicker-cell day" data-date="1713128400000">15</span><span class="datepicker-cell day" data-date="1713214800000">16</span><span class="datepicker-cell day" data-date="1713301200000">17</span><span class="datepicker-cell day" data-date="1713387600000">18</span><span class="datepicker-cell day" data-date="1713474000000">19</span><span class="datepicker-cell day" data-date="1713560400000">20</span><span class="datepicker-cell day" data-date="1713646800000">21</span><span class="datepicker-cell day" data-date="1713733200000">22</span><span class="datepicker-cell day" data-date="1713819600000">23</span><span class="datepicker-cell day" data-date="1713906000000">24</span><span class="datepicker-cell day" data-date="1713992400000">25</span><span class="datepicker-cell day" data-date="1714078800000">26</span><span class="datepicker-cell day" data-date="1714165200000">27</span><span class="datepicker-cell day" data-date="1714251600000">28</span><span class="datepicker-cell day" data-date="1714338000000">29</span><span class="datepicker-cell day focused" data-date="1714424400000">30</span><span class="datepicker-cell day next" data-date="1714510800000">1</span><span class="datepicker-cell day next" data-date="1714597200000">2</span><span class="datepicker-cell day next" data-date="1714683600000">3</span><span class="datepicker-cell day next" data-date="1714770000000">4</span><span class="datepicker-cell day next" data-date="1714856400000">5</span><span class="datepicker-cell day next" data-date="1714942800000">6</span><span class="datepicker-cell day next" data-date="1715029200000">7</span><span class="datepicker-cell day next" data-date="1715115600000">8</span><span class="datepicker-cell day next" data-date="1715202000000">9</span><span class="datepicker-cell day next" data-date="1715288400000">10</span><span class="datepicker-cell day next" data-date="1715374800000">11</span></div></div></div></div><div class="datepicker-footer"><div class="datepicker-controls"><button type="button" class="btn today-btn" style="display: none;">Today</button><button type="button" class="btn clear-btn" style="display: none;">Clear</button></div></div></div></div>-->
@@ -114,14 +113,13 @@
                         <!-- GENDER -->
                         <label for="gender">Gender</label>
                         <select class="form-select mb-0" id="gender" th:field="*{gender}">
-                            <option th:value="'None'" th:text="None"></option>
+                            <option th:value="'None'" th:text="${'Current : ' + userDto.getGender()}"></option>
                             <option th:value="'Male'" th:text="Male"></option>
                             <option th:value="'Female'" th:text="Female"></option>
                         </select>
                     </div>
                 </div>
                 <div class="row">
-                    <!-- TODO: ADD THE FUNCTIONALITY -->
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
                             <label for="profilePicture">Profile Picture</label>
@@ -141,7 +139,7 @@
                             <input class="form-control"
                                    id="phone"
                                    type="tel"
-                                   placeholder="+12-345 678 910"
+                                   th:placeholder="${userDto.getNumber()}"
                                    th:field="*{number}">
                             <p th:if="${#fields.hasErrors('number')}" class="text-danger" th:errors="*{number}"></p>
                         </div>
@@ -156,7 +154,7 @@
                             <input class="form-control"
                                    id="address"
                                    type="text"
-                                   placeholder="Enter your home address"
+                                   th:placeholder="${userDto.getAddress()}"
                                    th:field="*{address}">
                             <p th:if="${#fields.hasErrors('address')}" class="text-danger" th:errors="*{address}"></p>
                         </div>
@@ -167,7 +165,7 @@
                             <input class="form-control"
                                    id="country"
                                    type="text"
-                                   placeholder="Country"
+                                   th:placeholder="${userDto.getCountry()}"
                                    th:field="*{country}">
                             <p th:if="${#fields.hasErrors('country')}" class="text-danger" th:errors="*{country}"></p>
                         </div>
@@ -179,7 +177,7 @@
                             <label for="city">City</label>
                             <input class="form-control"
                                    id="city" type="text"
-                                   placeholder="City"
+                                   th:placeholder="${userDto.getCity()}"
                                    th:field="*{city}">
                             <p th:if="${#fields.hasErrors('city')}" class="text-danger" th:errors="*{city}"></p>
                         </div>
@@ -189,6 +187,7 @@
                         <input class="form-control"
                                id="state"
                                type="text"
+                               th:placeholder="${userDto.getRegion()}"
                                th:field="*{region}">
                         <p th:if="${#fields.hasErrors('region')}" class="text-danger" th:errors="*{region}"></p>
                     </div>
@@ -198,7 +197,7 @@
                             <input class="form-control"
                                    id="zip"
                                    type="tel"
-                                   placeholder="ZIP"
+                                   th:placeholder="${userDto.getZip()}"
                                    th:field="*{zip}">
                             <p th:if="${#fields.hasErrors('zip')}" class="text-danger" th:errors="*{zip}"></p>
                         </div>

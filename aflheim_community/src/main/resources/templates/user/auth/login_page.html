@@ -74,7 +74,9 @@
             <div class="text-center text-md-center mb-4 mt-md-0">
               <h1 class="mb-0 h3">Log into your account</h1>
             </div>
-
+            <!-- Invalid Credentials Error -->
+            <p th:if="${incorrectCredentials}" th:text="${'Incorrecr email or password.'}" class="text-danger"></p>
+            
 <!--            ########## FORM HERE ############# -->
             <form action="/login"  method="post" class="mt-4">
               <!-- Form -->

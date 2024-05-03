@@ -46,7 +46,7 @@ public class RegistrationServiceImpl implements RegistrationService{
                 .state(String.valueOf(State.NOT_CONFIRMED))
                 .role(String.valueOf(Role.VISITOR))
                 .gender(String.valueOf(Gender.NOT_SPECIFIED))
-                .birthdate(Date.valueOf(LocalDate.now()))
+                .birthdate(LocalDate.now())
                 .name("Viking")
                 .surname("Vikingson")
                 .address("Valhalla")
