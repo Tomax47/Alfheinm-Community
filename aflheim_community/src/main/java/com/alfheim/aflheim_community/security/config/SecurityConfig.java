@@ -36,12 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/static/**",
                         "/error").permitAll()
 
-                .antMatchers("/login",
-                        "/login/**",
-                        "register",
-                        "/password/reset/**",
-                        "/confirm/**",
-                        "/account/confirm/**").anonymous()
+//                .antMatchers("/login",
+//                        "/login/**",
+//                        "/register",
+//                        "/password/reset/**",
+//                        "/confirm/**",
+//                        "/account/confirm/**").anonymous()
 
                 .antMatchers("/profile",
                         "/profile/**",
@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("email")
                     .passwordParameter("password")
                     .defaultSuccessUrl("/profile")
-                    .failureUrl("/error/login/invalid")
+                    .failureUrl("/login/error")
                     .permitAll()
 
                 .and()

@@ -31,7 +31,7 @@ public class CustomErrorController implements ErrorController {
         return "error_pages/internal_server_error_page";
     }
 
-    @RequestMapping("/error/login/invalid")
+    @RequestMapping("/login/error")
     public String handleIncorrectLoginError(Model model) {
         System.out.println("CUSTOM ERROR HANDLER FOR INCORRECT CREDENTIALS. SETTING UP INCORRECT CREDENTIALS FLAG");
         model.addAttribute("incorrectCredentials", true);
