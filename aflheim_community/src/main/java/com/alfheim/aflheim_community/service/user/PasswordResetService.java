@@ -7,4 +7,6 @@ public interface PasswordResetService {
     int resetUserPassword(String code, String newPassword);
 
     String verifyResetToken(String verificationToken);
+
+    int authResetUserPassword(String username, String oldPassword, String newPassword);
 }

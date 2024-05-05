@@ -1,13 +1,18 @@
 package com.alfheim.aflheim_community.controller.user.auth;
 
+import com.alfheim.aflheim_community.dto.user.AuthPasswordResetForm;
+import com.alfheim.aflheim_community.model.user.User;
+import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.user.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.naming.Binding;
+import javax.validation.Valid;
 
 @Controller
 public class PasswordController {
@@ -78,5 +83,48 @@ public class PasswordController {
         }
         // PASSWORD RESET SUCCESSFULLY
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile/password/reset")
+    public String getAuthPasswordResetPage(Model model,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        AuthPasswordResetForm passwordResetForm = new AuthPasswordResetForm();
+        model.addAttribute("passwordResetForm", passwordResetForm);
+        model.addAttribute("username", userDetails.getUsername());
+
+        return "user/profile/authenticated_password_reset_page";
+    }
+
+    @PostMapping("/profile/password/reset")
+    public String doAuthPasswordReset(@Valid @ModelAttribute AuthPasswordResetForm authPasswordResetForm,
+                                      BindingResult result,
+                                      Model model,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        String username = userDetails.getUsername();
+        AuthPasswordResetForm passwordResetForm = new AuthPasswordResetForm();
+
+        if (result.hasErrors()) {
+            System.out.println("CONTROLLER CAUGHT FILED ERRORS! PAS. RESET");
+            System.out.println(result.getAllErrors().get(0));
+            model.addAttribute("passwordResetForm", passwordResetForm);
+            model.addAttribute("username", username);
+
+            return "user/profile/authenticated_password_reset_page";
+        }
+
+        int resp = passwordResetService.authResetUserPassword(username, authPasswordResetForm.getOldPassword(), authPasswordResetForm.getNewPassword());
+
+        if (resp == 1) {
+            return "redirect:/profile";
+        } else if (resp == 2){
+            return "redirect:/profile/password/reset?error=IncorrectCredentials";
+        } else if (resp == 3) {
+            return "redirect:/profile/password/reset?error=SWW";
+        } else {
+            return "redirect:/profile/password/reset?error=UserNotFound";
+        }
+
     }
 }

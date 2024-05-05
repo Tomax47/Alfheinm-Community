@@ -30,7 +30,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Autowired
     private UserPasswordResetRepo userPasswordResetRepo;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public int sendPasswordResetEmail(String email) {
@@ -115,6 +116,37 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Override
     public String verifyResetToken(String verificationToken) {
         return userPasswordResetRepo.findByResetCode(verificationToken).get().getUserEmail();
+    }
+
+    @Override
+    public int authResetUserPassword(String username, String oldPassword, String newPassword) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // TODO : FIX THE ENCODED STRING AIN'T LOOK LIKE BCRYPT ISSUE
+            if (passwordEncoder.matches(user.getPassword(), oldPassword)) {
+
+                try {
+                    // Success
+                    user.setPassword(passwordEncoder.encode(newPassword));
+                    userRepo.save(user);
+                    return 1;
+
+                } catch (Exception e) {
+                    // Something went wrong
+                    return 3;
+                }
+            }
+
+            // Incorrect old password
+            return 2;
+        }
+
+        // User not found
+        return 0;
     }
 
     private void addUserPasswordResetRecord(String email, String code) {

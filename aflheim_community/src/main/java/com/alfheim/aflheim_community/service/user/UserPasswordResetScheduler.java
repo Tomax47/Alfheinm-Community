@@ -1,7 +1,6 @@
 package com.alfheim.aflheim_community.service.user;
 
 import com.alfheim.aflheim_community.model.user.RecordState;
-import com.alfheim.aflheim_community.model.user.UserConfirmation;
 import com.alfheim.aflheim_community.model.user.UserPasswordReset;
 import com.alfheim.aflheim_community.repository.UserPasswordResetRepo;
 import org.springframework.scheduling.annotation.Scheduled;
