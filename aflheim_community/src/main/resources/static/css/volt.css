@@ -6282,9 +6282,13 @@ textarea.form-control-lg {
 
 .dropup,
 .dropend,
-.dropdown,
 .dropstart {
     position: relative;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-toggle {
@@ -6552,6 +6556,21 @@ textarea.form-control-lg {
     white-space: nowrap;
     background-color: transparent;
     border: 0;
+}
+
+.dropdown-item-danger {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #111827;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: #E11D48;
+    border: 0;
+    border-bottom-left-radius: .4rem;
+    border-bottom-right-radius: .4rem;
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
@@ -10443,6 +10462,10 @@ textarea.form-control-lg {
 
 .w-6 {
     width: 6rem;
+}
+
+.w-8 {
+    width: 8rem;
 }
 
 .w-50 {
