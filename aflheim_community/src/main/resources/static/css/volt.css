@@ -7660,7 +7660,7 @@ textarea.form-control-lg {
 }
 
 .accordion-button:not(.collapsed)::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231c2532'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    /*background-image: none;*/
     transform: rotate(180deg);
 }
 
@@ -7670,7 +7670,7 @@ textarea.form-control-lg {
     height: 1.25rem;
     margin-left: auto;
     content: "";
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23374151'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-image: url("down_arrow_icon.png");
     background-repeat: no-repeat;
     background-size: 1.25rem;
     transition: transform 0.2s ease-in-out;
@@ -10466,6 +10466,10 @@ textarea.form-control-lg {
 
 .w-8 {
     width: 8rem;
+}
+
+.w-50r {
+    width: 50rem;
 }
 
 .w-50 {
@@ -23167,14 +23171,14 @@ label {
 }
 
 .accordion-button:not(.collapsed)::after {
-    background-image: none;
-    transform: rotateZ(45deg);
+    background-image: url("up_arrow_icon.png");
+    transform: rotateZ(0deg);
 }
 
 .accordion-button::after {
-    background-image: none;
+    background-image: url("down_arrow_icon.png");
     content: "\f067";
-    font-family: "Font Awesome 5 Free";
+    /*font-family: "Font Awesome 5 Free";*/
     font-size: 1rem;
     font-weight: 900;
 }

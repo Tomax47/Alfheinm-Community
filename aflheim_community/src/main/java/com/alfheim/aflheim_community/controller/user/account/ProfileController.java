@@ -29,6 +29,10 @@ public class ProfileController {
 
         // Getting the user
         UserDto userDto = profileService.getProfileDetails(userDetails.getUserEmail());
+        String badge  = "";
+        if (userDto.getRole().equals("VISITOR")) {
+            badge = "badge bg-primary";
+        }
 
         // Checking the aut state
         boolean isAuthenticated = principal != null;
@@ -36,6 +40,7 @@ public class ProfileController {
 
         // Passing in the dto and the form
         UserUpdateForm updateForm = new UserUpdateForm();
+        model.addAttribute("badge", badge);
         model.addAttribute("userDto", userDto);
         model.addAttribute("user", updateForm);
         return "user/profile/profile_page";

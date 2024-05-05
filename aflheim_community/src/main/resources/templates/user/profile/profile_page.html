@@ -49,7 +49,9 @@
             <img th:src="${userDto.getProfilePicture()}" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
             <h4 class="h3 fw-bold" th:text="${'@' + userDto.getUsername()}"></h4>
             <h5 class="fw-normal" th:text="${userDto.getEmail()}"></h5>
-            <p class="text-gray mb-4" th:text="${userDto.getRole()}"></p>
+            <div class="mb-2">
+                <span th:class="${badge}" th:text="${userDto.getRole()}"></span>
+            </div>
 
             <!-- TODO: SHOW ONLY IN CASE THIS IS A VISITOR ACCOUNT -->
             <a class="btn btn-sm btn-yellow-200 d-inline-flex align-items-center me-2" href="#">
