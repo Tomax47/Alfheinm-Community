@@ -30,7 +30,6 @@ public class RegisterController {
 
             UserRegistrationForm registrationForm = new UserRegistrationForm();
             model.addAttribute("registrationForm", registrationForm);
-            model.addAttribute("isAuthenticated", false);
             return "/user/auth/register_page";
         }
 

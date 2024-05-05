@@ -32,6 +32,10 @@ public class ProfileController {
         String badge  = "";
         if (userDto.getRole().equals("VISITOR")) {
             badge = "badge bg-primary";
+        } else if (userDto.getRole().equals("MEMBER")) {
+            badge = "badge bg-secondary";
+        } else if (userDto.getRole().equals("ADMIN")){
+            badge = "badge bg-success";
         }
 
         // Checking the aut state

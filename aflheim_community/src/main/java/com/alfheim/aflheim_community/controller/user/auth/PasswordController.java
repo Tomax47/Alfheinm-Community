@@ -93,11 +93,11 @@ public class PasswordController {
         model.addAttribute("passwordResetForm", passwordResetForm);
         model.addAttribute("username", userDetails.getUsername());
 
-        return "user/profile/authenticated_password_reset_page";
+        return "/user/profile/authenticated_password_reset_page";
     }
 
     @PostMapping("/profile/password/reset")
-    public String doAuthPasswordReset(@Valid @ModelAttribute AuthPasswordResetForm authPasswordResetForm,
+    public String doAuthPasswordReset(@Valid @ModelAttribute("passwordResetForm") AuthPasswordResetForm authPasswordResetForm,
                                       BindingResult result,
                                       Model model,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -107,14 +107,16 @@ public class PasswordController {
 
         if (result.hasErrors()) {
             System.out.println("CONTROLLER CAUGHT FILED ERRORS! PAS. RESET");
-            System.out.println(result.getAllErrors().get(0));
+            System.out.println(result.getAllErrors());
             model.addAttribute("passwordResetForm", passwordResetForm);
             model.addAttribute("username", username);
 
-            return "user/profile/authenticated_password_reset_page";
+            return "/user/profile/authenticated_password_reset_page";
         }
 
-        int resp = passwordResetService.authResetUserPassword(username, authPasswordResetForm.getOldPassword(), authPasswordResetForm.getNewPassword());
+        int resp = passwordResetService.authResetUserPassword(username,
+                authPasswordResetForm.getOldPassword(),
+                authPasswordResetForm.getNewPassword());
 
         if (resp == 1) {
             return "redirect:/profile";
