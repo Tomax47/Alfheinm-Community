@@ -22597,7 +22597,7 @@ textarea.form-control-lg {
 .navbar-collapse.show {
         padding: 1.5rem;
         border-radius: 0.35rem;
-        background: #ffffff;
+        background: #003040;
         animation: show-navbar-collapse 0.2s ease forwards;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }

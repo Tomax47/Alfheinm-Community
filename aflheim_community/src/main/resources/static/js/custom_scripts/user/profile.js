@@ -1,6 +1,5 @@
 
-console.log("PROFILE CUSTOM JS WORKING")
-
+// ################ HANDLE ACTIONS BUTTONS DROPDOWN ################
 $(document).ready(function() {
     $('#dropdownMenuOffset').on('click', function(e) {
         console.log("FUNCTION CALLED")
