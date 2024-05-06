@@ -91,7 +91,7 @@ public class MailServiceImpl implements MailService {
         Map<String, String> attr = new HashMap<>();
 
         if (emailType.equals("confirmation")) {
-            System.out.println("EMAIL TYPE, CINFIRMATION");
+            System.out.println("EMAIL TYPE, CONFIRMATION");
             attr.put("confirm_code", model.get("confirm_code"));
         } else if (emailType.equals("passwordReset")) {
             System.out.println("EMAIL TYPE, PASSWORD RESET");
