@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.Binding;
@@ -103,14 +104,10 @@ public class PasswordController {
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String username = userDetails.getUsername();
-        AuthPasswordResetForm passwordResetForm = new AuthPasswordResetForm();
 
         if (result.hasErrors()) {
-            System.out.println("CONTROLLER CAUGHT FILED ERRORS! PAS. RESET");
-            System.out.println(result.getAllErrors());
-            model.addAttribute("passwordResetForm", passwordResetForm);
             model.addAttribute("username", username);
-
+            model.addAttribute("passwordResetForm", authPasswordResetForm);
             return "/user/profile/authenticated_password_reset_page";
         }
 
