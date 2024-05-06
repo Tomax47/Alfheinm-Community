@@ -81,10 +81,22 @@ public class ProfileServiceImpl implements ProfileService {
                     userUpdateForm.getProfilePicture().getContentType().equals("image/jpeg") ||
                     userUpdateForm.getProfilePicture().getContentType().equals("image/png")
             ) {
+                // New file submission
 
+                // Saving the file
                 String imageStorageName = fileStorageService.saveFile(userUpdateForm.getProfilePicture());
 
-                // TODO: DELETE THE CURRENT IMG OF THE USER FROM THE TABLE IF HE HAS ONE AND REPLACE IT WITH THE NEW ONE
+                System.out.println("\nIS IMAGE'S STORAGE NAME BLANK?\n"+user.getProfilePicture().getFileStorageName().isBlank()+
+                        "\nStorage Name : "+user.getProfilePicture().getFileStorageName()+"\n\n");
+
+                if (!user.getProfilePicture().getFileStorageName().isBlank()) {
+                    // User has a profile picture. Deleting it...
+                    System.out.println("\n\nUSER HAS AN OLD PROFILE PICTURE. DELETING IT...\nFILE STORAGE NAME : "+
+                            user.getProfilePicture().getFileStorageName()+"\n\n");
+                    fileStorageService.deleteFile(user.getProfilePicture().getFileStorageName());
+                }
+
+                // Setting the new profile picture
                 user.setProfilePicture(fileStorageService.findByStorageName(imageStorageName));
             }
             User updatedUser = userRepo.save(user);

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public void writeFileToResponse(String fileStorageName, HttpServletResponse response) {
-        FileInfo fileInfo = fileInfoRepo.findByFileStorageName(fileStorageName);
+        FileInfo fileInfo = fileInfoRepo.findByFileStorageName(fileStorageName).get();
 
         /**
          This line sets the content type of the HTTP response to the type of the file being written.
@@ -77,7 +78,7 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public FileInfo findByStorageName(String storageName) {
-        return fileInfoRepo.findByFileStorageName(storageName);
+        return fileInfoRepo.findByFileStorageName(storageName).get();
     }
 
     @Override
@@ -88,12 +89,27 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public int deleteFile(String storageName) {
         try {
-            System.out.println("\n\n DELETING THE FILE \n\n");
-            FileInfo fileInfo = fileInfoRepo.findByFileStorageName(storageName);
-            fileInfoRepo.delete(fileInfo);
 
+            // TODO :
+            //  1- FIX THE ISSUE OF THE FILE NOT BEING DELETED FROM THE DB.
+            //  2- FIX THE ISSUE OF "FILE IS BEING USED" THAT'S PREVENTING THE DELETION OF THE FILE FROM THE DIRECTORY IT'S SAVED IN.
+
+            // Deleting the file from the DB
+            FileInfo fileInfo = fileInfoRepo.findByFileStorageName(storageName).get();
+
+            System.out.println("\n\n DELETING THE FILE\nFile storage name : "+fileInfo.getFileStorageName()+"\n\n");
+            fileInfoRepo.delete(fileInfo);
+            System.out.println("FILE-INFO : DELETED THE FILE FROM THE REPOSITORY.");
+
+            // Deleting the file from the dir path
+            Files.delete(Path.of(fileInfo.getUrl()));
+            System.out.println("FILE-INFO : DELETE THE FILE FROM THE FILES DIRECTORY.");
             return 1;
         } catch (Exception e) {
+            System.out.println("FILE-INFO : SOMETHING WENT WRONG DELETING THE FILE.\nERROR DETAILS : ");
+            System.out.println(e.getMessage()+"\nERROR'S TRACEBACK : \n");
+            e.printStackTrace();
+            System.out.println("\n\n");
             return 0;
         }
     }
