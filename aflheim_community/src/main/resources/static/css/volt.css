@@ -986,12 +986,12 @@
     --bs-gray-800: #003044;
     --bs-gray-900: #003044;
     --bs-primary: #003044;
-    --bs-secondary: #004154;
+    --bs-secondary: #f0bc74;
     --bs-tertiary: #3A6275;
-    --bs-success: #B6D3E3;
+    --bs-success: #10B981;
     --bs-info: #003044;
     --bs-warning: #B6D3E3;
-    --bs-danger: #B6D3E3;
+    --bs-danger: #E11D48;
     --bs-white: #DAEBF4;
     --bs-indigo: #004154;
     --bs-purple: #3A6275;
@@ -1008,12 +1008,12 @@
     --bs-gray-800: #003044;
     --bs-gray-900: #003044;
     --bs-primary-rgb: 0, 48, 68;
-    --bs-secondary-rgb: 0, 65, 84;
+    --bs-secondary-rgb: 240, 188, 116;
     --bs-tertiary-rgb: 58, 98, 117;
-    --bs-success-rgb: 182, 211, 227;
+    --bs-success-rgb: 16, 185, 129;
     --bs-info-rgb: 0, 48, 68;
     --bs-warning-rgb: 182, 211, 227;
-    --bs-danger-rgb: 182, 211, 227;
+    --bs-danger-rgb: 225, 29, 72;
     --bs-white-rgb: 218, 235, 244;
     --bs-indigo-rgb: 0, 65, 84;
     --bs-purple-rgb: 58, 98, 117;
@@ -6282,9 +6282,13 @@ textarea.form-control-lg {
 
 .dropup,
 .dropend,
-.dropdown,
 .dropstart {
     position: relative;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-toggle {
@@ -6552,6 +6556,21 @@ textarea.form-control-lg {
     white-space: nowrap;
     background-color: transparent;
     border: 0;
+}
+
+.dropdown-item-danger {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #111827;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: #E11D48;
+    border: 0;
+    border-bottom-left-radius: .4rem;
+    border-bottom-right-radius: .4rem;
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
@@ -7641,7 +7660,7 @@ textarea.form-control-lg {
 }
 
 .accordion-button:not(.collapsed)::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231c2532'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    /*background-image: none;*/
     transform: rotate(180deg);
 }
 
@@ -7651,7 +7670,7 @@ textarea.form-control-lg {
     height: 1.25rem;
     margin-left: auto;
     content: "";
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23374151'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-image: url("down_arrow_icon.png");
     background-repeat: no-repeat;
     background-size: 1.25rem;
     transition: transform 0.2s ease-in-out;
@@ -10443,6 +10462,14 @@ textarea.form-control-lg {
 
 .w-6 {
     width: 6rem;
+}
+
+.w-8 {
+    width: 8rem;
+}
+
+.w-50r {
+    width: 50rem;
 }
 
 .w-50 {
@@ -22570,7 +22597,7 @@ textarea.form-control-lg {
 .navbar-collapse.show {
         padding: 1.5rem;
         border-radius: 0.35rem;
-        background: #ffffff;
+        background: #003040;
         animation: show-navbar-collapse 0.2s ease forwards;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
@@ -23144,14 +23171,14 @@ label {
 }
 
 .accordion-button:not(.collapsed)::after {
-    background-image: none;
-    transform: rotateZ(45deg);
+    background-image: url("up_arrow_icon.png");
+    transform: rotateZ(0deg);
 }
 
 .accordion-button::after {
-    background-image: none;
+    background-image: url("down_arrow_icon.png");
     content: "\f067";
-    font-family: "Font Awesome 5 Free";
+    /*font-family: "Font Awesome 5 Free";*/
     font-size: 1rem;
     font-weight: 900;
 }

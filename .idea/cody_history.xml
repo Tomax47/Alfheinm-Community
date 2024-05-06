@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChatHistory">
+    <accountData>
+      <list>
+        <AccountData>
+          <accountId value="VXNlcjo0MTEyNzU=" />
+          <chats>
+            <list>
+              <chat>
+                <internalId value="662e973e-763e-49c8-aacc-30f23faf02f7" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="ecc6220b-8ef6-4036-b735-f4f41c54ca12" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="87f7c1fb-96ca-4ad3-9bfb-0b7c3fefd567" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="290cfec3-94a0-4f3a-8505-81c2c6f6425a" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="3f344648-aaf7-4680-9433-375e06efd23d" />
+                <messages>
+                  <list>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="Hey" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Hello! I'm Claude, an AI assistant created by Anthropic. How can I help you today?" />
+                    </message>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="Why you aint working while Im writing the code?" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="I'm an AI assistant without the ability to directly write or modify code. My role is to understand the context you provide me through code snippets or files, and then have a dialogue to provide explanations, suggestions, or answer questions related to that code.&#10;&#10;I don't have the capability to actively write, run or test code myself. My purpose is to serve as an intelligent aid by analyzing the code you show me and engaging in helpful discussion around it based on my training. Please feel free to provide me with more context or ask any specific questions you have about the code, and I'll do my best to assist you." />
+                    </message>
+                  </list>
+                </messages>
+                <updatedAt value="2024-05-05T11:42:57.2674455" />
+              </chat>
+              <chat>
+                <internalId value="20ce820c-e56d-4da3-a26f-8e2df0cf5b42" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="49a97e71-7981-408c-ac9c-c49b59a938e4" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="706f0a38-2c2a-458b-bf62-d79af9da776d" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-sonnet-20240229" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3 Sonnet" />
+                  </llm>
+                </llm>
+              </chat>
+            </list>
+          </chats>
+          <defaultLlm>
+            <llm>
+              <model value="anthropic/claude-3-sonnet-20240229" />
+              <provider value="Anthropic" />
+              <title value="Claude 3 Sonnet" />
+            </llm>
+          </defaultLlm>
+        </AccountData>
+      </list>
+    </accountData>
+  </component>
+</project>

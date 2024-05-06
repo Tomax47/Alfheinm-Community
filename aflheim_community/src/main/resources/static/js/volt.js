@@ -15,6 +15,7 @@
 
 */
 
+console.log("VOLT SCRIPT IS CALLED")
 "use strict";
 const d = document;
 d.addEventListener("DOMContentLoaded", function(event) {

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://thymelead.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <link th:href="@{/css/volt.css}" rel="stylesheet"> <!-- TODO: ADD THE STATICS SHEETS TO THE STATIC FOLDER -->
+    <link href="/css/volt.css" rel="stylesheet">
   <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Alfheim</title>
 </head>
 
@@ -21,7 +22,7 @@
                 <div class="row">
                     <div class="col-6 collapse-brand">
                         <a href="#">
-                            <img src="../../assets/img/brand/dark.svg" alt="menuimage">
+<!--                            <img src="../../assets/img/brand/dark.svg" alt="menuimage">-->
                         </a>
                     </div>
                     <div class="col-6 collapse-close">
@@ -32,8 +33,11 @@
                 </div>
             </div>
             <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a href="/" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a href="/recent" class="nav-link">Recent</a>
                 </li>
                 <li class="nav-item">
                     <a href="/publications" class="nav-link">Publications</a>
@@ -41,16 +45,26 @@
                 <li class="nav-item">
                     <a href="/events" class="nav-link">Events</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a href="/about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a href="/profile" class="nav-link">My Activities</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a href="/profile" class="nav-link">Profile</a>
                 </li>
             </ul>
         </div>
 
-        <a href="/login">
+        <a href="/login" sec:authorize="!isAuthenticated()">
             <button class="btn btn-outline-secondary w-6" type="button">Sign In</button>
         </a>
-        <a href="/login">
+        <a href="/logout" sec:authorize="isAuthenticated()">
+            <button class="btn btn-outline-secondary w-6" type="button">Logout</button>
+        </a>
+
+        <a href="/#">
             <button class="btn btn-secondary w-6 ml-1" type="button">Publish</button>
         </a>
 
@@ -155,4 +169,47 @@
     </div>
 </footer>
 
+<!-- CUSTOM LAYOUT -->
+<script src="/js/custom_scripts/layout.js"></script>
+
+<!-- Core -->
+<script src="/js/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
+<script src="/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Vendor JS -->
+<script src="/js/vendor/onscreen/dist/on-screen.umd.min.js"></script>
+
+<!-- Slider -->
+<script src="/js/vendor/nouislider/distribute/nouislider.min.js"></script>
+
+<!-- Smooth scroll -->
+<script src="/js/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+
+<!-- Charts -->
+<script src="/js/vendor/chartist/dist/chartist.min.js"></script>
+<script src="/js/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+
+<!-- Datepicker -->
+<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Sweet Alerts 2 -->
+<script src="/js/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+<!-- Moment JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+<!-- Vanilla JS Datepicker -->
+<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Notyf -->
+<script src="/js/vendor/notyf/notyf.min.js"></script>
+
+<!-- Simplebar -->
+<script src="/js/vendor/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Volt JS -->
+<script src="/js/volt.js"></script>
 </html>
