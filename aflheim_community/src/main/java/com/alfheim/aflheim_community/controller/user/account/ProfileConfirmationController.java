@@ -32,7 +32,7 @@ public class ProfileConfirmationController {
                                              Model model) {
         // This is the mapping for after registration confirmation
         model.addAttribute("email", email);
-        return "user/auth/email_confirmation_processing_page";
+        return "users/auth/email_confirmation_processing_page";
     }
 
     @PostMapping("/confirm/process/resend/{email}")
@@ -57,7 +57,7 @@ public class ProfileConfirmationController {
     public String getAccountConfirmationProcessPage() {
 
         // This is the mapping for personal request to confirm email
-        return "user/auth/email_confirmation_resend_page";
+        return "users/auth/email_confirmation_resend_page";
     }
 
     @PostMapping("/account/confirm/resend")

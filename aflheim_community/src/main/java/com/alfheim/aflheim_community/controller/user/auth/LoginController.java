@@ -20,7 +20,7 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             model.addAttribute("isAuthenticated", false);
-            return "/user/auth/login_page";
+            return "/users/auth/login_page";
         }
 
         return "redirect:/profile";

@@ -35,7 +35,7 @@ public class CustomErrorController implements ErrorController {
     public String handleIncorrectLoginError(Model model) {
         System.out.println("CUSTOM ERROR HANDLER FOR INCORRECT CREDENTIALS. SETTING UP INCORRECT CREDENTIALS FLAG");
         model.addAttribute("incorrectCredentials", true);
-        return "user/auth/login_page";
+        return "users/auth/login_page";
     }
 
     @Override
