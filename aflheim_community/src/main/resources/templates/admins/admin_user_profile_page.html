@@ -4,8 +4,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{admin_layout}">
 <head>
-    <meta charset="UTF-8">
-    <title th:title="${'@' + userDto.getUsername()}"></title>
+  <meta charset="UTF-8">
+  <title th:title="${'@' + userDto.getUsername()}"></title>
 </head>
 <body>
 <main layout:fragment="body" class="content">
@@ -409,7 +409,7 @@
             <div class="profile-cover rounded-top" data-background="https://image.jimcdn.com/app/cms/image/transf/none/path/s2217cd0bb1220415/image/i1bbdd1338d8b58eb/version/1690764459/viking-longship.jpg" style="background: url(https://image.jimcdn.com/app/cms/image/transf/none/path/s2217cd0bb1220415/image/i1bbdd1338d8b58eb/version/1690764459/viking-longship.jpg);"></div>
             <div class="card-body pb-5">
               <img th:src="${userDto.getProfilePicture()}" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
-              <h4 class="h3" th:text="${'@' + userDto.getUsername()}"></h4>
+              <h4 class="h3" th:text="${'@' + userDto.getUsername()}" id="username"></h4>
               <h5 class="fw-normal" th:text="${userDto.getEmail()}"></h5>
               <div class="mb-3" th:switch="${userDto.getRole()}">
                 <!-- ## ROLE PART ##-->
@@ -419,10 +419,10 @@
               </div>
 
               <!-- # Profile Card Actions # -->
-              <a class="btn btn-sm btn-danger d-inline-flex align-items-center me-2" href="#">
+              <button class="btn btn-sm btn-danger d-inline-flex align-items-center me-2" id="deleteUserBtn">
                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                 Delete User
-              </a>
+              </button>
               <a class="btn btn-sm btn-secondary" href="#">Send Email</a>
             </div>
           </div>
@@ -432,7 +432,6 @@
       </div>
     </div>
   </div>
-
 
   <!-- #### FOOTER PART #### -->
   <footer class="bg-white rounded shadow p-5 mb-4 mt-4">
@@ -460,6 +459,12 @@
       </div>
     </div>
   </footer>
+
+  <!-- SWEET ALERT LIB -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- CUSTOM SCRIPT -->
+  <script src="/js/custom_scripts/admin/adminUserProfilePage.js"></script>
 </main>
 </body>
 </html>
