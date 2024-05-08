@@ -19,6 +19,7 @@ public class UsersFetchingServiceImpl implements UsersFetchingService {
 
     @Override
     public List<UserDto> search(Integer size, Integer page, String query, String sortParameter, String directionParameter) {
+
         Sort.Direction direction = Sort.Direction.ASC;
         Sort sort = Sort.by(direction, "id");
 
@@ -36,9 +37,12 @@ public class UsersFetchingServiceImpl implements UsersFetchingService {
         }
 
         if (size == null) {
-            size = 5;
+            size = 2;
         }
 
+        if (page == null) {
+            page = 0;
+        }
 
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 

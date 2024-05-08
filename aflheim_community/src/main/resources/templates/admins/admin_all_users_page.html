@@ -240,7 +240,7 @@
         </div>
 
         <!-- #### ACTUAL TABLE #### -->
-        <table class="table user-table table-hover align-items-center">
+        <table class="table user-table table-hover align-items-center" id="usersDataTable">
             <thead>
             <tr>
                 <th class="border-bottom"></th>
@@ -248,12 +248,12 @@
                 <th class="border-bottom">Birthdate</th>
                 <th class="border-bottom">Role</th>
                 <th class="border-bottom">Account Status</th>
-                <th class="border-bottom">Action</th>
+                <th class="border-bottom">Reputation</th>
             </tr>
             </thead>
             <!-- BODY -->
-            <tbody th:each="user: ${usersFirstPageList}">
-            <tr>
+            <tbody>
+            <tr th:each="user: ${usersFirstPageList}">
                 <td>
                     <div class="form-check dashboard-check">
                         <input class="form-check-input" type="checkbox" value="" id="userCheck1">
@@ -262,10 +262,10 @@
                 </td>
                 <td>
                     <!-- ## USER PART ## -->
-                    <a href="#" class="d-flex align-items-center">
+                    <a th:href="@{/admin/users/{username}(username=${user.getUsername()})}" class="d-flex align-items-center">
                         <img th:src="${user.getProfilePicture()}" class="avatar rounded-circle me-3" alt="Avatar">
                         <div class="d-block">
-                            <span class="fw-bold" th:text="${'@' + user.getUsername()}"></span>
+                            <span class="fw-black" th:text="${'@' + user.getUsername()}"></span>
                             <div class="small text-gray" th:text="${user.getEmail()}"></div>
                         </div>
                     </a>
@@ -274,47 +274,23 @@
                     <!-- ## BIRTHDATE PART ## -->
                     <span class="fw-normal" th:text="${user.getBirthdate()}"></span>
                 </td>
-                <td>
+                <td th:switch="${user.getRole()}">
                     <!-- ## ROLE PART ##-->
-                    <span class="fw-normal d-flex align-items-center" th:text="${user.getRole()}">
-                            <svg class="icon icon-xxs text-success me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                        </span>
+                    <span th:case="'VISITOR'" th:class="${'badge bg-primary'}" th:text="${user.getRole()}"></span>
+                    <span th:case="'MEMBER'" th:class="${'badge bg-secondary'}" th:text="${user.getRole()}"></span>
+                    <span th:case="'ADMIN'" th:class="${'badge bg-success'}" th:text="${user.getRole()}"></span>
                 </td>
-                <td>
-                    <!-- ## ACCOUNT STATE PART ##-->
-                    <span class="fw-normal text-success" th:text="${user.getAccountState()}"></span>
+                <!-- ## ACCOUNT STATE PART ## -->
+                <td th:switch="${user.getAccountState()}">
+                    <span th:case="'CONFIRMED'" th:class="${'fw-normal text-success'}" th:text="${user.getAccountState()}"></span>
+                    <span th:case="'NOT_CONFIRMED'" th:class="${'fw-normal text-secondary'}" th:text="${'NOT FONFIRMED'}"></span>
+                    <span th:case="'BANNED'" th:class="${'fw-normal text-danger'}" th:text="${user.getAccountState()}"></span>
+                    <span th:case="'SUSPENDED'" th:class="${'fw-normal text-danger'}" th:text="${user.getAccountState()}"></span>
+                    <span th:case="'BLACKLISTED'" th:class="${'fw-normal text-danger'}" th:text="${user.getAccountState()}"></span>
                 </td>
                 <td>
                     <!-- ## ACTION PART ## -->
-                    <div class="btn-group">
-                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                            </svg>
-                            <span class="visually-hidden">
-                                    Toggle Dropdown
-                                </span>
-                        </button>
-                        <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1" style="">
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"></path>
-                                </svg> Reset Pass </a>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                </svg> View Details
-                            </a>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11 6a3 3 0 11-6 0 3 3 0 016 0zM14 17a6 6 0 00-12 0h12zM13 8a1 1 0 100 2h4a1 1 0 100-2h-4z"></path>
-                                </svg>
-                                Suspend
-                            </a>
-                        </div>
-                    </div>
-                    <svg class="icon icon-xs text-danger ms-1" title="" data-bs-toggle="tooltip" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" data-bs-original-title="Delete" aria-label="Delete">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
+                    <span class="fw-normal text-black">0.00</span>
                 </td>
             </tr>
             </tbody>
@@ -325,13 +301,13 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination mb-0">
                     <li class="page-item">
-                        <a class="page-link" href="#">Previous</a>
+                        <a class="page-link" id="previousPage">Previous</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="#">CURRENT NUMBER HERE</a>
+                        <a class="page-link" id="currentPage" value="0">0</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                        <a class="page-link" id="nextPage">Next</a>
                     </li>
                 </ul>
             </nav>

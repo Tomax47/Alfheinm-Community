@@ -76,6 +76,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         try {
 
+            System.out.println("\n\nUSER PROFILE PICTURE : \nIS NULL? "+
+                    (userUpdateForm.getProfilePicture() == null)
+                    +"\nTYPE : "+userUpdateForm.getProfilePicture().getContentType());
+
             if (userUpdateForm.getProfilePicture() != null &&
                     // TODO: TRANSFER THIS FUNCTIONALITY FOR JS ON THE FRONTEND
                     userUpdateForm.getProfilePicture().getContentType().equals("image/jpeg") ||
@@ -83,18 +87,12 @@ public class ProfileServiceImpl implements ProfileService {
             ) {
                 // New file submission
 
+                System.out.println("IMAGE ACCEPTED! SAVING A NEW IMAGE...");
                 // Saving the file
                 String imageStorageName = fileStorageService.saveFile(userUpdateForm.getProfilePicture());
 
-                System.out.println("\nIS IMAGE'S STORAGE NAME BLANK?\n"+user.getProfilePicture().getFileStorageName().isBlank()+
-                        "\nStorage Name : "+user.getProfilePicture().getFileStorageName()+"\n\n");
-
-                if (!user.getProfilePicture().getFileStorageName().isBlank()) {
-                    // User has a profile picture. Deleting it...
-                    System.out.println("\n\nUSER HAS AN OLD PROFILE PICTURE. DELETING IT...\nFILE STORAGE NAME : "+
-                            user.getProfilePicture().getFileStorageName()+"\n\n");
-                    fileStorageService.deleteFile(user.getProfilePicture().getFileStorageName());
-                }
+                System.out.println("\nIMAGE NAME : "+imageStorageName);
+                System.out.println("\nIS USER'S PROFILE IMAGE NULL? "+user.getProfilePicture());
 
                 // Setting the new profile picture
                 user.setProfilePicture(fileStorageService.findByStorageName(imageStorageName));
