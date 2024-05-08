@@ -93,7 +93,7 @@ function RenderServicesTable(responseUserDto) {
         } else if (user.accountState === 'NOT_CONFIRMED') {
             userAccountStateElement = `<span class="fw-normal text-secondary">Not Confirmed</span>`;
         } else {
-            userAccountStateElement = `<span class="fw-normal text-danger">user.accountState</span>`;
+            userAccountStateElement = `<span class="fw-normal text-danger">` + user.accountState + `</span>`;
         }
 
         let usersListItem = '<tr>' +

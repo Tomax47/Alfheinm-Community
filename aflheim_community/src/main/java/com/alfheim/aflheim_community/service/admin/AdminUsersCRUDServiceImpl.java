@@ -8,11 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
-public class UsersFetchingServiceImpl implements UsersFetchingService {
+public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
     @Autowired
     private UserRepo userRepo;
@@ -37,7 +39,7 @@ public class UsersFetchingServiceImpl implements UsersFetchingService {
         }
 
         if (size == null) {
-            size = 2;
+            size = 4;
         }
 
         if (page == null) {
@@ -50,5 +52,31 @@ public class UsersFetchingServiceImpl implements UsersFetchingService {
         Page<User> papersPage = userRepo.search(query, pageRequest);
 
         return UserDto.usersListFrom(papersPage.getContent());
+    }
+
+    @Override
+    public int deleteUser(String username) {
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        System.out.println("\n\nADMIN SERVICE : 111111111111111111111");
+        if (userOptional.isPresent()) {
+            System.out.println("ADMIN SERVICE : 22222222222222222");
+            User user = userOptional.get();
+
+            if (user.getRole().equals("ADMIN")) {
+                System.out.println("ADMIN SERVICE : REFUSED. IS ADMIN!");
+                // Refusing request. Can't delete an admin!
+                return 2;
+            }
+
+            System.out.println("ADMIN SERVICE : 33333333333333333333333");
+            userRepo.delete(user);
+            System.out.println("ADMIN SERVICE : DELETED!");
+            return 1;
+        }
+
+        System.out.println("ADMIN SERVICE : NOT FOUND!");
+        // User ain't found
+        return 0;
     }
 }
