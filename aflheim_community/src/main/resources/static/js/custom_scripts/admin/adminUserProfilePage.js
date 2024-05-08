@@ -11,6 +11,8 @@ let username = document.getElementById('username').textContent.trim().slice(1);
 
 console.log(`USERNAME : ${username}`)
 
+// ## MODALS ##
+
 // Error modal
 function handleError(errorData) {
     const notyf = new Notyf({
@@ -35,6 +37,26 @@ function handleError(errorData) {
         type: 'error',
         message: errorData.errorMessage
     });
+};
+
+// Handle success modal
+function handleSuccessModal(messageData) {
+    swalWithBootstrapButtons.fire({
+        icon: 'success',
+        title: messageData.title,
+        text: messageData.text,
+        showConfirmButton: true,
+        timer: 1500
+    });
+};
+
+// Warning modal
+function handleWarningModal(messageData) {
+    swalWithBootstrapButtons.fire(
+        messageData.title,
+        messageData.text,
+        'warning'
+    );
 };
 
 // Send Delete request
@@ -92,3 +114,47 @@ document.getElementById('deleteUserBtn').addEventListener('click', function () {
     });
 });
 
+
+// USER BOTTOM ACTIONS
+
+// User Confirmed toggle keep default
+const checkbox = document.getElementById('user-confirm-toggle-checked');
+checkbox.addEventListener('change', (event) => {
+    if (!event.target.checked) {
+        event.preventDefault();
+        checkbox.checked = true;
+
+        handleSuccessModal({
+            title: 'Confirmed!',
+            text: 'This user is already confirmed.'
+        });
+    }
+});
+
+// Un-banable admin
+const banCheckbox = document.getElementById('admin-ban-toggle');
+banCheckbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+        event.preventDefault();
+        banCheckbox.checked = false;
+
+        handleWarningModal({
+            title: 'Prohibited Action!',
+            text: 'You cannot ban an admin.'
+        });
+    }
+});
+
+// Un-suspendable admin
+const suspendCheckbox = document.getElementById('admin-suspend-toggle');
+suspendCheckbox.addEventListener('change', (event) => {
+    if (event.target.checked) {
+        event.preventDefault();
+        suspendCheckbox.checked = false;
+
+        handleWarningModal({
+            title: 'Prohibited Action!',
+            text: 'You cannot suspend admins\' accounts.'
+        });
+    }
+});
