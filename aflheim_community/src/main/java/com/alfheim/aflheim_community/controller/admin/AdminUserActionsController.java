@@ -141,4 +141,42 @@ public class AdminUserActionsController {
                         Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 );
     }
+
+    // Admin user password reset
+    @PostMapping("/admin/user/password/reset")
+    public ResponseEntity<Object> adminResetUserPassword(@RequestParam("username") String username,
+                                                         @RequestParam("newPassword") String newPassword,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        int result = adminUsersCRUDService.resetUserPassword(username, newPassword, userDetails.getUsername());
+
+        if (result == 200) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Password reset request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 403) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new CustomError(403,
+                            "Cannot change admins password.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
 }

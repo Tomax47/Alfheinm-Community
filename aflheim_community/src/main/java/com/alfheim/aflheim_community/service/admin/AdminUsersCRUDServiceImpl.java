@@ -3,6 +3,7 @@ package com.alfheim.aflheim_community.service.admin;
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.repository.UserRepo;
+import com.alfheim.aflheim_community.service.user.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,9 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @Override
     public List<UserDto> search(Integer size, Integer page, String query, String sortParameter, String directionParameter) {
@@ -78,5 +82,25 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         System.out.println("ADMIN SERVICE : NOT FOUND!");
         // User ain't found
         return 0;
+    }
+
+    @Override
+    public int resetUserPassword(String username, String newPassword, String adminUsername) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+
+            if (userOptional.get().getRole().equals("ADMIN")) {
+                // Forbidden. Can't change admins' passwords
+                return 403;
+            }
+
+            int result = passwordResetService.adminUserResetPassword(userOptional.get(), newPassword, adminUsername);
+            return result;
+        }
+
+        // User not found
+        return 404;
     }
 }

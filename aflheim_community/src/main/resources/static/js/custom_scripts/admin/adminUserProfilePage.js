@@ -8,8 +8,9 @@ const swalWithBootstrapButtons = Swal.mixin({
 });
 
 let username = document.getElementById('username').textContent.trim().slice(1);
+let userRole = document.getElementById('userRole').textContent.trim();
 
-console.log(`USERNAME : ${username}`)
+console.log(`USERNAME : ${username}\nROLE : ${userRole}`)
 
 // ## MODALS ##
 
@@ -119,42 +120,171 @@ document.getElementById('deleteUserBtn').addEventListener('click', function () {
 
 // User Confirmed toggle keep default
 const checkbox = document.getElementById('user-confirm-toggle-checked');
-checkbox.addEventListener('change', (event) => {
-    if (!event.target.checked) {
-        event.preventDefault();
-        checkbox.checked = true;
+if (checkbox !== null) {
+    checkbox.addEventListener('change', (event) => {
+        if (!event.target.checked) {
+            event.preventDefault();
+            checkbox.checked = true;
 
-        handleSuccessModal({
-            title: 'Confirmed!',
-            text: 'This user is already confirmed.'
-        });
-    }
-});
+            handleSuccessModal({
+                title: 'Confirmed!',
+                text: 'This user is already confirmed.'
+            });
+        }
+    });
+}
 
 // Un-banable admin
 const banCheckbox = document.getElementById('admin-ban-toggle');
-banCheckbox.addEventListener('change', (event) => {
-    if (event.target.checked) {
-        event.preventDefault();
-        banCheckbox.checked = false;
+if (banCheckbox !== null) {
+    banCheckbox.addEventListener('change', (event) => {
+        if (event.target.checked) {
+            event.preventDefault();
+            banCheckbox.checked = false;
 
-        handleWarningModal({
-            title: 'Prohibited Action!',
-            text: 'You cannot ban an admin.'
-        });
-    }
-});
+            handleWarningModal({
+                title: 'Prohibited Action!',
+                text: 'You cannot ban an admin.'
+            });
+        }
+    });
+}
 
 // Un-suspendable admin
 const suspendCheckbox = document.getElementById('admin-suspend-toggle');
-suspendCheckbox.addEventListener('change', (event) => {
-    if (event.target.checked) {
-        event.preventDefault();
-        suspendCheckbox.checked = false;
+if (suspendCheckbox !== null) {
+    suspendCheckbox.addEventListener('change', (event) => {
+        if (event.target.checked) {
+            event.preventDefault();
+            suspendCheckbox.checked = false;
 
-        handleWarningModal({
-            title: 'Prohibited Action!',
-            text: 'You cannot suspend admins\' accounts.'
-        });
+            handleWarningModal({
+                title: 'Prohibited Action!',
+                text: 'You cannot suspend admins\' accounts.'
+            });
+        }
+    });
+}
+
+// ### Password reset part ###
+
+let passwordInput = document.getElementById("password");
+const passwordResetBtn = document.getElementById("passwordResetBtn");
+
+// Checking the password
+passwordInput.addEventListener('input', function() {
+    // Get the entered password
+    const password = this.value;
+
+    // Password check
+    const isValidLength = password.length >= 8;
+    const containMaliciousChars = /['`"]/.test(password);
+
+    // Test the password against the pattern
+    if (isValidLength && !containMaliciousChars) {
+        // Valid
+        this.classList.add('is-valid');
+        this.classList.remove('is-invalid');
+    } else if (isValidLength && containMaliciousChars) {
+        // Contains invalid chars
+        this.classList.remove('is-valid');
+        this.classList.add('is-invalid');
+    } else if (!isValidLength && !containMaliciousChars) {
+        // Too short
+        this.classList.remove('is-valid');
+        this.classList.add('is-invalid');
     }
 });
+
+// Handle user clicking out of the input box
+passwordInput.addEventListener('blur', function() {
+    // Removing the validation note for empty input
+    if (this.value.trim() === '') {
+        this.classList.remove('is-invalid');
+        this.classList.remove('is-valid');
+    }
+});
+
+// handle view/hide password
+const passwordVisibilityToggle = document.getElementById('hideShowPasswordToggle');
+
+passwordVisibilityToggle.addEventListener('click', function() {
+    // Toggle the password input type between 'password' and 'text'
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.innerHTML = `
+      <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+      </svg>
+    `;
+    } else {
+        passwordInput.type = 'password';
+        this.innerHTML = `
+      <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+      </svg>
+    `;
+    }
+});
+
+// Submitting request
+passwordResetBtn.addEventListener('click', function(event) {
+    if (passwordInput.classList.contains('is-valid')) {
+        console.log('Password is valid. Submitting request...');
+        if (userRole === "ADMIN") {
+            // Refusing request. Can't edit admins' details
+            handleError({
+                errorMessage: "Cannot change admins password"
+            });
+
+            // Clearing input value
+            passwordInput.value = '';
+            passwordInput.classList.remove('is-valid');
+
+        } else {
+
+            // Submitting request.
+            let newPassword = passwordInput.value;
+            let url = "/admin/user/password/reset?username=" + username + "&newPassword=" + newPassword;
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function(xhr) {
+                    console.log(`Response : ${xhr}`);
+                    // handleSuccessModal();
+                },
+                error: function(xhr) {
+                    // Handle the error response
+                    if (xhr.responseText === "OK") {
+                        // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                        // Clearing input value
+                        passwordInput.value = '';
+                        passwordInput.classList.remove('is-valid');
+
+                        // Throwing the success modal
+                        handleSuccessModal({
+                            title: "Success!",
+                            text: "Password has been changed successfully"
+                        });
+                    }
+                    const errorData = JSON.parse(xhr.responseText);
+                    handleError(errorData);
+
+                    // Clearing input value
+                    passwordInput.value = '';
+                    passwordInput.classList.remove('is-valid');
+                },
+                dataType: "json",
+                contentType: "application/json"
+            });
+        }
+
+    } else {
+        console.log('Password is invalid. Request not submitted.');
+        event.preventDefault();
+        handleError({ errorMessage: "Submission refused. Invalid password!" });
+    }
+});
+
