@@ -38,6 +38,7 @@ public class UserDto {
     private LocalDate birthdate;
     private String profilePicture;
     private String accountState;
+    private int reputation;
 
     public static UserDto from(User user) {
 
@@ -72,6 +73,7 @@ public class UserDto {
                 .zip(user.getZip())
                 .birthdate(user.getBirthdate())
                 .profilePicture(profilePictureUrl)
+                .reputation(user.getReputation())
                 .build();
     }
 

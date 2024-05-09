@@ -1,9 +1,11 @@
 package com.alfheim.aflheim_community.controller.admin;
 
+import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserPaginationSearchFormatterDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
 import com.alfheim.aflheim_community.model.CustomError;
+import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.admin.AdminUsersCRUDService;
 import com.alfheim.aflheim_community.service.user.ProfileService;
@@ -211,6 +213,7 @@ public class AdminUserActionsController {
                 );
     }
 
+    // Admin user account change ban state
     @PostMapping("/admin/users/account/banState")
     @ResponseBody
     public ResponseEntity<Object> adminChangeBanUserAccountState(@RequestParam("username") String username,
@@ -248,6 +251,7 @@ public class AdminUserActionsController {
                 );
     }
 
+    // Admin user account change suspension state
     @PostMapping("/admin/users/account/suspensionState")
     @ResponseBody
     public ResponseEntity<Object> adminChangeSuspensionUserAccountState(@RequestParam("username") String username,
@@ -278,6 +282,53 @@ public class AdminUserActionsController {
                     );
         }
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
+
+    // Admin file a user blacklist report
+    @PostMapping("/admin/user/blacklist/add")
+    @ResponseBody
+    public ResponseEntity<Object> adminBlacklistUser(@RequestBody UserBlacklistReportForm userBlacklistReportForm,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        int result = adminUsersCRUDService.addUserToBlacklist(
+                userBlacklistReportForm,
+                userDetails.getUsername());
+
+        if (result == 200) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account blacklisting request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 1404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "Admin can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 403) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new CustomError(403,
+                            "Request has been refused due to lack of authority.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        // Bad request
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new CustomError(400,
                         "You have made a bad request.",

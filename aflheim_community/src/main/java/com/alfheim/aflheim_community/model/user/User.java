@@ -17,6 +17,7 @@ import java.util.Date;
 @Builder
 @Entity(name = "account")
 public class User {
+    // This entity's error code starts with 1
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +50,8 @@ public class User {
     private String region; // Optional
     @Column(nullable = true, length = 10)
     private String zip; // Optional
+    @Column(nullable = false)
+    private int reputation;
 
     @Column(nullable = false)
     private String gender; // [Male = 0, Female = 1, Not_Specified = 2]

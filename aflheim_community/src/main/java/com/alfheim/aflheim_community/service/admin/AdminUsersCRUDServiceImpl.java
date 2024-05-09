@@ -1,8 +1,12 @@
 package com.alfheim.aflheim_community.service.admin;
 
+import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
+import com.alfheim.aflheim_community.model.user.BlacklistRecordState;
 import com.alfheim.aflheim_community.model.user.User;
+import com.alfheim.aflheim_community.model.user.UsersBlacklist;
 import com.alfheim.aflheim_community.repository.UserRepo;
+import com.alfheim.aflheim_community.repository.UsersBlacklistRepo;
 import com.alfheim.aflheim_community.service.user.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +22,9 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private UsersBlacklistRepo usersBlacklistRepo;
 
     @Autowired
     private PasswordResetService passwordResetService;
@@ -187,6 +194,105 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
             // Access forbidden. not an admin
             return 403;
+        }
+
+        // User not found
+        return 404;
+    }
+
+    // Blacklisting user
+    @Override
+    public int addUserToBlacklist(UserBlacklistReportForm userBlacklistReportForm, String adminUsername) {
+        System.out.println("\n\nADMIN SERVICE : ADDING USER TO THE BLACKLIST...");
+        Optional<User> userOptional = userRepo.findByUsername(userBlacklistReportForm.getUsername());
+        Optional<User> adminOptional = userRepo.findByUsername(adminUsername);
+
+        if (adminOptional.isPresent()) {
+            if (userOptional.isPresent()) {
+                if (adminOptional.get().getRole().equals("ADMIN") && !userOptional.get().getRole().equals("ADMIN")) {
+                    // Preparing user and the blacklist report
+                    User user = userOptional.get();
+
+                    UsersBlacklist usersBlacklist = UsersBlacklist.builder()
+                            .userEmail(user.getEmail())
+                            .username(userBlacklistReportForm.getUsername())
+                            .reason(userBlacklistReportForm.getReason())
+                            .reputationPtsDeducted(userBlacklistReportForm.getReputationPtsDeducted())
+                            .state(BlacklistRecordState.VALID)
+                            .build();
+
+                    try {
+                        // Saving the Blacklist report
+                        usersBlacklistRepo.save(usersBlacklist);
+
+                        // Updating user's state
+                        user.setState("BLACKLISTED");
+
+                        // Updating user's reputation
+                        int newUserReputation = user.getReputation() - usersBlacklist.getReputationPtsDeducted();
+                        user.setReputation(newUserReputation);
+
+                        userRepo.save(user);
+
+                        // Success.
+                        return 200;
+                    } catch (Exception e) {
+                        // Internal error
+                        return 500;
+                    }
+                }
+                // Forbidden
+                return 403;
+            }
+
+            // User not found
+            return 404;
+        }
+
+        // Admin not found
+        return 1404;
+    }
+
+    @Override
+    public int removeUserFromBlacklist(String username, boolean isRevertingErrorReq) {
+        System.out.println("\n\nADMIN SERVICE : REMOVING USER FROM THE BLACKLIST");
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            Optional<UsersBlacklist> usersBlacklistOptional = usersBlacklistRepo.findByUsernameAndState(username, BlacklistRecordState.VALID);
+
+            if (usersBlacklistOptional.isPresent()) {
+                // Record found
+                System.out.println("\n\nRECORD BLACKLIST : "+usersBlacklistOptional.get().toString());
+                UsersBlacklist usersBlacklistRecord = usersBlacklistOptional.get();
+                User user = userOptional.get();
+
+                // Invalidating the record
+                usersBlacklistRecord.setState(BlacklistRecordState.INVALID);
+
+                if (isRevertingErrorReq) {
+                    // Reverting request. The blacklisting was an error, retrieving user's deducted reputation pts
+                    int restoredReputation = user.getReputation() + usersBlacklistRecord.getReputationPtsDeducted();
+                    user.setReputation(restoredReputation);
+                }
+
+                user.setState("CONFIRMED");
+
+                try {
+                    // Updating objects
+                    userRepo.save(user);
+                    usersBlacklistRepo.save(usersBlacklistRecord);
+
+                    //Success
+                    return 200;
+                } catch (Exception e) {
+                    // Internal error
+                    return 500;
+                }
+            }
+
+            // No record has been found by this username
+            return 4404;
         }
 
         // User not found

@@ -373,7 +373,7 @@ passwordVisibilityToggle.addEventListener('click', function() {
     }
 });
 
-// Submitting request
+// Submitting password reset request
 passwordResetBtn.addEventListener('click', function(event) {
     if (passwordInput.classList.contains('is-valid')) {
         console.log('Password is valid. Submitting request...');
@@ -433,3 +433,141 @@ passwordResetBtn.addEventListener('click', function(event) {
     }
 });
 
+// ### Handle blacklisting user ###
+
+// URL -> /admin/user/blacklist/add with a request body data = {json here}
+
+const otherReasonInput = document.getElementById('otherReason');
+const reasonSelect = document.getElementById('reportReason');
+const reputationPointsInput = document.getElementById('reputationPtsInput');
+const blacklistSubmitButton = document.getElementById('blacklistReportSubmitBtn');
+
+// Submition handling
+blacklistSubmitButton.addEventListener('click', function() {
+    // Get the selected reason value
+    let selectedReason = reasonSelect.options[reasonSelect.selectedIndex].value;
+    const reputationStrikeValue = parseInt(reputationPointsInput.value);
+
+    if (userRole !== "ADMIN") {
+        if (isCorrectReason(selectedReason)) {
+            if (isInRangeStrike(reputationStrikeValue)){
+
+                // Setting up the reason
+                if (selectedReason === '6') {
+                    console.log("Setting up selected reason as other");
+                    selectedReason = otherReasonInput.value;
+                } else {
+                    selectedReason = reasonSelect.options[reasonSelect.selectedIndex].innerHTML;
+                }
+
+                console.log(`\nFINAL SELECTED REASON : ${selectedReason}`);
+
+                submitUserBlacklistReport(username, selectedReason, reputationStrikeValue);
+                console.log("FORM SUBMITTED")
+            } else {
+
+                // Displaying error
+                reputationPointsInput.classList.add('is-invalid');
+            }
+        }
+    } else {
+        handleError({ errorMessage: "You can't blacklist an admin!" });
+    }
+
+});
+
+// Check correct reason specification "If other, then specify"
+function isCorrectReason(selectedReason) {
+    // Check if the selected reason is "Other"
+    if (selectedReason === '6') {
+        // Check if the otherReason input is empty
+        if (otherReasonInput.value.trim() === '') {
+
+            // Displaying the error
+            otherReasonInput.classList.remove('is-valid');
+            otherReasonInput.classList.add('is-invalid');
+
+            // Returning false, so the form ain't get submitted
+            return;
+        }
+        return true;
+    }
+    return true;
+};
+
+// Check reputation strike pts
+function isInRangeStrike(strikeValue) {
+    console.log(`Is in range ? ${strikeValue > 1 && strikeValue < 200}`)
+    if (strikeValue > 1 && strikeValue < 200) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Handle event to restrict input to > 1 & < 200
+reputationPointsInput.addEventListener('input', function() {
+    let reputationPoints = parseInt(reputationPointsInput.value);
+
+    // Reputation Strike Value : 1-200 pts
+    if (isNaN(reputationPoints) || reputationPoints < 1 ) {
+        reputationPointsInput.value = 1;
+
+        // Displaying error
+        reputationPointsInput.classList.add('is-invalid');
+    } else if (reputationPoints > 200) {
+        reputationPointsInput.value = 200;
+
+        // Displaying error
+        reputationPointsInput.classList.add('is-invalid');
+    } else {
+        reputationPointsInput.classList.remove('is-invalid');
+    }
+});
+
+// Submit user blacklist request function
+function submitUserBlacklistReport(username, reason, reputationPtsDeducted) {
+
+    let data = {
+        "username": username,
+        "reason": reason,
+        "reputationPtsDeducted": reputationPtsDeducted
+    };
+    
+    $.ajax({
+        type: "POST", // метод запроса
+        url: "/admin/user/blacklist/add",
+        data: JSON.stringify(data),
+        success: function(xhr) {
+            console.log(`Response : ${xhr}`);
+            // handleSuccessModal();
+        },
+        error: function(xhr) {
+            // Handle the error response
+            if (xhr.responseText === "OK") {
+                // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                // Clearing inputs
+                otherReasonInput.value = ''
+                otherReasonInput.classList.remove('is-invalid')
+
+                reputationPointsInput.value = ''
+                reputationPointsInput.classList.remove('is-invalid')
+
+
+                // Throwing the success modal
+                handleSuccessModal({
+                    title: "Success!",
+                    text: "Report has been made and user blacklisted"
+                });
+            }
+            const errorData = JSON.parse(xhr.responseText);
+            handleError(errorData);
+
+            // Clearing input value
+            passwordInput.value = '';
+            passwordInput.classList.remove('is-valid');
+        },
+        dataType: "json",
+        contentType: "application/json"
+    });
+}

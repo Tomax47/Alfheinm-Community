@@ -294,7 +294,7 @@
 
       <!-- #### USER PROFILE ACTIONS BOTTOM PART #### -->
       <div class="card card-body border-0 shadow mb-4 mb-xl-0">
-        <h2 class="h5 mb-4 fw-black">Profile Actions</h2>
+        <h2 class="h5 mb-5 fw-black">Profile Actions</h2>
         <ul class="list-group list-group-flush">
           <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
             <div>
@@ -326,7 +326,7 @@
               </div>
             </div>
           </li>
-          <li class="list-group-item d-flex align-items-center justify-content-between px-0">
+          <li class="list-group-item d-flex align-items-center justify-content-between px-0 mb-4">
             <div>
               <h3 class="h6 mb-1 fw-black">Confirm Account</h3>
               <p class="small pe-4 text-success" th:if="${userDto.getAccountState().equals('CONFIRMED')}">This account is already Confirmed.</p>
@@ -394,6 +394,45 @@
             <button type="submit" class="btn btn-gray-800" id="passwordResetBtn">Reset password</button>
           </div>
         </div>
+        <!-- #### /PASSWORD RESET CARD #### -->
+
+        <!-- #### BLACKLIST REPORT CARD #### -->
+        <div class="card card-body border-0 shadow mb-4">
+          <h2 class="h5 mb-4 fw-black">File Blacklist Report</h2>
+          <div class="mb-3">
+            <label class="my-1 me-2" for="reportReason">Reason</label>
+            <select class="form-select" id="reportReason" aria-label="Default select example">
+              <option selected="selected">Policies Violation</option>
+              <option value="1">Spamming</option>
+              <option value="2">Scamming</option>
+              <option value="3">Sharing Hatred</option>
+              <option value="4">Sharing Irrelevant Content</option>
+              <option value="5">Sexual Harassment</option>
+              <option value="6">Other</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="otherReason">Other Reason</label>
+            <input type="text" class="form-control" id="otherReason" aria-describedby="otherReasonHelp" placeholder="Specify the reason here">
+            <div class="invalid-feedback">
+              Please, specify the other reason or choose one from the options above
+            </div>
+          </div>
+
+<!--          POINTS DEDUCTION -->
+          <div class="mb-3">
+            <label for="otherReason">Reputation Strike</label>
+            <input type="number" class="form-control" id="reputationPtsInput" aria-describedby="otherReasonHelp" placeholder="Specify the reason here">
+            <div class="invalid-feedback">
+              Strike must be between 1 and 200!
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-outline-gray-800 w-100" id="blacklistReportSubmitBtn">Submit & Blacklist</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
