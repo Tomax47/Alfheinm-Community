@@ -107,7 +107,7 @@ function RenderServicesTable(responseUserDto) {
             '                                <a href="/admin/users/' + user.username + '" class="d-flex align-items-center">' +
             '                                    <img src="' + user.profilePicture + '" class="avatar rounded-circle me-3" alt="Avatar">' +
             '                                    <div class="d-block">' +
-            '                                        <span class="fw-bold">@' + user.username + '</span>' +
+            '                                        <span class="fw-black">@' + user.username + '</span>' +
             '                                        <div class="small text-gray">' + user.email + '</div>' +
             '                                    </div>' +
             '                                </a>' +

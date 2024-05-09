@@ -179,4 +179,109 @@ public class AdminUserActionsController {
                         Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 );
     }
+
+    // Admin user account confirm
+    @PostMapping("/admin/users/account/confirm")
+    @ResponseBody
+    public ResponseEntity<Object> adminConfirmUserAccount(@RequestParam("username") String username) {
+
+        int result = adminUsersCRUDService.confirmUserAccount(username);
+
+        if (result == 200) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account confirmation request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
+
+    @PostMapping("/admin/users/account/banState")
+    @ResponseBody
+    public ResponseEntity<Object> adminChangeBanUserAccountState(@RequestParam("username") String username,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        int result = adminUsersCRUDService.changeBanUserAccountState(username, userDetails.getUsername());
+
+        if (result == 200) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 403) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new CustomError(403,
+                            "Request has been refused due to lack of authority.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account ban request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
+
+    @PostMapping("/admin/users/account/suspensionState")
+    @ResponseBody
+    public ResponseEntity<Object> adminChangeSuspensionUserAccountState(@RequestParam("username") String username,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        int result = adminUsersCRUDService.changeSuspensionUserAccountState(username, userDetails.getUsername());
+
+        if (result == 200) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 403) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new CustomError(403,
+                            "Request has been refused due to lack of authority.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account suspension request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
 }

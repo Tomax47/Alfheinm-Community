@@ -299,11 +299,13 @@
           <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
             <div>
               <h3 class="h6 mb-1 fw-black">Suspend Account</h3>
-              <p class="small pe-4">Suspend this account for a certain period of time.</p>
+              <p class="small pe-4" th:if="${!userDto.getAccountState().equals('SUSPENDED')}">Suspend this account for a certain period of time.</p>
+              <p class="small pe-4 text-danger" th:if="${userDto.getAccountState().equals('SUSPENDED')}">This account is Suspended. Toggle to unsuspend</p>
             </div>
             <div>
               <div class="form-check form-switch">
-                <input th:if="${!userDto.getRole().equals('ADMIN')}" class="form-check-input" type="checkbox" id="user-suspend-toggle">
+                <input th:if="${!userDto.getRole().equals('ADMIN') and userDto.getAccountState().equals('SUSPENDED')}" class="form-check-input" type="checkbox" id="user-suspend-toggle" checked>
+                <input th:if="${!userDto.getRole().equals('ADMIN') and !userDto.getAccountState().equals('SUSPENDED')}" class="form-check-input" type="checkbox" id="user-suspend-toggle">
                 <input th:if="${userDto.getRole().equals('ADMIN')}" class="form-check-input" type="checkbox" id="admin-suspend-toggle">
                 <label class="form-check-label" for="user-suspend-toggle"></label>
               </div>
@@ -312,11 +314,13 @@
           <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
             <div>
               <h3 class="h6 mb-1 fw-black">Ban Account</h3>
-              <p class="small pe-4">Ban this account for a certain period of time.</p>
+              <p class="small pe-4" th:if="${!userDto.getAccountState().equals('BANNED')}">Ban this account for a certain period of time.</p>
+              <p class="small pe-4 text-danger" th:if="${userDto.getAccountState().equals('BANNED')}">This account is Banned. Toggle to remove the Ban</p>
             </div>
             <div>
               <div class="form-check form-switch">
-                <input th:if="${!userDto.getRole().equals('ADMIN')}" class="form-check-input" type="checkbox" id="user-ban-toggle">
+                <input th:if="${!userDto.getRole().equals('ADMIN') and userDto.getAccountState().equals('BANNED')}" class="form-check-input" type="checkbox" id="user-ban-toggle" checked>
+                <input th:if="${!userDto.getRole().equals('ADMIN') and !userDto.getAccountState().equals('BANNED')}" class="form-check-input" type="checkbox" id="user-ban-toggle">
                 <input th:if="${userDto.getRole().equals('ADMIN')}" class="form-check-input" type="checkbox" id="admin-ban-toggle">
                 <label class="form-check-label" for="user-ban-toggle"></label>
               </div>
@@ -325,13 +329,17 @@
           <li class="list-group-item d-flex align-items-center justify-content-between px-0">
             <div>
               <h3 class="h6 mb-1 fw-black">Confirm Account</h3>
-              <p class="small pe-4 text-success" th:if="${userDto.getAccountState().equals('CONFIRMED')}">This account is already confirmed!</p>
-              <p class="small pe-4 text-secondary" th:if="${userDto.getAccountState().equals('NOT_CONFIRMED')}">This account isn't confirmed yet!</p>
+              <p class="small pe-4 text-success" th:if="${userDto.getAccountState().equals('CONFIRMED')}">This account is already Confirmed.</p>
+              <p class="small pe-4 text-secondary" th:if="${userDto.getAccountState().equals('NOT_CONFIRMED')}">This account isn't Confirmed yet</p>
+              <p class="small pe-4 text-danger" th:if="${userDto.getAccountState().equals('SUSPENDED') or userDto.getAccountState().equals('BANNED') or userDto.getAccountState().equals('BLACKLISTED')}" th:text="${'This account is ' + userDto.getAccountState()}"></p>
             </div>
             <div>
               <div class="form-check form-switch">
                 <input th:if="${userDto.getAccountState().equals('NOT_CONFIRMED')}" class="form-check-input" type="checkbox" id="user-confirm-toggle">
                 <input th:if="${userDto.getAccountState().equals('CONFIRMED')}" class="form-check-input" type="checkbox" id="user-confirm-toggle-checked" checked>
+                <svg th:if="${userDto.getAccountState().equals('SUSPENDED') or userDto.getAccountState().equals('BANNED') or userDto.getAccountState().equals('BLACKLISTED')}" class="icon icon-xs text-danger" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
                 <label class="form-check-label" for="user-notification-3"></label>
               </div>
             </div>

@@ -11,4 +11,10 @@ public interface AdminUsersCRUDService {
     int deleteUser(String username);
 
     int resetUserPassword(String username, String newPassword, String adminUsername);
+
+    int confirmUserAccount(String username);
+
+    int changeBanUserAccountState(String username, String adminUsername);
+
+    int changeSuspensionUserAccountState(String username, String adminUsername);
 }

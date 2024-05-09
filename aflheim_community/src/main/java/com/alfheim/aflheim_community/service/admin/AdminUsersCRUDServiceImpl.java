@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +97,96 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
             int result = passwordResetService.adminUserResetPassword(userOptional.get(), newPassword, adminUsername);
             return result;
+        }
+
+        // User not found
+        return 404;
+    }
+
+    @Override
+    public int confirmUserAccount(String username) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setState("CONFIRMED");
+
+            try {
+                userRepo.save(user);
+                return 200;
+            } catch (Exception e) {
+
+                return 500;
+            }
+        }
+
+        // User not found
+        return 404;
+    }
+
+    @Override
+    public int changeBanUserAccountState(String username, String adminUsername) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (!user.getState().equals("BANNED")) {
+                user.setState("BANNED");
+            } else {
+                user.setState("CONFIRMED");
+            }
+
+            if (userRepo.findByUsername(adminUsername).get().getRole().equals("ADMIN")) {
+                try {
+                    // Success
+                    userRepo.save(user);
+                    return 200;
+                } catch (Exception e) {
+                    // Some error
+                    return 500;
+                }
+            }
+
+            // Access forbidden. not an admin
+            return 403;
+        }
+
+        // User not found
+        return 404;
+    }
+
+    @Override
+    public int changeSuspensionUserAccountState(String username, String adminUsername) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (!user.getState().equals("SUSPENDED")) {
+                // Suspend the account
+                user.setState("SUSPENDED");
+            } else {
+                // Remove restrictions on the account
+                user.setState("CONFIRMED");
+            }
+
+            if (userRepo.findByUsername(adminUsername).get().getRole().equals("ADMIN")) {
+                try {
+                    // Success
+                    userRepo.save(user);
+                    return 200;
+                } catch (Exception e) {
+                    // Some error
+                    return 500;
+                }
+            }
+
+            // Access forbidden. not an admin
+            return 403;
         }
 
         // User not found

@@ -9,6 +9,7 @@ const swalWithBootstrapButtons = Swal.mixin({
 
 let username = document.getElementById('username').textContent.trim().slice(1);
 let userRole = document.getElementById('userRole').textContent.trim();
+let REFRESH_DELAY = 1500;
 
 console.log(`USERNAME : ${username}\nROLE : ${userRole}`)
 
@@ -119,12 +120,15 @@ document.getElementById('deleteUserBtn').addEventListener('click', function () {
 // USER BOTTOM ACTIONS
 
 // User Confirmed toggle keep default
-const checkbox = document.getElementById('user-confirm-toggle-checked');
-if (checkbox !== null) {
-    checkbox.addEventListener('change', (event) => {
+const ConfirmCheckbox = document.getElementById('user-confirm-toggle-checked');
+const userConfirmCheckbox = document.getElementById('user-confirm-toggle');
+
+if (ConfirmCheckbox !== null) {
+    ConfirmCheckbox.addEventListener('change', (event) => {
+        console.log("CONFIRM TOGGLE CLICKED")
         if (!event.target.checked) {
             event.preventDefault();
-            checkbox.checked = true;
+            ConfirmCheckbox.checked = true;
 
             handleSuccessModal({
                 title: 'Confirmed!',
@@ -134,8 +138,55 @@ if (checkbox !== null) {
     });
 }
 
+// Confirm user btn handle
+if (userConfirmCheckbox !== null) {
+    userConfirmCheckbox.addEventListener('change', (event) => {
+
+        let url = "/admin/users/account/confirm?username=" + username;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(xhr) {
+                console.log(`Response : ${xhr}`);
+                window.location.replace("/admin/users/"+username);
+                // handleSuccessModal();
+            },
+            error: function(xhr) {
+                // Handle the error response
+                if (xhr.responseText === "OK") {
+                    // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                    userBanCheckbox.disabled = true;
+
+                    // Throwing the success modal
+                    handleSuccessModal({
+                        title: "Success!",
+                        text: "User account has been Confirmed successfully."
+                    });
+
+                    // Refreshing 'After a 1.5s delay'.
+                    setTimeout(
+                      function () {
+                          window.location.replace("/admin/users/"+username);
+                      }, REFRESH_DELAY
+                    );
+
+                }
+                const errorData = JSON.parse(xhr.responseText);
+                handleError(errorData);
+
+                // Refreshing
+                window.location.replace("/admin/users/"+username);
+            },
+            dataType: "json",
+            contentType: "application/json"
+        });
+    });
+};
+
 // Un-banable admin
 const banCheckbox = document.getElementById('admin-ban-toggle');
+const userBanCheckbox = document.getElementById('user-ban-toggle');
 if (banCheckbox !== null) {
     banCheckbox.addEventListener('change', (event) => {
         if (event.target.checked) {
@@ -150,8 +201,56 @@ if (banCheckbox !== null) {
     });
 }
 
+// Handle user ban toggle
+if (userBanCheckbox !== null) {
+    userBanCheckbox.addEventListener('change', (event) => {
+
+        let url = "/admin/users/account/banState?username=" + username;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(xhr) {
+                console.log(`Response : ${xhr}`);
+                window.location.replace("/admin/users/"+username);
+                // handleSuccessModal();
+            },
+            error: function(xhr) {
+                // Handle the error response
+                if (xhr.responseText === "OK") {
+                    // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                    userBanCheckbox.disabled = true;
+
+                    // Throwing the success modal
+                    handleSuccessModal({
+                        title: "Success!",
+                        text: "Account Ban state has been changed successfully."
+                    });
+
+                    // Refreshing 'After a 1.5s delay'.
+                    setTimeout(
+                        function () {
+                            window.location.replace("/admin/users/"+username);
+                        }, REFRESH_DELAY
+                    );
+
+                }
+                const errorData = JSON.parse(xhr.responseText);
+                handleError(errorData);
+
+                // Refreshing
+                window.location.replace("/admin/users/"+username);
+            },
+            dataType: "json",
+            contentType: "application/json"
+        });
+
+    });
+}
+
 // Un-suspendable admin
 const suspendCheckbox = document.getElementById('admin-suspend-toggle');
+const userSuspendCheckbox = document.getElementById('user-suspend-toggle');
 if (suspendCheckbox !== null) {
     suspendCheckbox.addEventListener('change', (event) => {
         if (event.target.checked) {
@@ -163,6 +262,52 @@ if (suspendCheckbox !== null) {
                 text: 'You cannot suspend admins\' accounts.'
             });
         }
+    });
+}
+
+if (userSuspendCheckbox !== null) {
+    userSuspendCheckbox.addEventListener('change', (event) => {
+
+        let url = "/admin/users/account/suspensionState?username=" + username;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(xhr) {
+                console.log(`Response : ${xhr}`);
+                window.location.replace("/admin/users/"+username);
+                // handleSuccessModal();
+            },
+            error: function(xhr) {
+                // Handle the error response
+                if (xhr.responseText === "OK") {
+                    // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                    userSuspendCheckbox.disabled = true;
+
+                    // Throwing the success modal
+                    handleSuccessModal({
+                        title: "Success!",
+                        text: "Account Suspension state has been changed successfully."
+                    });
+
+                    // Refreshing 'After a 1.5s delay'.
+                    setTimeout(
+                        function () {
+                            window.location.replace("/admin/users/"+username);
+                        }, REFRESH_DELAY
+                    );
+
+                }
+                const errorData = JSON.parse(xhr.responseText);
+                handleError(errorData);
+
+                // Refreshing
+                window.location.replace("/admin/users/"+username);
+            },
+            dataType: "json",
+            contentType: "application/json"
+        });
+
     });
 }
 
