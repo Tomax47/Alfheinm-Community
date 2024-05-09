@@ -61,6 +61,52 @@ function handleWarningModal(messageData) {
     );
 };
 
+// Handle info modal
+function handleInfoModal(messageData) {
+    swalWithBootstrapButtons.fire(
+        messageData.title,
+        messageData.text,
+        'info'
+    )
+};
+
+// handle blacklisted info modal
+function handleBlacklistedInfoModal(blacklistReport) {
+
+    let footer = '<div class="form-check">' +
+        '                   <input class="form-check-input" type="checkbox" value="" id="errorReportCheckbox"> ' +
+        '                   <label class="form-check-label" for="errorReportCheckbox">Error Report</label>' +
+        '               </div>'
+
+    swalWithBootstrapButtons.fire({
+        icon: 'info',
+        title: 'Blacklist Report',
+        html: '<p class="mt-3"><span class="fw-black">Created on : </span>' + blacklistReport.createdAt + '</p>' +
+            '  <p><span class="fw-black">Reason : </span>' + blacklistReport.reason + '</p>' +
+            '  <p><span class="fw-black">Reputation Strike :</span> -' + blacklistReport.reputationPtsDeducted + '</p>' +
+            '  <p><span class="fw-black">State : </span>' + blacklistReport.state + '</p>',
+        showCancelButton: true,
+        confirmButtonClass: 'text-white btn btn-outline-info',
+        confirmButtonText: 'Remove From Blacklist',
+        cancelButtonClass: 'bt-outline-info fw-black',
+        cancelButtonText: 'Cancel',
+        footer: footer
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Admin confirmed, perform delete action. Preparing the url
+            console.log('ADMIN confirmed blacklist removal');
+
+            let isErrorReport = document.getElementById('errorReportCheckbox').checked;
+            // Making the request
+            makeBlacklistUserRemovalRequest(isErrorReport);
+
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Admin cancelled
+            console.log('ADMIN CANCELLED REMOVING FROM BLACKLIST ACTION');
+        }
+    });
+};
+
 // Send Delete request
 function makeDeleteUserRequest(url) {
     console.log("SENDING A DELETE REQUEST...");
@@ -525,49 +571,134 @@ reputationPointsInput.addEventListener('input', function() {
     }
 });
 
+// ## USER BLACKLIST PART ##
+const openReportModalBtn = document.getElementById('openReportBtn');
+
+openReportModalBtn.addEventListener('click', function () {
+    console.log('button clicked. displaying modal report')
+    displayReportDetailsModal();
+});
+
 // Submit user blacklist request function
 function submitUserBlacklistReport(username, reason, reputationPtsDeducted) {
+    let isBlacklistedDiv = document.getElementById('blacklistedDiv');
 
-    let data = {
-        "username": username,
-        "reason": reason,
-        "reputationPtsDeducted": reputationPtsDeducted
-    };
-    
+    console.log(`IS BLACK LISTED GIV NULL? ${isBlacklistedDiv === null}`);
+    if (isBlacklistedDiv === null) {
+        let data = {
+            "username": username,
+            "reason": reason,
+            "reputationPtsDeducted": reputationPtsDeducted
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/user/blacklist/add",
+            data: JSON.stringify(data),
+            success: function(xhr) {
+                console.log(`Response : ${xhr}`);
+                // handleSuccessModal();
+            },
+            error: function(xhr) {
+                // Handle the error response
+                if (xhr.responseText === "OK") {
+                    // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
+                    // Clearing inputs
+                    otherReasonInput.value = ''
+                    otherReasonInput.classList.remove('is-invalid')
+
+                    reputationPointsInput.value = ''
+                    reputationPointsInput.classList.remove('is-invalid')
+
+
+                    // Throwing the success modal
+                    handleSuccessModal({
+                        title: "Success!",
+                        text: "Report has been made and user blacklisted"
+                    });
+
+                    // Refreshing 'After a 1.5s delay'.
+                    setTimeout(
+                        function () {
+                            window.location.replace("/admin/users/"+username);
+                        }, REFRESH_DELAY
+                    );
+                }
+                const errorData = JSON.parse(xhr.responseText);
+                handleError(errorData);
+
+                // Clearing input value
+                passwordInput.value = '';
+                passwordInput.classList.remove('is-valid');
+            },
+            dataType: "json",
+            contentType: "application/json"
+        });
+    } else if (userRole === "ADMIN") {
+        handleError({ errorMessage: "Can't blacklist an admin!" });
+    } else {
+        handleError({ errorMessage: "User is already blacklisted!" });
+    }
+
+};
+
+// Handle showing report's details
+function displayReportDetailsModal() {
+
+    let url = "/admin/user/blacklist/report?username=" + username;
+
     $.ajax({
-        type: "POST", // метод запроса
-        url: "/admin/user/blacklist/add",
-        data: JSON.stringify(data),
-        success: function(xhr) {
-            console.log(`Response : ${xhr}`);
-            // handleSuccessModal();
+        type: "GET",
+        url: url,
+        success: function(data) {
+            // Throwing the blacklist info modal
+            handleBlacklistedInfoModal(data);
         },
-        error: function(xhr) {
+        error: function(data) {
             // Handle the error response
-            if (xhr.responseText === "OK") {
-                // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
-                // Clearing inputs
-                otherReasonInput.value = ''
-                otherReasonInput.classList.remove('is-invalid')
-
-                reputationPointsInput.value = ''
-                reputationPointsInput.classList.remove('is-invalid')
-
-
-                // Throwing the success modal
-                handleSuccessModal({
-                    title: "Success!",
-                    text: "Report has been made and user blacklisted"
-                });
-            }
-            const errorData = JSON.parse(xhr.responseText);
+            const errorData = JSON.parse(data.responseText);
             handleError(errorData);
-
-            // Clearing input value
-            passwordInput.value = '';
-            passwordInput.classList.remove('is-valid');
         },
         dataType: "json",
         contentType: "application/json"
     });
-}
+};
+
+// Handle remove user from blacklist
+function makeBlacklistUserRemovalRequest(isErrorReport) {
+    console.log(`\n\nREMOVING USER FROM BLACKLIST. ERROR REPORT? ${isErrorReport}`)
+
+    let url = "/admin/user/blacklist/remove?username=" + username +"&isErrorReport=" + isErrorReport;
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        success: function(data) {
+            // Throwing the blacklist info modal
+            console.log('Success hooken')
+            handleBlacklistedInfoModal(data);
+        },
+        error: function(data) {
+            if (data.responseText === "OK") {
+                handleSuccessModal({
+                    title: "Success!",
+                    text: "User has been successfully removed from the blacklist."
+                });
+
+                // Refreshing 'After a 1.5s delay'.
+                setTimeout(
+                    function () {
+                        window.location.replace("/admin/users/"+username);
+                    }, REFRESH_DELAY
+                );
+            }
+
+            // Handle the error response
+            const errorData = JSON.parse(data.responseText);
+            handleError(errorData);
+        },
+        dataType: "json",
+        contentType: "application/json"
+    });
+
+};

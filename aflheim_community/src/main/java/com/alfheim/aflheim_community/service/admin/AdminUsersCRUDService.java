@@ -1,7 +1,9 @@
 package com.alfheim.aflheim_community.service.admin;
 
+import com.alfheim.aflheim_community.dto.user.UserBlacklistReportDto;
 import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
+import com.alfheim.aflheim_community.model.user.BlacklistRecordState;
 
 import java.util.List;
 
@@ -23,4 +25,6 @@ public interface AdminUsersCRUDService {
 
     // Reverting error request return the deducted pts to the user
     int removeUserFromBlacklist(String username, boolean isRevertingErrorReq);
+
+    UserBlacklistReportDto getUserBlacklistReportDetails(String username);
 }

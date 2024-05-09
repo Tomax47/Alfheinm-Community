@@ -1,9 +1,6 @@
 package com.alfheim.aflheim_community.controller.admin;
 
-import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
-import com.alfheim.aflheim_community.dto.user.UserDto;
-import com.alfheim.aflheim_community.dto.user.UserPaginationSearchFormatterDto;
-import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
+import com.alfheim.aflheim_community.dto.user.*;
 import com.alfheim.aflheim_community.model.CustomError;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
@@ -326,6 +323,12 @@ public class AdminUserActionsController {
                             "Request has been refused due to lack of authority.",
                             Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                     );
+        } else if (result == 4409) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(new CustomError(409,
+                            "User already has a valid blacklist report.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
         }
 
         // Bad request
@@ -334,5 +337,69 @@ public class AdminUserActionsController {
                         "You have made a bad request.",
                         Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 );
+    }
+
+    // Admin remove user from blacklist
+    @PostMapping("/admin/user/blacklist/remove")
+    @ResponseBody
+    public ResponseEntity<Object> adminRemoveUserFromBlacklist(@RequestParam("username") String username,
+                                                               @RequestParam("isErrorReport") String isErrorReport) {
+
+        int result = adminUsersCRUDService.removeUserFromBlacklist(username, Boolean.valueOf(isErrorReport));
+
+        if (result == 200) {
+            // Success
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("OK");
+        } else if (result == 404) {
+            // User not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "User can't be found!",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 500) {
+            // Internal server error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account blacklisting removal request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 4404) {
+            // No record for the username has been found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "No record has been found for this username",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        // Bad request
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
+    }
+
+    // Get user blacklist report's details
+    @GetMapping("/admin/user/blacklist/report")
+    @ResponseBody
+    public ResponseEntity<Object> adminGetUserBlacklistReportDetails(@RequestParam("username") String username) {
+
+        UserBlacklistReportDto userBlacklistReportDto = adminUsersCRUDService.getUserBlacklistReportDetails(username);
+
+        if (userBlacklistReportDto == null) {
+            // No report found
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new CustomError(404,
+                            "Report couldn't be found.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        // Sending report details
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userBlacklistReportDto);
     }
 }

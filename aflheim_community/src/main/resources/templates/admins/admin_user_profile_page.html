@@ -294,8 +294,24 @@
 
       <!-- #### USER PROFILE ACTIONS BOTTOM PART #### -->
       <div class="card card-body border-0 shadow mb-4 mb-xl-0">
-        <h2 class="h5 mb-5 fw-black">Profile Actions</h2>
-        <ul class="list-group list-group-flush">
+
+        <!-- PROFILE IS BLACKLISTED DIV -->
+        <div th:if="${userDto.getAccountState().equals('BLACKLISTED')}" class="d-flex align-items-center justify-content-center px-0 border-bottom" id="blacklistedDiv">
+          <div class="text-center">
+            <h1 class="h1 text-danger">This account is blacklisted</h1>
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="150" height="150" viewBox="0,0,256,256"
+                   style="fill:#000000; opacity: 0.8;">
+                <g fill="#e11d48" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M25,3c-6.63672,0 -12,5.36328 -12,12v5h-4c-1.64453,0 -3,1.35547 -3,3v24c0,1.64453 1.35547,3 3,3h32c1.64453,0 3,-1.35547 3,-3v-24c0,-1.64453 -1.35547,-3 -3,-3h-4v-5c0,-6.63672 -5.36328,-12 -12,-12zM25,5c5.56641,0 10,4.43359 10,10v5h-20v-5c0,-5.56641 4.43359,-10 10,-10zM9,22h32c0.55469,0 1,0.44531 1,1v24c0,0.55469 -0.44531,1 -1,1h-32c-0.55469,0 -1,-0.44531 -1,-1v-24c0,-0.55469 0.44531,-1 1,-1zM25,30c-1.69922,0 -3,1.30078 -3,3c0,0.89844 0.39844,1.6875 1,2.1875v2.8125c0,1.10156 0.89844,2 2,2c1.10156,0 2,-0.89844 2,-2v-2.8125c0.60156,-0.5 1,-1.28906 1,-2.1875c0,-1.69922 -1.30078,-3 -3,-3z"></path></g></g>
+              </svg>
+            </div>
+            <button id="openReportBtn" class="btn btn-outline-danger mt-4 mb-4">Open Report</button>
+          </div>
+        </div>
+
+        <!-- PROFILE IS NOT BLACKLISTED DIV -->
+        <h2 th:if="${!userDto.getAccountState().equals('BLACKLISTED')}" class="h5 mb-5 fw-black">Profile Actions</h2>
+        <ul th:if="${!userDto.getAccountState().equals('BLACKLISTED')}" class="list-group list-group-flush">
           <li class="list-group-item d-flex align-items-center justify-content-between px-0 border-bottom">
             <div>
               <h3 class="h6 mb-1 fw-black">Suspend Account</h3>
@@ -422,7 +438,7 @@
 <!--          POINTS DEDUCTION -->
           <div class="mb-3">
             <label for="otherReason">Reputation Strike</label>
-            <input type="number" class="form-control" id="reputationPtsInput" aria-describedby="otherReasonHelp" placeholder="Specify the reason here">
+            <input type="number" class="form-control" id="reputationPtsInput" aria-describedby="otherReasonHelp" placeholder="Specify the reputation strike value">
             <div class="invalid-feedback">
               Strike must be between 1 and 200!
             </div>

@@ -1,5 +1,6 @@
 package com.alfheim.aflheim_community.service.admin;
 
+import com.alfheim.aflheim_community.dto.user.UserBlacklistReportDto;
 import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.model.user.BlacklistRecordState;
@@ -210,6 +211,11 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         if (adminOptional.isPresent()) {
             if (userOptional.isPresent()) {
                 if (adminOptional.get().getRole().equals("ADMIN") && !userOptional.get().getRole().equals("ADMIN")) {
+                    if (usersBlacklistRepo.findByUsernameAndState(userOptional.get().getUsername(), BlacklistRecordState.VALID).isPresent()) {
+                        System.out.println("\n\n111111111111111111111\n\n");
+                        return 4409;
+                    }
+
                     // Preparing user and the blacklist report
                     User user = userOptional.get();
 
@@ -297,5 +303,19 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
         // User not found
         return 404;
+    }
+
+    // Getting user blacklist report's details
+    @Override
+    public UserBlacklistReportDto getUserBlacklistReportDetails(String username) {
+        Optional<UsersBlacklist> usersBlacklist = usersBlacklistRepo.findByUsernameAndState(username, BlacklistRecordState.VALID);
+
+        if (usersBlacklist.isPresent()) {
+            // returning report's details
+            return UserBlacklistReportDto.from(usersBlacklist.get());
+        }
+
+        // No report found
+        return null;
     }
 }

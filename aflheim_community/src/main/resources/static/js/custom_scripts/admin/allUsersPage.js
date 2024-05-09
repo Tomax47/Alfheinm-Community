@@ -122,7 +122,7 @@ function RenderServicesTable(responseUserDto) {
                                             userAccountStateElement +
             '                            </td>' +
             '                            <td>' +
-            '                                <span class="fw-normal text-black">0.00</span>' +
+            '                                <span class="fw-normal text-black">' + user.reputation + '</span>' +
             '                            </td>' +
             '                       </tr>';
 
