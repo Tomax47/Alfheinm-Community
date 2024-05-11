@@ -3,12 +3,14 @@ package com.alfheim.aflheim_community.service.admin;
 import com.alfheim.aflheim_community.dto.user.UserBlacklistReportDto;
 import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
+import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
 import com.alfheim.aflheim_community.model.user.BlacklistRecordState;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UsersBlacklist;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.repository.UsersBlacklistRepo;
 import com.alfheim.aflheim_community.service.user.PasswordResetService;
+import com.alfheim.aflheim_community.service.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,9 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
     @Autowired
     private PasswordResetService passwordResetService;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Override
     public List<UserDto> search(Integer size, Integer page, String query, String sortParameter, String directionParameter) {
@@ -316,6 +321,33 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         }
 
         // No report found
+        return null;
+    }
+
+    @Override
+    public UserDto updateUserProfileInfo(String username, UserUpdateForm userUpdateForm) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        System.out.println("111111111111111111");
+        if (userOptional.isPresent()) {
+
+            if (userOptional.get().getRole().equals("ADMIN")) {
+                System.out.println("222222222222222222");
+                // Throw an exception if the user is an admin 'cant't change admin's details'
+                return null;
+            }
+
+            // Success
+            UserDto userDto = profileService.updateAccount(userUpdateForm, userOptional.get().getEmail());
+            System.out.println("333333333333333333");
+
+            System.out.println("IS USERDTO NULL ? "+ (userDto == null));
+            return userDto;
+        }
+
+        // THROW EXCEPTION IF USER NOT FOUND
+        System.out.println("44444444444444444444444");
         return null;
     }
 }

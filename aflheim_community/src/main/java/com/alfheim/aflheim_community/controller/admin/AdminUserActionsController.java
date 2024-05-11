@@ -2,7 +2,6 @@ package com.alfheim.aflheim_community.controller.admin;
 
 import com.alfheim.aflheim_community.dto.user.*;
 import com.alfheim.aflheim_community.model.CustomError;
-import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.admin.AdminUsersCRUDService;
 import com.alfheim.aflheim_community.service.user.ProfileService;
@@ -13,12 +12,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class AdminUserActionsController {
@@ -90,6 +89,7 @@ public class AdminUserActionsController {
 
         // Getting Admin Details
         UserDto admin = profileService.getProfileDetails(userDetails.getUserEmail());
+        System.out.println("\n\nADMINUSERACTIONSCONTRLLER : USERNAME -> "+username+"\n\n");
         UserDto userDto = profileService.getProfileDetailsByUsername(username);
 
         // Preparing the user update form
@@ -401,5 +401,37 @@ public class AdminUserActionsController {
         // Sending report details
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userBlacklistReportDto);
+    }
+
+    @PostMapping("/admin/user/profile/update")
+    @ResponseBody
+    public ResponseEntity<Object> updateUserProfileInfo(@RequestParam("username") String username,
+                                                        @RequestParam(value = "profilePictureFile", required = false) MultipartFile profilePictureFile,
+                                                        @RequestParam(value = "data", required = false) String data) {
+
+        UserUpdateForm userUpdateForm = UserUpdateForm.formatData(data, profilePictureFile);
+
+        UserDto userDto = adminUsersCRUDService.updateUserProfileInfo(username, userUpdateForm);
+
+        if (userDto != null) {
+
+            // Success
+            return ResponseEntity.status(HttpStatus.OK).body(userDto);
+        } else if (userDto == null) {
+
+            // Something went wrong
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CustomError(500,
+                            "Account update request has been refused.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        // Bad request
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new CustomError(400,
+                        "You have made a bad request.",
+                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                );
     }
 }
