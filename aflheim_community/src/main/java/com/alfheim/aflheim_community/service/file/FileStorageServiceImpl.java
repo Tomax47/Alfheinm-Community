@@ -33,6 +33,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         String storageName = UUID.randomUUID().toString() + "." +
                 FilenameUtils.getExtension(file.getOriginalFilename());
 
+        System.out.println("\n\nFILE INFO : 111111111111111111111111111111111111111");
         //Building the FileInfo object
         FileInfo fileInfo = FileInfo.builder()
                 .fileName(file.getOriginalFilename())
@@ -42,15 +43,21 @@ public class FileStorageServiceImpl implements FileStorageService {
                 .url(storagePath + "\\" + storageName)
                 .build();
 
+        System.out.println("FILE INFO : 222222222222222222222222222222222222222");
         // Saving the file into the storage path directory
         try {
+            System.out.println("FILE INFO : 33333333333333333333333333333333333");
             Files.copy(file.getInputStream(), Paths.get(storagePath, storageName));
+            System.out.println("FILE INFO : 4444444444444444444444444444444444");
         } catch (IOException e) {
+            System.out.println("FILE INFO : ERRRORRRRRRRRRRRRRRRRR\n\n");
             throw new IllegalStateException(e);
         }
 
         // Saving the file into the DB
+        System.out.println("FILE INFO : SAVING TO THE REPO");
         fileInfoRepo.save(fileInfo);
+        System.out.println("FILE INFO : SAVED. RETURNING FILE "+fileInfo.getFileStorageName()+"...\n\n");
         return fileInfo.getFileStorageName();
     }
 

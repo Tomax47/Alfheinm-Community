@@ -1,5 +1,6 @@
 package com.alfheim.aflheim_community.security.config;
 
+import com.alfheim.aflheim_community.model.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

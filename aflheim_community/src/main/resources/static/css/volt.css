@@ -1012,7 +1012,7 @@
     --bs-tertiary-rgb: 58, 98, 117;
     --bs-success-rgb: 16, 185, 129;
     --bs-info-rgb: 0, 48, 68;
-    --bs-warning-rgb: 182, 211, 227;
+    --bs-warning-rgb: 245, 158, 4;
     --bs-danger-rgb: 225, 29, 72;
     --bs-white-rgb: 218, 235, 244;
     --bs-indigo-rgb: 0, 65, 84;
@@ -1532,6 +1532,10 @@ progress {
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.3;
+}
+
+.display-flex {
+    display: flex;
 }
 
 .list-unstyled {
@@ -4479,7 +4483,29 @@ textarea.form-control-lg {
     margin-left: -0.0625rem;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    border-bottom-right-radius: .5rem;
+    border-top-right-radius:  .5rem;
 }
+
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback):hover {
+    cursor: pointer;
+}
+
+.usernameText {
+    font-weight: 800;
+    font-size: calc(1.3rem + 0.6vw);
+    transition: font-weight 0.2s ease-in-out;
+}
+
+.username:hover {
+    cursor: pointer;
+    top: -5px;
+}
+
+.username:not(:hover) {
+    top: +5px;
+}
+
 
 .valid-feedback {
     display: none;
@@ -10318,6 +10344,11 @@ textarea.form-control-lg {
 
 .border-top-0 {
     border-top: 0 !important;
+}
+
+.border-tbrr-0 {
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
 }
 
 .border-end {

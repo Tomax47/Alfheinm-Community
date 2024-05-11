@@ -47,7 +47,7 @@ public class ProfileController {
         model.addAttribute("badge", badge);
         model.addAttribute("userDto", userDto);
         model.addAttribute("user", updateForm);
-        return "user/profile/profile_page";
+        return "users/profile/profile_page";
     }
 
     @PostMapping("/profile/update")
@@ -59,7 +59,7 @@ public class ProfileController {
         if (result.hasErrors()) {
             model.addAttribute("user", userUpdateForm);
             model.addAttribute("userDto", profileService.getProfileDetails(userDetails.getUserEmail()));
-            return "user/profile/profile_page";
+            return "users/profile/profile_page";
         }
 
         System.out.println(userUpdateForm.getProfilePicture().getContentType());
@@ -81,7 +81,7 @@ public class ProfileController {
         model.addAttribute("username", username);
         model.addAttribute("profilePicUrl", profilePictureUrl);
         model.addAttribute("isAuthenticated", true);
-        return "user/profile/delete_profile_page";
+        return "users/profile/delete_profile_page";
     }
 
     @GetMapping("/profile/{username}/delete")

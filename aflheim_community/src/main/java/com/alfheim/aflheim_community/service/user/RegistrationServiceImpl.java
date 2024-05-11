@@ -56,6 +56,7 @@ public class RegistrationServiceImpl implements RegistrationService{
                 .city("Valhalla")
                 .region("Val")
                 .zip("9")
+                .reputation(0)
                 .build();
 
         try {

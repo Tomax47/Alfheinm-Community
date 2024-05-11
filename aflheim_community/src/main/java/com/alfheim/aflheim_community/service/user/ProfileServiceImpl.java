@@ -76,34 +76,34 @@ public class ProfileServiceImpl implements ProfileService {
 
         try {
 
-            if (userUpdateForm.getProfilePicture() != null &&
-                    // TODO: TRANSFER THIS FUNCTIONALITY FOR JS ON THE FRONTEND
-                    userUpdateForm.getProfilePicture().getContentType().equals("image/jpeg") ||
-                    userUpdateForm.getProfilePicture().getContentType().equals("image/png")
-            ) {
-                // New file submission
+            System.out.println("\n\nUSER PROFILE PICTURE : \nIS NULL? "+
+                    (userUpdateForm.getProfilePicture() == null));
 
-                // Saving the file
-                String imageStorageName = fileStorageService.saveFile(userUpdateForm.getProfilePicture());
+            if (userUpdateForm.getProfilePicture() != null) {
 
-                System.out.println("\nIS IMAGE'S STORAGE NAME BLANK?\n"+user.getProfilePicture().getFileStorageName().isBlank()+
-                        "\nStorage Name : "+user.getProfilePicture().getFileStorageName()+"\n\n");
+                if (userUpdateForm.getProfilePicture().getContentType().equals("image/jpeg") ||
+                        userUpdateForm.getProfilePicture().getContentType().equals("image/png") ||
+                userUpdateForm.getProfilePicture().getContentType().equals("image/webp")) {
 
-                if (!user.getProfilePicture().getFileStorageName().isBlank()) {
-                    // User has a profile picture. Deleting it...
-                    System.out.println("\n\nUSER HAS AN OLD PROFILE PICTURE. DELETING IT...\nFILE STORAGE NAME : "+
-                            user.getProfilePicture().getFileStorageName()+"\n\n");
-                    fileStorageService.deleteFile(user.getProfilePicture().getFileStorageName());
+                    // New file submission
+
+                    System.out.println("IMAGE ACCEPTED! SAVING A NEW IMAGE...");
+                    // Saving the file
+                    String imageStorageName = fileStorageService.saveFile(userUpdateForm.getProfilePicture());
+
+                    System.out.println("\nIMAGE NAME : "+imageStorageName);
+                    System.out.println("\nIS USER'S PROFILE IMAGE NULL? "+user.getProfilePicture());
+
+                    // Setting the new profile picture
+                    user.setProfilePicture(fileStorageService.findByStorageName(imageStorageName));
                 }
-
-                // Setting the new profile picture
-                user.setProfilePicture(fileStorageService.findByStorageName(imageStorageName));
             }
+
+            // Update user's details
             User updatedUser = userRepo.save(user);
             return UserDto.from(updatedUser);
 
         } catch (Exception e) {
-            // TODO: HANDLE IT BETTER
             return null;
         }
     }

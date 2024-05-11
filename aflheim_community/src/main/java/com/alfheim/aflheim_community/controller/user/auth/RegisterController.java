@@ -30,7 +30,7 @@ public class RegisterController {
 
             UserRegistrationForm registrationForm = new UserRegistrationForm();
             model.addAttribute("registrationForm", registrationForm);
-            return "/user/auth/register_page";
+            return "/users/auth/register_page";
         }
 
         return "redirect:/profile";
@@ -44,7 +44,7 @@ public class RegisterController {
         if (result.hasErrors()) {
             // Fields input errors
             model.addAttribute("registrationForm", registrationForm);
-            return "/user/auth/register_page";
+            return "/users/auth/register_page";
         }
 
         System.out.println("REGISTRATION PROCEEDING...");

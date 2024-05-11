@@ -25,7 +25,7 @@ public class PasswordController {
     public String getForgotPasswordPage(Model model) {
 
         model.addAttribute("isAuthenticated", false);
-        return "user/auth/forgot_password_page";
+        return "users/auth/forgot_password_page";
     }
 
     @PostMapping("/login/password/recover")
@@ -60,7 +60,7 @@ public class PasswordController {
             // Authorized and correct token
             model.addAttribute("email", userEmail);
             model.addAttribute("resetToken", verificationToken);
-            return "user/auth/reset_password_page";
+            return "users/auth/reset_password_page";
         }
     }
 
@@ -94,7 +94,7 @@ public class PasswordController {
         model.addAttribute("passwordResetForm", passwordResetForm);
         model.addAttribute("username", userDetails.getUsername());
 
-        return "/user/profile/authenticated_password_reset_page";
+        return "/users/profile/authenticated_password_reset_page";
     }
 
     @PostMapping("/profile/password/reset")
@@ -108,7 +108,7 @@ public class PasswordController {
         if (result.hasErrors()) {
             model.addAttribute("username", username);
             model.addAttribute("passwordResetForm", authPasswordResetForm);
-            return "/user/profile/authenticated_password_reset_page";
+            return "/users/profile/authenticated_password_reset_page";
         }
 
         int resp = passwordResetService.authResetUserPassword(username,

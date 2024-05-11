@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 public class UserPasswordReset {
+    // This entity's error code starts with 3
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

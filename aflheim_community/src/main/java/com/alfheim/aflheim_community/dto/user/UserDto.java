@@ -37,6 +37,8 @@ public class UserDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
     private String profilePicture;
+    private String accountState;
+    private int reputation;
 
     public static UserDto from(User user) {
 
@@ -64,16 +66,18 @@ public class UserDto {
                 .occupation(user.getOccupation())
                 .gender(user.getGender())
                 .role(user.getRole())
+                .accountState(user.getState())
                 .country(user.getCountry())
                 .city(user.getCity())
                 .region(user.getRegion())
                 .zip(user.getZip())
                 .birthdate(user.getBirthdate())
                 .profilePicture(profilePictureUrl)
+                .reputation(user.getReputation())
                 .build();
     }
 
-    public static List<UserDto> usersList(List<User> users) {
+    public static List<UserDto> usersListFrom(List<User> users) {
         return users.stream()
                 .map(UserDto::from)
                 .collect(Collectors.toList());

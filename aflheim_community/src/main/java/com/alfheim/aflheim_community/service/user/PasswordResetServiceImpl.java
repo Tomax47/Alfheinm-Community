@@ -149,6 +149,22 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         return 0;
     }
 
+    @Override
+    public int adminUserResetPassword(User user, String newPassword, String adminUsername) {
+
+        try {
+            // Setting the new password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepo.save(user);
+
+            // TODO: SEND AN EMAIL TO THE USER INFORMING OF THE PASSWORD CHANGE!
+
+            return 200;
+        } catch (Exception e) {
+            return 500;
+        }
+    }
+
     private void addUserPasswordResetRecord(String email, String code) {
 
         // SAVING THE PASSWD RESET REQUEST RECORD
