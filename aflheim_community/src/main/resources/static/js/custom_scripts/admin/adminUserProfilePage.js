@@ -1440,7 +1440,6 @@ function clearInputs() {
     birthdayInput.classList.remove('is-valid');
     birthdayInput.classList.remove('is-invalid');
 };
-
 function updateUsersData(response) {
 
     nameInput.placeholder = response.name;
@@ -1454,8 +1453,6 @@ function updateUsersData(response) {
     genderInput.options[0].innerText = 'Current : ' + response.gender;
     phoneInput.placeholder = response.number;
     birthdayInput.placeholder = response.birthdate;
-
-    document.getElementById('profileImageDisplay').src = response.profilePictureUrl;
 }
 function submitUserDataUpdateRequest() {
 

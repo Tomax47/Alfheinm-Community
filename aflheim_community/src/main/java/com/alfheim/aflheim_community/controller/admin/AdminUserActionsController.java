@@ -434,4 +434,15 @@ public class AdminUserActionsController {
                         Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
                 );
     }
+
+    // Admin user search page
+    @GetMapping("/admin/users/search")
+    public String getAdminUserSearchPage(Model model,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        UserDto admin = profileService.getProfileDetails(userDetails.getUserEmail());
+        model.addAttribute("admin", admin);
+
+        return "admins/admin_users_publications_page";
+    }
 }

@@ -4491,6 +4491,22 @@ textarea.form-control-lg {
     cursor: pointer;
 }
 
+.usernameText {
+    font-weight: 800;
+    font-size: calc(1.3rem + 0.6vw);
+    transition: font-weight 0.2s ease-in-out;
+}
+
+.username:hover {
+    cursor: pointer;
+    top: -5px;
+}
+
+.username:not(:hover) {
+    top: +5px;
+}
+
+
 .valid-feedback {
     display: none;
     width: 100%;

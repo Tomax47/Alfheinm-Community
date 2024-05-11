@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
-    @Query("SELECT users FROM account users WHERE (:query = 'empty' OR UPPER(users.name) LIKE UPPER(CONCAT('%', :query, '%') ) )")
+    @Query("SELECT users FROM account users WHERE (:query = 'empty' OR UPPER(users.username) LIKE UPPER(CONCAT('%', :query, '%') ) )")
     Page<User> search(@Param("query") String query, Pageable pageable);
 }

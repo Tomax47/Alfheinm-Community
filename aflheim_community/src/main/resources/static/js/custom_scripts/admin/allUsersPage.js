@@ -7,16 +7,45 @@ let previousPageBtn = document.getElementById('previousPage');
 
 let currentPageNumber = parseInt(currentPageBtn.innerText);
 
+const searchQueryInput = document.getElementById('searchQueryInput');
+const sizeSelect = document.getElementById('sizeSelect');
+const sizeStatement = document.getElementById('statementSize');
 currentPageBtn.addEventListener('click', () => {
-    // Fetching same page's data
-    PagSearchUsers(currentPageNumber, null, null);
+    let query;
+    let size = sizeSelect.options[sizeSelect.selectedIndex].value;
+
+    if (searchQueryInput.value === '') {
+        query = null;
+    } else {
+        query = searchQueryInput.value;
+    }
+
+    if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+        size = null;
+    }
+
+    PagSearchUsers(currentPageNumber, size, query);
 });
 nextPageBtn.addEventListener('click', () => {
 
     currentPageNumber += 1;
+    let query;
+    let size = sizeSelect.options[sizeSelect.selectedIndex].value;
+
+    if (searchQueryInput.value === '') {
+        query = null;
+    } else {
+        query = searchQueryInput.value;
+    }
+
+    if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+        size = null;
+    }
+
+    console.log(`Size : ${size}. Query : ${query}`);
 
     // Fetching next page's data
-    PagSearchUsers(currentPageNumber, null, null);
+    PagSearchUsers(currentPageNumber, size, query);
 
     // Updating the currentPageNumber value
     currentPageBtn.innerText = currentPageNumber;
@@ -25,9 +54,22 @@ nextPageBtn.addEventListener('click', () => {
 previousPageBtn.addEventListener('click', () => {
     if (currentPageNumber != "0") {
 
+        let query;
+        let size = sizeSelect.options[sizeSelect.selectedIndex].value;
+
+        if (searchQueryInput.value === '') {
+            query = null;
+        } else {
+            query = searchQueryInput.value;
+        }
+
+        if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+            size = null;
+        }
+
         currentPageNumber -= 1;
         // Fetching previous page's data
-        PagSearchUsers(currentPageNumber, null, null);
+        PagSearchUsers(currentPageNumber, size, query);
 
         // Updating the currentPageNumber value
         currentPageBtn.innerText = currentPageNumber;
@@ -37,6 +79,49 @@ previousPageBtn.addEventListener('click', () => {
     }
 });
 
+// Size selection change
+sizeSelect.addEventListener('change', function () {
+    let query;
+    let size = sizeSelect.options[sizeSelect.selectedIndex].value;
+
+    if (searchQueryInput.value === '') {
+        query = null;
+    } else {
+        query = searchQueryInput.value;
+    }
+
+    if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+        size = null;
+    }
+
+    // Fetching previous page's data
+    PagSearchUsers(currentPageNumber, size, query);
+
+    if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+        sizeStatement.innerText = '4';
+    } else {
+        sizeStatement.innerText = size;
+    }
+});
+
+// Query input change
+searchQueryInput.addEventListener('input', function () {
+    let query;
+    let size = sizeSelect.options[sizeSelect.selectedIndex].value;
+
+    if (searchQueryInput.value === '') {
+        query = null;
+    } else {
+        query = searchQueryInput.value;
+    }
+
+    if (size !== '4' && size !== '8' && size !== '10' && size !== '12') {
+        size = null;
+    }
+
+    // Fetching previous page's data
+    PagSearchUsers(currentPageNumber, size, query);
+});
 
 // Refetch
 function PagSearchUsers(page, size, query) {
