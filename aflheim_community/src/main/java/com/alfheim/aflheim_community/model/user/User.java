@@ -66,6 +66,6 @@ public class User {
     @JoinColumn(name = "profile_picture_id", referencedColumnName = "id")
     private FileInfo profilePicture;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
     private List<Publication> createdPublications;
 }

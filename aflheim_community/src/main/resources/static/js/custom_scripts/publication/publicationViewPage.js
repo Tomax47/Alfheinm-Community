@@ -56,11 +56,23 @@ function handleInfoModal(message) {
     });
 };
 
+// Success modal
+function handleSuccessModal(messageData) {
+    swalWithBootstrapButtons.fire({
+        icon: 'success',
+        title: messageData.title,
+        text: messageData.text,
+        showConfirmButton: true,
+        timer: 1500
+    });
+};
+
 // Const
 const publicationId = document.getElementById('publicationId');
 const noReviewsBtn = document.getElementById('noReviewsYet');
 const upVoteBtn = document.getElementById('upVoteBtn');
 const downVoteBtn = document.getElementById('downVoteBtn');
+const REFRESH_DELAY = 1500;
 
 // Handling no reviews clicked
 if (noReviewsBtn != null) {
@@ -173,5 +185,74 @@ function changeDownVoteStatus() {
         },
         dataType: "json",
         contentType: "application/json"
+    });
+};
+
+// Handle deleting publication
+function submitPublicationDeleteRequest() {
+    let url = "/publications/delete?publicationId="+publicationId.innerText;
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        success: function(response) {
+            deletePublicationBtn.disabled = true;
+
+            // Throwing the success modal
+            handleSuccessModal({
+                title: "Success!",
+                text: "Publication has been successfully deleted."
+            });
+
+            // Refreshing 'After a 1.5s delay'.
+            setTimeout(
+                function () {
+                    window.location.replace("/publications/feed");
+                }, REFRESH_DELAY
+            );
+
+            return;
+        },
+        error: function(reponse) {
+            // Handle the error response
+            const errorData = JSON.parse(reponse.responseText);
+            handleError(errorData);
+            return;
+        },
+        dataType: "json",
+        contentType: "application/json"
+    });
+};
+
+function handlePublicationDeleteModal() {
+    let footer = '<p>Make sure to comply with '+'<a href="/privacy" class="text-primary fw-black">Alfheim\'s policies</a>'+'</p>'
+
+    swalWithBootstrapButtons.fire({
+        icon: 'error',
+        title: 'Un-Revertible Action!',
+        text: 'Are you sure you want to delete the publication?',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-danger',
+        confirmButtonText: 'Delete Publication',
+        cancelButtonClass: 'bt-outline-grey-400 fw-black',
+        cancelButtonText: 'Cancel',
+        footer: footer
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Confirmed, submitting delete req
+            submitPublicationDeleteRequest();
+
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Cancelled
+        }
+    });
+};
+
+const deletePublicationBtn = document.getElementById('deletePublicationBtn');
+
+if (deletePublicationBtn != null) {
+    deletePublicationBtn.addEventListener('click', function () {
+        console.log('clicked')
+        handlePublicationDeleteModal();
     });
 };

@@ -218,7 +218,7 @@
                 <div class="card mb-4" th:if="${user.getRole().equals('ADMIN') or user.getUsername().equals(publication.authorUsername())}">
                     <div class="card-header fw-black">Post's Interactions</div>
                     <div class="card-body">
-                        <button class="btn btn-danger">
+                        <button class="btn btn-danger" id="deletePublicationBtn">
                             Delete this post
                         </button>
                     </div>

@@ -32,12 +32,14 @@ public class PublicationsController {
     @Autowired
     private StringToPublicationFormConverter stringToPublicationFormConverter;
 
+    // Get feed page
     @GetMapping("/publications/feed")
     public String getPublicationsFeedPage() {
 
         return "publications/publications_feed_page";
     }
 
+    // Get new publication page
     @GetMapping("/profile/publications/new")
     public String getCreatePublicationPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -45,6 +47,8 @@ public class PublicationsController {
         return "publications/publication_new_page";
     }
 
+
+    // Add new publication
     @PostMapping("/profile/publication/add")
     @ResponseBody
     public ResponseEntity<Object> addPublication(@RequestParam("username") String username,
@@ -81,6 +85,7 @@ public class PublicationsController {
 
     }
 
+    // View publication
     @GetMapping("/publications/view")
     public String getPublicationPage(@RequestParam("publicationId") Long publicationId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -94,6 +99,7 @@ public class PublicationsController {
         return "publications/publication_page";
     }
 
+    // Upvote publication
     @PostMapping("/publications/view/upvote")
     @ResponseBody
     public ResponseEntity<Object> changePublicationUpVoteStatus(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -120,6 +126,7 @@ public class PublicationsController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    // Down vote publication
     @PostMapping("/publications/view/downvote")
     @ResponseBody
     public ResponseEntity<Object> changePublicationDownVoteStatus(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -145,4 +152,37 @@ public class PublicationsController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
 
     }
+
+    // Delete publication
+    @PostMapping("/publications/delete")
+    @ResponseBody
+    public ResponseEntity<Object> deletePublication(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                    @RequestParam("publicationId") String publicationId) {
+
+        int result = publicationService.deletePublication(Long.parseLong(publicationId), userDetails.getUsername());
+
+        if (result == 404) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "Publication not found.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 1404) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(new CustomError(404,
+                            "User not found.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        } else if (result == 401) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CustomError(401,
+                            "Unauthorized request.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
+                    );
+        }
+
+        // Success
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
 }

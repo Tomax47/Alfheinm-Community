@@ -99,8 +99,59 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public int deletePublication(Long id) {
-        return 0;
+    public int deletePublication(Long publicationId, String username) {
+
+        Optional<Publication> publicationOptional = publicationRepo.findById(publicationId);
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (publicationOptional.isPresent()) {
+            // Publication found
+            if (userOptional.isPresent()) {
+                // User exist
+                Publication publication = publicationOptional.get();
+                if (publication.getAuthor().getUsername().equals(username) || userOptional.get().getRole().equals("ADMIN")) {
+                    // Authorized. deleting publication...
+
+                    System.out.println("111111111111111");
+                    List<User> upVotesList = publication.getUpVotes();
+                    List<User> downVotesList = publication.getDownVotes();
+
+                    upVotesList.clear();
+                    downVotesList.clear();
+
+                    System.out.println("\n\nLIST UP VOTES ");
+                    publication.setDownVotes(downVotesList);
+                    publication.setUpVotes(upVotesList);
+
+                    Publication saved = publicationRepo.save(publication);
+                    System.out.println("222222222222222222222");
+
+                    List<Publication> createdPublications = userOptional.get().getCreatedPublications();
+                    createdPublications.remove(saved);
+                    userRepo.save(userOptional.get());
+
+                    System.out.println("33333333333333333333");
+                    // Deleting publication
+                    String publicationImageStorageName = saved.getCoverImage().getFileStorageName();
+                    publicationRepo.delete(saved);
+
+                    System.out.println("44444444444444444444");
+                    // Deleting cover image
+//                    fileStorageService.deleteFile(publicationImageStorageName);
+
+                    return 200;
+                }
+
+                // Unauthorized
+                return 401;
+            }
+
+            // User not found
+            return 1404;
+        }
+
+        // Publication not found
+        return 404;
     }
 
     @Override

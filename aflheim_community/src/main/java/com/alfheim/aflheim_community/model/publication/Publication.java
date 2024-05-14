@@ -43,17 +43,17 @@ public class Publication {
     @CreationTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinTable(name = "publication_author")
     private User author;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "publication_up_votes",
             joinColumns = @JoinColumn(name = "publication_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> upVotes;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "publication_down_votes",
             joinColumns = @JoinColumn(name = "publication_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
