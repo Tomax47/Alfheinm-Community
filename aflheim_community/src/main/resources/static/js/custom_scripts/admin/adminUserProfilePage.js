@@ -904,7 +904,7 @@ genderInput.addEventListener('change', function() {
     // Based on the value
     let selectedGender = genderInput.value;
 
-    // Check if the selected country is in the list of countries
+    // Check if the selected gender is in the list of countries
     console.log(`SELECTED GENDER : ${selectedGender}`)
     if (selectedGender === "Male" || selectedGender === "Female" || selectedGender === "None") {
         if (this.classList.contains('is-invalid')) {

@@ -1,21 +1,17 @@
 package com.alfheim.aflheim_community.dto.publication;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.Multipart;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class PublicationForm {
-
     private String title;
     private String content;
-    private String categories;
+    private String category;
     private String description;
-    private Multipart coverImage;
+    private MultipartFile coverImage;
 }

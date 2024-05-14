@@ -1,6 +1,7 @@
 package com.alfheim.aflheim_community.model.user;
 
 import com.alfheim.aflheim_community.model.File.FileInfo;
+import com.alfheim.aflheim_community.model.publication.Publication;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -63,4 +65,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_picture_id", referencedColumnName = "id")
     private FileInfo profilePicture;
+
+    @OneToMany(mappedBy = "author")
+    private List<Publication> createdPublications;
 }
