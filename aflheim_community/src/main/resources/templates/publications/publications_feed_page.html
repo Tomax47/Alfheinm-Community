@@ -6,6 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Publications Feed</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
   <link href="css/volt.css" rel="stylesheet" />
 </head>
 <body>
@@ -29,94 +30,46 @@
       <div class="col-lg-8">
         <!-- Featured blog post-->
         <div class="card mb-4">
-          <a href="#!"><img class="card-img-top" src="https://cdn.britannica.com/54/179954-138-48FF7D00/Overview-Vikings.jpg?w=800&h=450&c=crop" alt="..." /></a>
+          <a href="#!"><img class="card-img-top" th:src="${featuredPublication.coverImageUrl()}" alt="..." /></a>
           <div class="card-body">
 
             <a class="d-flex align-items-center">
-              <img class="avatar rounded-circle me-1" src="/assets/img/default-avatar.jpg" alt="Avatar">
+              <img class="avatar rounded-circle me-1" th:src="${featuredPublication.authorProfilePictureUrl()}" alt="Avatar">
               <div class="d-block">
-                <span class="fw-black">@Marcos21</span>
+                <span class="fw-black" th:text="${'@'+featuredPublication.authorUsername()}"></span>
               </div>
             </a>
-            <div class=" d-flex ml-2 small text-muted mb-3">Posted on : January 1, 2023</div>
+            <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+featuredPublication.createdAt()}"></div>
 
-            <h2 class="card-title fw-black">History of Vikings longships
+            <h2 class="card-title fw-black">
+              <span th:utext="${featuredPublication.title()}"></span>
               <svg class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
             </h2>
-            <p class="card-text">Breifing on the history of longships making during the vikings erra!</p>
-            <a class="btn btn-outline-gray-500" href="#">Read more</a>
+            <p class="card-text" th:text="${featuredPublication.description()}"></p>
+            <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${featuredPublication.id()}}">Read more</a>
           </div>
         </div>
 
         <!-- Nested row for non-featured blog posts-->
-        <div class="row">
-          <div class="col-lg-6">
+        <div class="row" id="publicationsBody">
+          <div class="col-lg-6" th:each="publication: ${publications}">
             <!-- Blog post-->
             <div class="card mb-4">
-              <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
+              <a href="#!"><img class="card-img-top" th:src="${publication.coverImageUrl()}" alt="..." /></a>
               <div class="card-body">
                 <a class="d-flex align-items-center">
-                  <img class="avatar rounded-circle me-1" src="/assets/img/default-avatar.jpg" alt="Avatar">
+                  <img class="avatar rounded-circle me-1" th:src="${publication.authorProfilePictureUrl()}" alt="Avatar">
                   <div class="d-block">
-                    <span class="fw-black">@AlexDuke</span>
+                    <span class="fw-black" th:text="${'@'+publication.authorUsername()}"></span>
                   </div>
                 </a>
-                <div class=" d-flex ml-2 small text-muted mb-3">Posted on : January 2, 2024</div>
-                <h2 class="card-title h4 fw-black">The Old Runes
-                  <svg class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+                <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+publication.createdAt()}"></div>
+                <h2 class="card-title h4 fw-black" th:text="${publication.title()}">
+                  <svg th:if="${(publication.upVotesCount() + publication.downVotesCount() > 4) && ((publication.upVotesCount() * 100) / (publication.upVotesCount() + publication.downVotesCount())) > 80.0}"
+                          class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                 </h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                <a class="btn btn-outline-gray-500" href="#!">Read more</a>
-              </div>
-            </div>
-            <!-- Blog post-->
-            <div class="card mb-4">
-              <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-              <div class="card-body">
-                <a class="d-flex align-items-center">
-                  <img class="avatar rounded-circle me-1" src="/assets/img/default-avatar.jpg" alt="Avatar">
-                  <div class="d-block">
-                    <span class="fw-black">@AlexDuke</span>
-                  </div>
-                </a>
-                <div class=" d-flex ml-2 small text-muted mb-3">Posted on : January 2, 2024</div>
-                <h2 class="card-title h4 fw-black">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                <a class="btn btn-primary" th:href="@{/publications/view?publicationId=1}">Read more →</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <!-- Blog post-->
-            <div class="card mb-4">
-              <a href="#!"><img class="card-img-top" src="https://d3f1iyfxxz8i1e.cloudfront.net/courses/course_image/ed73cbf37678.jpg" alt="..." /></a>
-              <div class="card-body">
-                <a class="d-flex align-items-center">
-                  <img class="avatar rounded-circle me-1" src="/assets/img/default-avatar.jpg" alt="Avatar">
-                  <div class="d-block">
-                    <span class="fw-black">@AlexDuke</span>
-                  </div>
-                </a>
-                <div class=" d-flex ml-2 small text-muted mb-3">Posted on : January 2, 2024</div>
-                <h2 class="card-title h4 fw-black">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
-                <a class="btn btn-primary" href="#!">Read more →</a>
-              </div>
-            </div>
-            <!-- Blog post-->
-            <div class="card mb-4">
-              <a href="#!"><img class="card-img-top" src="https://images.squarespace-cdn.com/content/v1/5a72d2a74c326d63a3136d7e/1520087631871-IG0BBZB70ABT7A5IF5PN/norse.png" alt="..." /></a>
-              <div class="card-body">
-                <a class="d-flex align-items-center">
-                  <img class="avatar rounded-circle me-1" src="/assets/img/default-avatar.jpg" alt="Avatar">
-                  <div class="d-block">
-                    <span class="fw-black">@AlexDuke</span>
-                  </div>
-                </a>
-                <div class=" d-flex ml-2 small text-muted mb-3">Posted on : January 2, 2024</div>
-                <h2 class="card-title h4 fw-black">Post Title</h2>
-                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam.</p>
-                <a class="btn btn-primary" href="#!">Read more →</a>
+                <p class="card-text" th:text="${publication.description()}"></p>
+                <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${publication.id()}}">Read more</a>
               </div>
             </div>
           </div>
@@ -125,13 +78,13 @@
         <nav aria-label="Pagination">
           <hr class="my-0" />
           <ul class="pagination justify-content-center my-4">
-            <li class="page-item disabled">
-              <a class="page-link" id="previousPage" tabindex="-1" aria-disabled="true">Previous</a>
+            <li class="page-item disabled" id="previousBtnPageItem">
+              <a class="page-link" id="previousPage" tabindex="-1" aria-disabled="flase">Previous</a>
             </li>
             <li class="page-item">
               <a class="page-link" id="currentPage">0</a>
             </li>
-            <li class="page-item">
+            <li class="page-item" id="nextBtnPageItem">
               <a class="page-link" id="nextPage">Next</a>
             </li>
           </ul>
@@ -204,6 +157,22 @@
       </div>
     </div>
   </div>
+
+  <!-- SWEET ALERT LIB -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- NOTIFY -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+  <!-- JQUERY -->
+  <script
+          src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <!-- CUSTOM SCRIPT -->
+  <script src="/js/custom_scripts/publication/publicationsFeed.js"></script>
+
 </main>
 </body>
 </html>

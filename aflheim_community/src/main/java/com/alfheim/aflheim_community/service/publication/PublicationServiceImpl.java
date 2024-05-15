@@ -3,6 +3,7 @@ package com.alfheim.aflheim_community.service.publication;
 import com.alfheim.aflheim_community.converter.publication.PublicationToPublicationDtoConverter;
 import com.alfheim.aflheim_community.dto.publication.PublicationDto;
 import com.alfheim.aflheim_community.dto.publication.PublicationForm;
+import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.model.File.FileInfo;
 import com.alfheim.aflheim_community.model.publication.Publication;
 import com.alfheim.aflheim_community.model.user.User;
@@ -11,6 +12,9 @@ import com.alfheim.aflheim_community.repository.PublicationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,11 +49,6 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         // Publication not found
-        return null;
-    }
-
-    @Override
-    public List<PublicationDto> searchProducts(Integer size, Integer page, String query, String sort, String direction) {
         return null;
     }
 
@@ -179,6 +178,10 @@ public class PublicationServiceImpl implements PublicationService {
                     upvotesList.remove(userOptional.get());
                     // Setting the new list to the publication
                     publication.setUpVotes(upvotesList);
+
+                    // Subtract total upVotes
+                    publication.setTotalUpVotes(publication.getTotalUpVotes() - 1);
+
                     // Updating record
                     Publication savedPublication = publicationRepo.save(publication);
 
@@ -192,11 +195,17 @@ public class PublicationServiceImpl implements PublicationService {
                         // User has down-voted this publication. removing and updating the downVotes list
                         downVotesList.remove(userOptional.get());
                         publication.setDownVotes(downVotesList);
+
+                        // Subtract total downVotes
+                        publication.setTotalDownVotes(publication.getTotalDownVotes() - 1);
                     }
 
                     // Updating the upVotes list
                     upvotesList.add(userOptional.get());
                     publication.setUpVotes(upvotesList);
+
+                    // Subtract total upVotes
+                    publication.setTotalUpVotes(publication.getTotalUpVotes() + 1);
 
                     Publication savedPublication = publicationRepo.save(publication);
 
@@ -235,6 +244,10 @@ public class PublicationServiceImpl implements PublicationService {
                     downvotesList.remove(userOptional.get());
                     // Setting the new list to the publication
                     publication.setDownVotes(downvotesList);
+
+                    // Subtract total downVotes
+                    publication.setTotalDownVotes(publication.getTotalDownVotes() - 1);
+
                     // Updating record
                     Publication savedPublication = publicationRepo.save(publication);
 
@@ -247,10 +260,16 @@ public class PublicationServiceImpl implements PublicationService {
                     if (upvotesList.contains(userOptional.get())) {
                         upvotesList.remove(userOptional.get());
                         publication.setUpVotes(upvotesList);
+
+                        // Subtract total upVotes
+                        publication.setTotalUpVotes(publication.getTotalUpVotes() - 1);
                     }
 
                     downvotesList.add(userOptional.get());
                     publication.setDownVotes(downvotesList);
+
+                    // Subtract total downVotes
+                    publication.setTotalDownVotes(publication.getTotalDownVotes() + 1);
 
                     Publication savedPublication = publicationRepo.save(publication);
 
@@ -266,6 +285,50 @@ public class PublicationServiceImpl implements PublicationService {
         // Publication not found
         return 404;
 
+    }
+
+    @Override
+    public List<PublicationDto> search(Integer size, Integer page, String query, String sortParameter, String directionParameter) {
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "totalUpVotes");
+
+        if (directionParameter != null) {
+            direction = Sort.Direction.fromString(directionParameter);
+        }
+
+        if (sortParameter != null) {
+            sort = Sort.by(direction, sortParameter);
+        }
+
+        if (query == null) {
+            // Setting the sql query part to be empty.
+            query = "empty";
+        }
+
+        if (size == null) {
+            size = 5;
+        }
+
+        if (page == null) {
+            page = 0;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        // The page itself that we are looking for that holds the data we wanted to search it
+        Page<Publication> papersPage = publicationRepo.search(query, pageRequest);
+
+        List<PublicationDto> publicationDtos = new ArrayList<>();
+        for (Publication publication : papersPage.getContent()) {
+            publicationDtos.add(publicationToPublicationDtoConverter.convert(publication));
+        }
+
+        return publicationDtos;
+    }
+
+    @Override
+    public List<PublicationDto> searchByCategory(String category) {
+        return null;
     }
 
     private boolean isAcceptableImageFormat(MultipartFile image) {

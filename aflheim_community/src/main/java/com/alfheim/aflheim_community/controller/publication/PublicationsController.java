@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class PublicationsController {
@@ -34,9 +35,41 @@ public class PublicationsController {
 
     // Get feed page
     @GetMapping("/publications/feed")
-    public String getPublicationsFeedPage() {
+    public String getPublicationsFeedPage(Model model) {
+
+        List<PublicationDto> publicationDto = publicationService.search(null, 0, null, null, null);
+        model.addAttribute("featuredPublication", publicationDto.get(0));
+        publicationDto.remove(0);
+        model.addAttribute("publications", publicationDto);
 
         return "publications/publications_feed_page";
+    }
+
+    @GetMapping("/publications/feed/pag")
+    @ResponseBody
+    public ResponseEntity<Object> pagSearchPublications(@RequestParam(value = "page") Integer page,
+                                                                      @RequestParam(value = "query", required = false) String query) {
+
+        // Setting up the query
+        if (query.equals("null")) {
+            query = null;
+        }
+
+        List<PublicationDto> publicationDtos = publicationService.search(null, page, query, null, null);
+
+        if (page == 0) {
+            // Removing the featured publication
+            publicationDtos.remove(0);
+        }
+
+        if (publicationDtos.size() == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CustomError(404,
+                            "No more publications been found.",
+                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())));
+        }
+
+        return ResponseEntity.ok(publicationDtos);
     }
 
     // Get new publication page

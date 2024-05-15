@@ -58,4 +58,7 @@ public class Publication {
             joinColumns = @JoinColumn(name = "publication_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private List<User> downVotes;
+
+    private int totalUpVotes;
+    private int totalDownVotes;
 }
