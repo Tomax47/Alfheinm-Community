@@ -111,34 +111,8 @@ public class AdminUserActionsController {
         System.out.println("ADMIN CONTROLLER : DELETING USER!");
         int result = adminUsersCRUDService.deleteUser(username);
 
-        if (result == 0) {
-            // User not found.
-            System.out.println("ADMIN CONTROLLER : USER NOT FOUND!");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User couldn't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-
-        } else if (result == 2) {
-            // Refused. Can't delete an admin.
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(403,
-                            "Cannot delete an admin user",
-                                    Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                            );
-
-        } else if (result == 1) {
-            // Result == 1. Accepted
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Admin user password reset
@@ -149,34 +123,9 @@ public class AdminUserActionsController {
 
         int result = adminUsersCRUDService.resetUserPassword(username, newPassword, userDetails.getUsername());
 
-        if (result == 200) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Password reset request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 403) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(403,
-                            "Cannot change admins password.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
     }
 
     // Admin user account confirm
@@ -186,28 +135,8 @@ public class AdminUserActionsController {
 
         int result = adminUsersCRUDService.confirmUserAccount(username);
 
-        if (result == 200) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account confirmation request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Admin user account change ban state
@@ -218,34 +147,8 @@ public class AdminUserActionsController {
 
         int result = adminUsersCRUDService.changeBanUserAccountState(username, userDetails.getUsername());
 
-        if (result == 200) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 403) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(403,
-                            "Request has been refused due to lack of authority.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account ban request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Admin user account change suspension state
@@ -256,34 +159,8 @@ public class AdminUserActionsController {
 
         int result = adminUsersCRUDService.changeSuspensionUserAccountState(username, userDetails.getUsername());
 
-        if (result == 200) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 403) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(403,
-                            "Request has been refused due to lack of authority.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account suspension request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Admin file a user blacklist report
@@ -292,51 +169,12 @@ public class AdminUserActionsController {
     public ResponseEntity<Object> adminBlacklistUser(@RequestBody UserBlacklistReportForm userBlacklistReportForm,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        int result = adminUsersCRUDService.addUserToBlacklist(
+        adminUsersCRUDService.addUserToBlacklist(
                 userBlacklistReportForm,
                 userDetails.getUsername());
 
-        if (result == 200) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account blacklisting request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 1404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "Admin can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 403) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(403,
-                            "Request has been refused due to lack of authority.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 4409) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(new CustomError(409,
-                            "User already has a valid blacklist report.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        // Bad request
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Admin remove user from blacklist
@@ -345,41 +183,10 @@ public class AdminUserActionsController {
     public ResponseEntity<Object> adminRemoveUserFromBlacklist(@RequestParam("username") String username,
                                                                @RequestParam("isErrorReport") String isErrorReport) {
 
-        int result = adminUsersCRUDService.removeUserFromBlacklist(username, Boolean.valueOf(isErrorReport));
+        adminUsersCRUDService.removeUserFromBlacklist(username, Boolean.valueOf(isErrorReport));
 
-        if (result == 200) {
-            // Success
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("OK");
-        } else if (result == 404) {
-            // User not found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "User can't be found!",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 500) {
-            // Internal server error
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account blacklisting removal request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 4404) {
-            // No record for the username has been found
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "No record has been found for this username",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        // Bad request
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("OK");
     }
 
     // Get user blacklist report's details
@@ -388,15 +195,6 @@ public class AdminUserActionsController {
     public ResponseEntity<Object> adminGetUserBlacklistReportDetails(@RequestParam("username") String username) {
 
         UserBlacklistReportDto userBlacklistReportDto = adminUsersCRUDService.getUserBlacklistReportDetails(username);
-
-        if (userBlacklistReportDto == null) {
-            // No report found
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(404,
-                            "Report couldn't be found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
 
         // Sending report details
         return ResponseEntity.status(HttpStatus.OK)
@@ -413,26 +211,7 @@ public class AdminUserActionsController {
 
         UserDto userDto = adminUsersCRUDService.updateUserProfileInfo(username, userUpdateForm);
 
-        if (userDto != null) {
-
-            // Success
-            return ResponseEntity.status(HttpStatus.OK).body(userDto);
-        } else if (userDto == null) {
-
-            // Something went wrong
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Account update request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
-
-        // Bad request
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CustomError(400,
-                        "You have made a bad request.",
-                        Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                );
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     // Admin user search page

@@ -17,5 +17,5 @@ public interface PublicationService {
     int changeDownVoteStatus(Long id, String username);
 
     List<PublicationDto> search(Integer size, Integer page, String query, String sort, String direction);
-    List<PublicationDto> searchByCategory(String category);
+    List<PublicationDto> searchByCategory(String category, Integer page);
 }

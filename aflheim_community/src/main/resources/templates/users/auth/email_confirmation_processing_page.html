@@ -4,8 +4,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Account Confirmation</title>
+  <meta charset="UTF-8">
+  <title>Account Confirmation</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 </head>
 <body>
 <main layout:fragment="body">
@@ -22,7 +23,7 @@
             <h1 class="h3 fw-bold">Confirmation link has been sent</h1>
             <p class="mb-4">Please check your inbox for the confirmation Email.
             <span class="fw-black">Didn't get the email?</span> Check your spam, or resend the confirmation email</p>
-            <form role="form" th:action="@{/confirm/process/resend/{email}(email=${email})}" method="post">
+            <div>
               <!-- Form -->
               <div class="mb-4">
                 <label for="email">Email Sent To</label>
@@ -35,9 +36,10 @@
                           required disabled>
                 </div>
               </div>
+            </div>
               <!-- End of Form -->
               <div class="d-grid">
-                <button type="submit" class="btn btn-gray-800">Resend Confirmation Email</button>
+                <button type="submit" class="btn btn-gray-800" id="resendSubmitBtn">Resend Confirmation Email</button>
               </div>
             </form>
           </div>
@@ -45,6 +47,22 @@
       </div>
     </div>
   </section>
+
+  <!-- SWEET ALERT LIB -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- NOTIFY -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+  <!-- JQUERY -->
+  <script
+          src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <!-- CUSTOM SCRIPT -->
+  <script src="/js/custom_scripts/user/profileConfirmationProcessingPage.js"></script>
+
 </main>
 </body>
 </html>

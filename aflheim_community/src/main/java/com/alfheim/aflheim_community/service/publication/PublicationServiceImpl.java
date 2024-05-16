@@ -3,11 +3,14 @@ package com.alfheim.aflheim_community.service.publication;
 import com.alfheim.aflheim_community.converter.publication.PublicationToPublicationDtoConverter;
 import com.alfheim.aflheim_community.dto.publication.PublicationDto;
 import com.alfheim.aflheim_community.dto.publication.PublicationForm;
-import com.alfheim.aflheim_community.dto.user.UserDto;
-import com.alfheim.aflheim_community.model.File.FileInfo;
+import com.alfheim.aflheim_community.exception.publication.PublicationNotFoundException;
+import com.alfheim.aflheim_community.exception.publication.PublicationPageNotFoundException;
+import com.alfheim.aflheim_community.exception.server.BadRequestException;
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
+import com.alfheim.aflheim_community.exception.user.UserUnauthorizedRequestException;
 import com.alfheim.aflheim_community.model.publication.Publication;
 import com.alfheim.aflheim_community.model.user.User;
-import com.alfheim.aflheim_community.repository.FileInfoRepo;
 import com.alfheim.aflheim_community.repository.PublicationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.service.file.FileStorageService;
@@ -49,7 +52,7 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         // Publication not found
-        return null;
+        throw new PublicationPageNotFoundException("Publication not found");
     }
 
     @Override
@@ -85,16 +88,16 @@ public class PublicationServiceImpl implements PublicationService {
 
                 } catch (Exception e) {
                     // Error 500
-                    return 500L;
+                    throw new InternalServerErrorException("Something went seriously wrong!");
                 }
             }
 
             // Bad request. Invalid image type
-            return 400L;
+            throw new BadRequestException("You have made a bad request");
         }
 
         // User not found
-        return 1404L;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -142,15 +145,15 @@ public class PublicationServiceImpl implements PublicationService {
                 }
 
                 // Unauthorized
-                return 401;
+                throw new UserUnauthorizedRequestException("Unauthorized request");
             }
 
             // User not found
-            return 1404;
+            throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
-        return 404;
+        throw new PublicationNotFoundException("Publication not found");
     }
 
     @Override
@@ -214,11 +217,11 @@ public class PublicationServiceImpl implements PublicationService {
             }
 
             // User not found
-            return 1404;
+            throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
-        return 400;
+        throw new PublicationNotFoundException("Publication not found");
     }
 
     @Override
@@ -279,11 +282,11 @@ public class PublicationServiceImpl implements PublicationService {
             }
 
             // User not found
-            return 1404;
+            throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
-        return 404;
+        throw new PublicationNotFoundException("Publication not found");
 
     }
 
@@ -323,12 +326,41 @@ public class PublicationServiceImpl implements PublicationService {
             publicationDtos.add(publicationToPublicationDtoConverter.convert(publication));
         }
 
+        if (publicationDtos.size() == 0) {
+            // Error, no publications found 404
+            throw new PublicationNotFoundException("No publications been not found");
+        }
+
+        // Success
         return publicationDtos;
     }
 
     @Override
-    public List<PublicationDto> searchByCategory(String category) {
-        return null;
+    public List<PublicationDto> searchByCategory(String category, Integer page) {
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "totalUpVotes");
+
+        if (page == null) {
+            page = 0;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, 4, sort);
+
+        // The page itself that we are looking for that holds the data we wanted to search it
+        Page<Publication> papersPage = publicationRepo.searchByCategory(category, pageRequest);
+
+        List<PublicationDto> publicationDtos = new ArrayList<>();
+        for (Publication publication : papersPage.getContent()) {
+            publicationDtos.add(publicationToPublicationDtoConverter.convert(publication));
+        }
+
+        if (publicationDtos.size() == 0) {
+            // Catching error
+            String errorMsg = "No publications been found for " + category;
+            throw new PublicationNotFoundException(errorMsg);
+        }
+
+        return publicationDtos;
     }
 
     private boolean isAcceptableImageFormat(MultipartFile image) {

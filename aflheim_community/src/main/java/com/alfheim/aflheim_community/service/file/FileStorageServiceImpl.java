@@ -33,7 +33,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         String storageName = UUID.randomUUID().toString() + "." +
                 FilenameUtils.getExtension(file.getOriginalFilename());
 
-        System.out.println("\n\nFILE INFO : 111111111111111111111111111111111111111");
         //Building the FileInfo object
         FileInfo fileInfo = FileInfo.builder()
                 .fileName(file.getOriginalFilename())
@@ -43,21 +42,17 @@ public class FileStorageServiceImpl implements FileStorageService {
                 .url(storagePath + "\\" + storageName)
                 .build();
 
-        System.out.println("FILE INFO : 222222222222222222222222222222222222222");
         // Saving the file into the storage path directory
         try {
-            System.out.println("FILE INFO : 33333333333333333333333333333333333");
             Files.copy(file.getInputStream(), Paths.get(storagePath, storageName));
-            System.out.println("FILE INFO : 4444444444444444444444444444444444");
+
         } catch (IOException e) {
-            System.out.println("FILE INFO : ERRRORRRRRRRRRRRRRRRRR\n\n");
+
             throw new IllegalStateException(e);
         }
 
         // Saving the file into the DB
-        System.out.println("FILE INFO : SAVING TO THE REPO");
         fileInfoRepo.save(fileInfo);
-        System.out.println("FILE INFO : SAVED. RETURNING FILE "+fileInfo.getFileStorageName()+"...\n\n");
         return fileInfo.getFileStorageName();
     }
 
@@ -65,17 +60,9 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void writeFileToResponse(String fileStorageName, HttpServletResponse response) {
         FileInfo fileInfo = fileInfoRepo.findByFileStorageName(fileStorageName).get();
 
-        /**
-         This line sets the content type of the HTTP response to the type of the file being written.
-         The content type is a MIME type that tells the client what kind of data is being sent in the response
-         */
         response.setContentType(fileInfo.getType());
         try {
-            /**
-             In this line, we write the content of the HTTP response we are sending to the client!
-             The IOUtils.copy() method, writes content from an input stream "which is the new FileInputStream" with the content of "file url"
-             in our case, to the HTTP response outputStream!
-             */
+
             IOUtils.copy(new FileInputStream(fileInfo.getUrl()),
                     response.getOutputStream());
         } catch (IOException e) {
@@ -104,19 +91,13 @@ public class FileStorageServiceImpl implements FileStorageService {
             // Deleting the file from the DB
             FileInfo fileInfo = fileInfoRepo.findByFileStorageName(storageName).get();
 
-            System.out.println("\n\n DELETING THE FILE\nFile storage name : "+fileInfo.getFileStorageName()+"\n\n");
             fileInfoRepo.delete(fileInfo);
-            System.out.println("FILE-INFO : DELETED THE FILE FROM THE REPOSITORY.");
 
             // Deleting the file from the dir path
             Files.delete(Path.of(fileInfo.getUrl()));
-            System.out.println("FILE-INFO : DELETE THE FILE FROM THE FILES DIRECTORY.");
             return 1;
+
         } catch (Exception e) {
-            System.out.println("FILE-INFO : SOMETHING WENT WRONG DELETING THE FILE.\nERROR DETAILS : ");
-            System.out.println(e.getMessage()+"\nERROR'S TRACEBACK : \n");
-            e.printStackTrace();
-            System.out.println("\n\n");
             return 0;
         }
     }

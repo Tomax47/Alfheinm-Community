@@ -25,7 +25,7 @@ public interface AdminUsersCRUDService {
     int addUserToBlacklist(UserBlacklistReportForm userBlacklistReportForm, String adminUsername);
 
     // Reverting error request return the deducted pts to the user
-    int removeUserFromBlacklist(String username, boolean isRevertingErrorReq);
+    void removeUserFromBlacklist(String username, boolean isRevertingErrorReq);
 
     UserBlacklistReportDto getUserBlacklistReportDetails(String username);
 

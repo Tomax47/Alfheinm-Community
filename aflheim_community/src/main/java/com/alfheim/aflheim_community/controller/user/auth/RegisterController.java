@@ -25,15 +25,9 @@ public class RegisterController {
     public String getRegistrationForm(Model model) {
 
         // Auth. Filter
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-
-            UserRegistrationForm registrationForm = new UserRegistrationForm();
-            model.addAttribute("registrationForm", registrationForm);
-            return "/users/auth/register_page";
-        }
-
-        return "redirect:/profile";
+        UserRegistrationForm registrationForm = new UserRegistrationForm();
+        model.addAttribute("registrationForm", registrationForm);
+        return "/users/auth/register_page";
     }
 
     @PostMapping("/register")

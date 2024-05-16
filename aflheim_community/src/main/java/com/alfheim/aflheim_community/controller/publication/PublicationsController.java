@@ -3,7 +3,6 @@ package com.alfheim.aflheim_community.controller.publication;
 import com.alfheim.aflheim_community.converter.publication.StringToPublicationFormConverter;
 import com.alfheim.aflheim_community.dto.publication.PublicationDto;
 import com.alfheim.aflheim_community.dto.publication.PublicationForm;
-import com.alfheim.aflheim_community.model.CustomError;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.publication.PublicationService;
 import com.alfheim.aflheim_community.service.user.ProfileService;
@@ -15,10 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -48,7 +43,7 @@ public class PublicationsController {
     @GetMapping("/publications/feed/pag")
     @ResponseBody
     public ResponseEntity<Object> pagSearchPublications(@RequestParam(value = "page") Integer page,
-                                                                      @RequestParam(value = "query", required = false) String query) {
+                                                        @RequestParam(value = "query", required = false) String query) {
 
         // Setting up the query
         if (query.equals("null")) {
@@ -60,13 +55,6 @@ public class PublicationsController {
         if (page == 0) {
             // Removing the featured publication
             publicationDtos.remove(0);
-        }
-
-        if (publicationDtos.size() == 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "No more publications been found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())));
         }
 
         return ResponseEntity.ok(publicationDtos);
@@ -88,33 +76,14 @@ public class PublicationsController {
                                                  @RequestParam(value = "publicationImage", required = false) MultipartFile publicationImage,
                                                  @RequestParam(value = "data", required = false) String data) {
 
-
-        System.out.println("\n\nImage : "+publicationImage.getOriginalFilename() + ", " + publicationImage.getContentType());
-        System.out.println("\nDATA : "+data);
-
         PublicationForm publicationForm = stringToPublicationFormConverter.convert(data);
         publicationForm.setCoverImage(publicationImage);
 
-        Long result = publicationService.addPublication(publicationForm, username);
-
-        if (result == 500) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CustomError(500,
-                            "Publication post request has been refused.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 1404) {
-            // No report found
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new CustomError(404,
-                            "User couldn't be found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
+        Long publicationId = publicationService.addPublication(publicationForm, username);
 
         // OK
         return ResponseEntity.status(HttpStatus.OK)
-                .body(result);
+                .body(publicationId);
 
     }
 
@@ -139,24 +108,10 @@ public class PublicationsController {
                                                                 @RequestParam("publicationId") String publicationId) {
 
         System.out.println("\n\nCONTROLLER UPVOTE : ID -> " + publicationId+"\n\n");
-        int result = publicationService.changeUpVoteStatus(Long.parseLong(publicationId), userDetails.getUsername());
-
-        if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "Publication not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 1404) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(new CustomError(404,
-                            "User not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
+        int totalUpVotes = publicationService.changeUpVoteStatus(Long.parseLong(publicationId), userDetails.getUsername());
 
         // Success
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(totalUpVotes);
     }
 
     // Down vote publication
@@ -165,24 +120,10 @@ public class PublicationsController {
     public ResponseEntity<Object> changePublicationDownVoteStatus(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                   @RequestParam("publicationId") String publicationId) {
 
-        int result = publicationService.changeDownVoteStatus(Long.parseLong(publicationId), userDetails.getUsername());
-
-        if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "Publication not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 1404) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(new CustomError(404,
-                            "User not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
+        int totalDownVotes = publicationService.changeDownVoteStatus(Long.parseLong(publicationId), userDetails.getUsername());
 
         // Success
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(totalDownVotes);
 
     }
 
@@ -192,30 +133,20 @@ public class PublicationsController {
     public ResponseEntity<Object> deletePublication(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                     @RequestParam("publicationId") String publicationId) {
 
-        int result = publicationService.deletePublication(Long.parseLong(publicationId), userDetails.getUsername());
-
-        if (result == 404) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new CustomError(404,
-                            "Publication not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 1404) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(new CustomError(404,
-                            "User not found.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        } else if (result == 401) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new CustomError(401,
-                            "Unauthorized request.",
-                            Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()))
-                    );
-        }
+        int successStatus = publicationService.deletePublication(Long.parseLong(publicationId), userDetails.getUsername());
 
         // Success
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(HttpStatus.OK).body(successStatus);
     }
 
+    @GetMapping("/publications/categories")
+    @ResponseBody
+    public ResponseEntity<Object> searchByCategory(@RequestParam(value = "page") Integer page,
+                                                        @RequestParam(value = "category") String category) {
+
+
+        List<PublicationDto> publicationDtos = publicationService.searchByCategory(category, page);
+
+        return ResponseEntity.ok(publicationDtos);
+    }
 }

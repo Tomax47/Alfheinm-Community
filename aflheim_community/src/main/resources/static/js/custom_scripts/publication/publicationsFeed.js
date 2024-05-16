@@ -21,7 +21,7 @@ function handleError(errorData) {
     });
     notyf.open({
         type: 'error',
-        message: errorData.errorMessage
+        message: errorData
     });
 };
 
@@ -129,7 +129,22 @@ currentPageBtn.addEventListener('click', () => {
 
     if (currentPageNumber < 0) {
         currentPageNumber = 0;
+
+        // Disabling prev
+        if (!prevBtnPageItem.classList.contains('disabled')) {
+            prevBtnPageItem.classList.add('disabled');
+        }
+
+        // Enabling next
+        if (nextBtnPageItem.classList.contains('disabled')) {
+            nextBtnPageItem.classList.remove('disabled');
+        }
     }
+
+    if (currentPageNumber === 0 && nextBtnPageItem.classList.contains('disabled')) {
+        nextBtnPageItem.classList.remove('disabled');
+    }
+
 
     if (searchQueryInput.value === '') {
         query = null;
@@ -212,4 +227,75 @@ searchQueryInput.addEventListener('keyup', function () {
         }
     }
     PagSearchPublications(currentPageNumber, searchQueryInput.value);
+});
+
+// Categories search
+function CategorySearch(page, category) {
+    let url = `/publications/categories?page=${page}&category=${category}`;
+
+    // Sending the requests.
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function(response) {
+            addPublications(response);
+        },
+        error: function (response) {
+            const errorData = response.responseJSON.message;
+
+            if (currentPageNumber > 0) {
+                currentPageNumber -= 1;
+            }
+
+            currentPageBtn.innerText = currentPageNumber;
+            currentPageBtn.setAttribute("value", `${currentPageNumber}`)
+
+            nextBtnPageItem.classList.add('disabled');
+            handleError(errorData);
+        },
+        dataType: "json",
+        contentType: "application/json"
+    });
+};
+
+const categories = document.querySelectorAll('.badge');
+
+// List of categories
+const categoriesList = [
+    {tag: "History"},
+    {tag: "Methodology"},
+    {tag: "Religion"},
+    {tag: "Runes"},
+    {tag: "Letters"},
+    {tag: "Old Norse"},
+    {tag: "Language"},
+    {tag: "Sagas"},
+    {tag: "Traditions"},
+    {tag: "Food"},
+    {tag: "Habits"}
+]
+
+// Check category inclusion
+function checkCategorySelectionInput(selectedCategory) {
+    // Based on the value "country code" & the text "country name"
+
+    let isTagIncluded = categoriesList.some(category => {
+        return category.tag === selectedCategory;
+    });
+
+    return isTagIncluded;
+};
+categories.forEach(category => {
+    category.addEventListener('click', function() {
+
+        const categoryName = this.innerText.trim();
+
+        // Perform an action based on the clicked category
+        if (checkCategorySelectionInput(categoryName)) {
+            CategorySearch(currentPageNumber, categoryName);
+        } else {
+            handleError({ errorMessage: "No such category!" });
+        }
+
+    });
 });
