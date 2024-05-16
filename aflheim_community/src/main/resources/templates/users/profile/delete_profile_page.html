@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Delete Account</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="title" content="Volt Premium Bootstrap Dashboard - Forgot password">
   <meta name="author" content="Themesberg">
@@ -54,7 +55,7 @@
             <div class="text-center text-md-center mb-4 mt-md-0">
               <!-- ######## PROFILE PICTURE ##########  -->
               <div class="avatar avatar-lg mx-auto mb-3"><img class="rounded-circle" alt="Image placeholder" th:src="${profilePicUrl}"></div>
-              <h1 class="h3" th:text="${'@' + username}"></h1>
+              <h1 class="h3" id="username" th:text="${'@' + username}"></h1>
               <p class="text-gray fw-bold">Better to be safe than sorry.</p>
             </div>
             <div class="form-group mb-4">
@@ -62,54 +63,29 @@
               <p class="text-gray fw-bold">Are you sure?</p>
             </div>
             <div class="d-grid mt-3">
-              <a class="btn btn-outline-danger w-100" th:href="@{/profile/{username}/delete(username=${username})}">Delete My Account</a>
+              <a class="btn btn-outline-danger w-100" id="deleteProfileBtn">Delete My Account</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- SWEET ALERT LIB -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- NOTIFY -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+  <!-- JQUERY -->
+  <script
+          src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <!-- CUSTOM SCRIPT -->
+  <script src="/js/custom_scripts/user/deleteProfilePage.js"></script>
+
 </main>
-
-<!-- Core -->
-<script src="/js/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
-<script src="/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-
-<!-- Vendor JS -->
-<script src="/js/vendor/onscreen/dist/on-screen.umd.min.js"></script>
-
-<!-- Slider -->
-<script src="/js/vendor/nouislider/distribute/nouislider.min.js"></script>
-
-<!-- Smooth scroll -->
-<script src="/js/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
-
-<!-- Charts -->
-<script src="/js/vendor/chartist/dist/chartist.min.js"></script>
-<script src="/js/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
-
-<!-- Datepicker -->
-<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-
-<!-- Sweet Alerts 2 -->
-<script src="/js/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
-
-<!-- Moment JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
-
-<!-- Vanilla JS Datepicker -->
-<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
-
-<!-- Notyf -->
-<script src="/js/vendor/notyf/notyf.min.js"></script>
-
-<!-- Simplebar -->
-<script src="/js/vendor/simplebar/dist/simplebar.min.js"></script>
-
-<!-- Github buttons -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-
-<!-- Volt JS -->
-<script src="/js/volt.js"></script>
 </body>
 </html>

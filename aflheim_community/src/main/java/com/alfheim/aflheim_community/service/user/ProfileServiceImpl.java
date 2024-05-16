@@ -2,6 +2,10 @@ package com.alfheim.aflheim_community.service.user;
 
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
+import com.alfheim.aflheim_community.exception.profile.AlreadyConfirmedException;
+import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
@@ -12,6 +16,7 @@ import com.alfheim.aflheim_community.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.rmi.AlreadyBoundException;
 import java.util.Optional;
 
 @Component
@@ -140,14 +145,14 @@ public class ProfileServiceImpl implements ProfileService {
         if (user != null) {
             try {
                 userRepo.delete(user);
-                return 1;
+                return 200;
             } catch (Exception e) {
                 // Something went wrong
-                return 2;
+                throw new InternalServerErrorException("Something went wrong");
             }
         }
         // User not found
-        return 0;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -157,6 +162,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (userConfirmationRecord.getUserEmail() != null &&
                 userConfirmationRecord.getState().toString().equals("ACTIVE")) {
+
             // Record exist and isActive
             User user = userRepo.findByEmail(userConfirmationRecord.getUserEmail()).get();
             user.setState("CONFIRMED");
@@ -168,9 +174,10 @@ public class ProfileServiceImpl implements ProfileService {
             accountConfirmationService.expireRecord(userConfirmationRecord);
 
             return true;
+
         } else {
             // No record found or not active
-            return false;
+            throw new ConfirmationRecordNotFoundException("No active confirmation record been found");
         }
     }
 
@@ -183,13 +190,13 @@ public class ProfileServiceImpl implements ProfileService {
 
                 // Resending confirmation email
                 accountConfirmationService.sendConfirmationEmail(email);
-                return 1;
+                return 200;
             } else {
                 // User is already confirmed
-                return 2;
+                throw new AlreadyConfirmedException("Account is already confirmed");
             }
         }
         // User ain't found
-        return 0;
+        throw new UserNotFoundException("User not found");
     }
 }

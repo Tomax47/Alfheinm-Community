@@ -37,7 +37,7 @@ function handleError(errorData) {
     });
     notyf.open({
         type: 'error',
-        message: errorData.errorMessage
+        message: errorData
     });
 };
 
@@ -140,17 +140,29 @@ function makeDeleteUserRequest(url) {
     $.ajax({
         type: "POST",
         url: url,
-        success: function(xhr) {
-            console.log(`Response : ${xhr}`);
-            window.location.replace("/admin/users");
+        success: function(response) {
+            console.log(`Response : ${response}`);
+
+            // Throwing the success modal
+            handleSuccessModal({
+                title: "Success!",
+                text: "User account has been deleted successfully."
+            });
+
+            // Refreshing 'After a 1.5s delay'.
+            setTimeout(
+                function () {
+                    window.location.replace("/admin/users");
+                }, REFRESH_DELAY
+            );
         },
-        error: function(xhr) {
+        error: function(response) {
             // Handle the error response
-            if (xhr.responseText === "OK") {
+            if (response.status === 200) {
                 // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                 window.location.replace("/admin/users");
             }
-            const errorData = JSON.parse(xhr.responseText);
+            const errorData = response.responseJSON.message;
             handleError(errorData);
         },
         dataType: "json",
@@ -172,6 +184,12 @@ document.getElementById('deleteUserBtn').addEventListener('click', function () {
         footer: '<a href="/policy">Make sure your action respects Alfheim\'s policies</a>'
     }).then((result) => {
         if (result.isConfirmed) {
+
+            if (userRole === "ADMIN") {
+                handleError("Can't delete an admin!");
+                return;
+            }
+
             // Admin confirmed, perform delete action. Preparing the url
             console.log('ADMIN confirmed deletion');
             let url = "/admin/users/delete?username=" + username;
@@ -219,14 +237,14 @@ if (userConfirmCheckbox !== null) {
         $.ajax({
             type: "POST",
             url: url,
-            success: function(xhr) {
-                console.log(`Response : ${xhr}`);
+            success: function(response) {
+                console.log(`Response : ${response}`);
                 window.location.replace("/admin/users/"+username);
                 // handleSuccessModal();
             },
-            error: function(xhr) {
+            error: function(response) {
                 // Handle the error response
-                if (xhr.responseText === "OK") {
+                if (response.status === 200) {
                     // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                     userBanCheckbox.disabled = true;
 
@@ -244,7 +262,7 @@ if (userConfirmCheckbox !== null) {
                     );
 
                 }
-                const errorData = JSON.parse(xhr.responseText);
+                const errorData = response.responseJSON.message;
                 handleError(errorData);
 
                 // Refreshing
@@ -287,9 +305,9 @@ if (userBanCheckbox !== null) {
                 window.location.replace("/admin/users/"+username);
                 // handleSuccessModal();
             },
-            error: function(xhr) {
+            error: function(response) {
                 // Handle the error response
-                if (xhr.responseText === "OK") {
+                if (response.status === 200) {
                     // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                     userBanCheckbox.disabled = true;
 
@@ -307,7 +325,7 @@ if (userBanCheckbox !== null) {
                     );
 
                 }
-                const errorData = JSON.parse(xhr.responseText);
+                const errorData = response.responseJSON.message;
                 handleError(errorData);
 
                 // Refreshing
@@ -350,9 +368,9 @@ if (userSuspendCheckbox !== null) {
                 window.location.replace("/admin/users/"+username);
                 // handleSuccessModal();
             },
-            error: function(xhr) {
+            error: function(response) {
                 // Handle the error response
-                if (xhr.responseText === "OK") {
+                if (response.status === 200) {
                     // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                     userSuspendCheckbox.disabled = true;
 
@@ -451,9 +469,7 @@ passwordResetBtn.addEventListener('click', function(event) {
         console.log('Password is valid. Submitting request...');
         if (userRole === "ADMIN") {
             // Refusing request. Can't edit admins' details
-            handleError({
-                errorMessage: "Cannot change admins password"
-            });
+            handleError("Cannot change admins password");
 
             // Clearing input value
             passwordInput.value = '';
@@ -468,13 +484,13 @@ passwordResetBtn.addEventListener('click', function(event) {
             $.ajax({
                 type: "POST",
                 url: url,
-                success: function(xhr) {
-                    console.log(`Response : ${xhr}`);
+                success: function(response) {
+                    console.log(`Response : ${response}`);
                     // handleSuccessModal();
                 },
-                error: function(xhr) {
+                error: function(response) {
                     // Handle the error response
-                    if (xhr.responseText === "OK") {
+                    if (response.status === 200) {
                         // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                         // Clearing input value
                         passwordInput.value = '';
@@ -486,7 +502,7 @@ passwordResetBtn.addEventListener('click', function(event) {
                             text: "Password has been changed successfully"
                         });
                     }
-                    const errorData = JSON.parse(xhr.responseText);
+                    const errorData = response.responseJSON.message;
                     handleError(errorData);
 
                     // Clearing input value
@@ -501,7 +517,7 @@ passwordResetBtn.addEventListener('click', function(event) {
     } else {
         console.log('Password is invalid. Request not submitted.');
         event.preventDefault();
-        handleError({ errorMessage: "Submission refused. Invalid password!" });
+        handleError("Submission refused. Invalid password!");
     }
 });
 
@@ -543,7 +559,7 @@ blacklistSubmitButton.addEventListener('click', function() {
             }
         }
     } else {
-        handleError({ errorMessage: "You can't blacklist an admin!" });
+        handleError("You can't blacklist an admin!");
     }
 
 });
@@ -627,9 +643,9 @@ function submitUserBlacklistReport(username, reason, reputationPtsDeducted) {
                 console.log(`Response : ${xhr}`);
                 // handleSuccessModal();
             },
-            error: function(xhr) {
+            error: function(response) {
                 // Handle the error response
-                if (xhr.responseText === "OK") {
+                if (response.responseText === "OK") {
                     // TODO: FIX IT SO THE SUCCESS GETS HOOKED UPON A SUCCESSFUL REQUEST.
                     // Clearing inputs
                     otherReasonInput.value = ''
@@ -652,7 +668,8 @@ function submitUserBlacklistReport(username, reason, reputationPtsDeducted) {
                         }, REFRESH_DELAY
                     );
                 }
-                const errorData = JSON.parse(xhr.responseText);
+                console.log(`Error Message : ${response.responseJSON.message}`)
+                const errorData = response.responseJSON.message;
                 handleError(errorData);
 
                 // Clearing input value
@@ -663,9 +680,9 @@ function submitUserBlacklistReport(username, reason, reputationPtsDeducted) {
             contentType: "application/json"
         });
     } else if (userRole === "ADMIN") {
-        handleError({ errorMessage: "Can't blacklist an admin!" });
+        handleError("Can't blacklist an admin!");
     } else {
-        handleError({ errorMessage: "User is already blacklisted!" });
+        handleError("User is already blacklisted!");
     }
 
 };
@@ -707,7 +724,8 @@ function makeBlacklistUserRemovalRequest(isErrorReport) {
             handleBlacklistedInfoModal(data);
         },
         error: function(data) {
-            if (data.responseText === "OK") {
+            console.log(`Message : ${data.status}`)
+            if (data.status === 200) {
                 handleSuccessModal({
                     title: "Success!",
                     text: "User has been successfully removed from the blacklist."
@@ -719,10 +737,11 @@ function makeBlacklistUserRemovalRequest(isErrorReport) {
                         window.location.replace("/admin/users/"+username);
                     }, REFRESH_DELAY
                 );
+                return;
             }
 
             // Handle the error response
-            const errorData = JSON.parse(data.responseText);
+            const errorData = JSON.parse(data.responseJSON.message);
             handleError(errorData);
         },
         dataType: "json",
@@ -904,7 +923,7 @@ genderInput.addEventListener('change', function() {
     // Based on the value
     let selectedGender = genderInput.value;
 
-    // Check if the selected country is in the list of countries
+    // Check if the selected gender is in the list of countries
     console.log(`SELECTED GENDER : ${selectedGender}`)
     if (selectedGender === "Male" || selectedGender === "Female" || selectedGender === "None") {
         if (this.classList.contains('is-invalid')) {
@@ -1498,7 +1517,7 @@ function submitUserDataUpdateRequest() {
        }
     } else {
         // Error. Invalid input value/s
-        handleError({ errorMessage : "The form has invalid data" });
+        handleError("The form has invalid data");
     }
 };
 
@@ -1512,9 +1531,7 @@ if (updateFormSubmitBtn !== null) {
             submitUserDataUpdateRequest();
         } else {
             // Refusing request. Can't edit admins' details
-            handleError({
-                errorMessage: "Cannot change admins details"
-            });
+            handleError("Cannot change admins details");
         }
     });
 };

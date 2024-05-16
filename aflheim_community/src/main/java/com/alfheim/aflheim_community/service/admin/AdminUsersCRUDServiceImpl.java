@@ -4,6 +4,11 @@ import com.alfheim.aflheim_community.dto.user.UserBlacklistReportDto;
 import com.alfheim.aflheim_community.dto.user.UserBlacklistReportForm;
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
+import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistActiveRecordException;
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
+import com.alfheim.aflheim_community.exception.user.UserUnauthorizedRequestException;
 import com.alfheim.aflheim_community.model.user.BlacklistRecordState;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UsersBlacklist;
@@ -82,18 +87,26 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
             if (user.getRole().equals("ADMIN")) {
                 System.out.println("ADMIN SERVICE : REFUSED. IS ADMIN!");
                 // Refusing request. Can't delete an admin!
-                return 2;
+                throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
             System.out.println("ADMIN SERVICE : 33333333333333333333333");
-            userRepo.delete(user);
+
+            try {
+                userRepo.delete(user);
+            } catch (Exception e) {
+                // Something went wrong
+                throw new InternalServerErrorException("Something went wrong");
+            }
+
             System.out.println("ADMIN SERVICE : DELETED!");
-            return 1;
+            // Success
+            return 200;
         }
 
         System.out.println("ADMIN SERVICE : NOT FOUND!");
         // User ain't found
-        return 0;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -105,15 +118,20 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
             if (userOptional.get().getRole().equals("ADMIN")) {
                 // Forbidden. Can't change admins' passwords
-                return 403;
+                throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
             int result = passwordResetService.adminUserResetPassword(userOptional.get(), newPassword, adminUsername);
+
+            if (result != 200) {
+                throw new InternalServerErrorException("Something went wrong");
+            }
+
             return result;
         }
 
         // User not found
-        return 404;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -130,12 +148,12 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                 return 200;
             } catch (Exception e) {
 
-                return 500;
+                throw new InternalServerErrorException("Something went wrong");
             }
         }
 
         // User not found
-        return 404;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -159,16 +177,16 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                     return 200;
                 } catch (Exception e) {
                     // Some error
-                    return 500;
+                    throw new InternalServerErrorException("Something went wrong");
                 }
             }
 
             // Access forbidden. not an admin
-            return 403;
+            throw new UserUnauthorizedRequestException("You lack the authority required for this action");
         }
 
         // User not found
-        return 404;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -194,16 +212,16 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                     return 200;
                 } catch (Exception e) {
                     // Some error
-                    return 500;
+                    throw new InternalServerErrorException("Something went wrong");
                 }
             }
 
             // Access forbidden. not an admin
-            return 403;
+            throw new UserUnauthorizedRequestException("You lack authority required for this action");
         }
 
         // User not found
-        return 404;
+        throw new UserNotFoundException("User not found");
     }
 
     // Blacklisting user
@@ -217,8 +235,8 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
             if (userOptional.isPresent()) {
                 if (adminOptional.get().getRole().equals("ADMIN") && !userOptional.get().getRole().equals("ADMIN")) {
                     if (usersBlacklistRepo.findByUsernameAndState(userOptional.get().getUsername(), BlacklistRecordState.VALID).isPresent()) {
-                        System.out.println("\n\n111111111111111111111\n\n");
-                        return 4409;
+                        // Already existing active record error
+                        throw new UserBlacklistActiveRecordException("User is already blacklisted");
                     }
 
                     // Preparing user and the blacklist report
@@ -249,23 +267,23 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                         return 200;
                     } catch (Exception e) {
                         // Internal error
-                        return 500;
+                        throw new InternalServerErrorException("Something went wrong");
                     }
                 }
                 // Forbidden
-                return 403;
+                throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
             // User not found
-            return 404;
+            throw new UserNotFoundException("User not found");
         }
 
         // Admin not found
-        return 1404;
+        throw new UserNotFoundException("Admin not found");
     }
 
     @Override
-    public int removeUserFromBlacklist(String username, boolean isRevertingErrorReq) {
+    public void removeUserFromBlacklist(String username, boolean isRevertingErrorReq) {
         System.out.println("\n\nADMIN SERVICE : REMOVING USER FROM THE BLACKLIST");
         Optional<User> userOptional = userRepo.findByUsername(username);
 
@@ -290,24 +308,24 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                 user.setState("CONFIRMED");
 
                 try {
-                    // Updating objects
+                    // Success... Updating objects
                     userRepo.save(user);
                     usersBlacklistRepo.save(usersBlacklistRecord);
 
-                    //Success
-                    return 200;
+                    return;
                 } catch (Exception e) {
                     // Internal error
-                    return 500;
+                    throw new InternalServerErrorException("Something went wrong!");
                 }
             }
 
             // No record has been found by this username
-            return 4404;
+            String errorMsg = "No record been found for "+username;
+            throw new UserBlacklistRecordNotFoundException(errorMsg);
         }
 
         // User not found
-        return 404;
+        throw new UserNotFoundException("User not found");
     }
 
     // Getting user blacklist report's details
@@ -321,7 +339,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         }
 
         // No report found
-        return null;
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -329,25 +347,19 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
         Optional<User> userOptional = userRepo.findByUsername(username);
 
-        System.out.println("111111111111111111");
         if (userOptional.isPresent()) {
 
             if (userOptional.get().getRole().equals("ADMIN")) {
-                System.out.println("222222222222222222");
-                // Throw an exception if the user is an admin 'cant't change admin's details'
-                return null;
+
+                throw new UserUnauthorizedRequestException("Cannot change admins' details");
             }
 
             // Success
             UserDto userDto = profileService.updateAccount(userUpdateForm, userOptional.get().getEmail());
-            System.out.println("333333333333333333");
 
-            System.out.println("IS USERDTO NULL ? "+ (userDto == null));
             return userDto;
         }
 
-        // THROW EXCEPTION IF USER NOT FOUND
-        System.out.println("44444444444444444444444");
-        return null;
+        throw new UserNotFoundException("User not found");
     }
 }

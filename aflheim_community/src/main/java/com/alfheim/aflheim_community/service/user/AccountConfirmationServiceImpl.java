@@ -1,5 +1,6 @@
 package com.alfheim.aflheim_community.service.user;
 
+import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
 import com.alfheim.aflheim_community.model.user.RecordState;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
@@ -8,10 +9,7 @@ import com.alfheim.aflheim_community.service.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class AccountConfirmationServiceImpl implements AccountConfirmationService {
@@ -56,7 +54,14 @@ public class AccountConfirmationServiceImpl implements AccountConfirmationServic
 
     @Override
     public Optional<UserConfirmation> getEmailConfirmationRecord(String code) {
-        return userConfirmationRepo.findByCode(code);
+
+        Optional<UserConfirmation> record = userConfirmationRepo.findByCode(code);
+
+        if (!record.isPresent()) {
+            throw new ConfirmationRecordNotFoundException("No active record been found");
+        }
+
+        return record;
     }
 
     private void addUserConfirmationRecord(String email, String code) {

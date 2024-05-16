@@ -1007,6 +1007,8 @@
     --bs-gray-700: #B6D3E3;
     --bs-gray-800: #003044;
     --bs-gray-900: #003044;
+    --bs-body-bg-rgb: 255, 240, 218;
+    --bs-blue-rgb: 41, 101, 110;
     --bs-primary-rgb: 0, 48, 68;
     --bs-secondary-rgb: 240, 188, 116;
     --bs-tertiary-rgb: 58, 98, 117;
@@ -1016,7 +1018,7 @@
     --bs-danger-rgb: 225, 29, 72;
     --bs-white-rgb: 218, 235, 244;
     --bs-indigo-rgb: 0, 65, 84;
-    --bs-purple-rgb: 58, 98, 117;
+    --bs-purple-rgb: 194, 41, 117;
     --bs-yellow-100-rgb: 182, 211, 227;
     --bs-yellow-200-rgb: 182, 211, 227;
     --bs-gray-50-rgb: 218, 235, 244;
@@ -7523,6 +7525,13 @@ textarea.form-control-lg {
     padding: 1.25rem 1.5rem;
 }
 
+.card-body-svg {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform: rotate(354deg);
+}
+
 .card-title {
     margin-bottom: 0.875rem;
 }
@@ -11143,6 +11152,18 @@ textarea.form-control-lg {
     margin-top: 20rem !important;
 }
 
+.mt-n-1 {
+    maring-top: -1rem;
+}
+
+.mt-n-2 {
+    maring-top: -1.5rem;
+}
+
+.mt-n-3 {
+    maring-top: -2rem;
+}
+
 .mt-sm {
     margin-top: 1rem !important;
 }
@@ -12664,6 +12685,11 @@ textarea.form-control-lg {
 .bg-secondary {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-blue {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-blue-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-tertiary {
@@ -28811,6 +28837,11 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
     height: 200%;
     margin: 10px 0;
 }
+
+.content-div {
+    max-height: 500px;
+    overflow-y: auto;
+};
 
 .simplebar-hide-scrollbar {
     position: fixed;

@@ -38,6 +38,7 @@ public class CustomErrorController implements ErrorController {
         return "users/auth/login_page";
     }
 
+
     @Override
     public String getErrorPath() {
         return "/error";

@@ -2,10 +2,12 @@ package com.alfheim.aflheim_community.controller.user.account;
 
 import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
-import com.alfheim.aflheim_community.model.user.User;
+import com.alfheim.aflheim_community.exception.user.UserUnauthorizedRequestException;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.user.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.xml.ws.RequestWrapper;
 import java.security.Principal;
 
 
@@ -24,27 +27,13 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String getUserProfilePage(Model model,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     Principal principal) {
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         // Getting the user
         UserDto userDto = profileService.getProfileDetails(userDetails.getUserEmail());
-        String badge  = "";
-        if (userDto.getRole().equals("VISITOR")) {
-            badge = "badge bg-primary";
-        } else if (userDto.getRole().equals("MEMBER")) {
-            badge = "badge bg-secondary";
-        } else if (userDto.getRole().equals("ADMIN")){
-            badge = "badge bg-success";
-        }
-
-        // Checking the aut state
-        boolean isAuthenticated = principal != null;
-        model.addAttribute("isAuthenticated", isAuthenticated);
 
         // Passing in the dto and the form
         UserUpdateForm updateForm = new UserUpdateForm();
-        model.addAttribute("badge", badge);
         model.addAttribute("userDto", userDto);
         model.addAttribute("user", updateForm);
         return "users/profile/profile_page";
@@ -75,7 +64,12 @@ public class ProfileController {
 
     @GetMapping("/profile/{username}/deleteAccount")
     public String getDeletePage(@PathVariable("username") String username,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                 Model model) {
+
+        if (!username.equals(userDetails.getUsername())) {
+            return "redirect:/profile";
+        }
 
         String profilePictureUrl = profileService.getProfileDetailsByUsername(username).getProfilePicture();
         model.addAttribute("username", username);
@@ -84,30 +78,17 @@ public class ProfileController {
         return "users/profile/delete_profile_page";
     }
 
-    @GetMapping("/profile/{username}/delete")
-    public String deleteUserProfile(@PathVariable("username") String username,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/profile/delete")
+    @ResponseBody
+    public ResponseEntity<Object> deleteUserProfile(@RequestParam("username") String username,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        if (isSameUserAuth(username, userDetails)) {
-            int deleteUser = profileService.deleteUserProfile(username);
-
-            // TODO : HANDLE THE ERRORS IN A MORE SPECIFIC WAY
-            if (deleteUser == 1) {
-                // Deletion succeeded
-                return "redirect:/logout";
-            } else {
-                // Something went wrong
-                return "redirect:/profile";
-            }
-        } else {
-            // UNAUTHORIZED REQUEST
-            System.out.println("UNAUTHORIZED");
-            return "redirect:/";
+        if (!username.equals(userDetails.getUsername())) {
+            // Unauthorized
+            throw new UserUnauthorizedRequestException("unauthorized request");
         }
 
-    }
-
-    private boolean isSameUserAuth(String username, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userDetails.getUsername().equals(username);
+        // Success
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 }
