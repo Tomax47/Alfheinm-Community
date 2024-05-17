@@ -17,4 +17,8 @@ public interface ProfileService {
     boolean confirmAccount(String code);
 
     int resendConfirmationEmail(String email);
+
+    int updateAccountRole(String username);
+
+    void addReputationPoints(String username, double pts);
 }

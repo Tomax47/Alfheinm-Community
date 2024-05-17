@@ -108,6 +108,12 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 
+		<!-- STRIPE -->
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>20.37.0</version>
+		</dependency>
 
 	</dependencies>
 
@@ -123,6 +129,16 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						--add-opens java.base/java.net=ALL-UNNAMED
+					</argLine>
 				</configuration>
 			</plugin>
 		</plugins>

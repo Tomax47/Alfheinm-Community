@@ -4,9 +4,11 @@ import com.alfheim.aflheim_community.dto.user.UserDto;
 import com.alfheim.aflheim_community.dto.user.UserUpdateForm;
 import com.alfheim.aflheim_community.exception.profile.AlreadyConfirmedException;
 import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.profile.RoleAlreadyExistException;
 import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.Gender;
+import com.alfheim.aflheim_community.model.user.Role;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
 import com.alfheim.aflheim_community.repository.UserConfirmationRepo;
@@ -133,9 +135,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public UserDto getProfileDetailsByUsername(String username) {
-        User user = userRepo.findByUsername(username).get();
+        Optional<User> user = userRepo.findByUsername(username);
 
-        return UserDto.from(user);
+        if (!user.isPresent()) {
+            // User not found
+            throw new UserNotFoundException("User not found");
+        }
+
+        return UserDto.from(user.get());
     }
 
     @Override
@@ -198,5 +205,58 @@ public class ProfileServiceImpl implements ProfileService {
         }
         // User ain't found
         throw new UserNotFoundException("User not found");
+    }
+
+    @Override
+    public int updateAccountRole(String username) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            // User exist
+            User user = userOptional.get();
+
+            if (user.getRole().equals("MEMBER")) {
+                // Already a member
+                throw new RoleAlreadyExistException("User is already a Member");
+            } else if (user.getRole().equals("ADMIN")) {
+                // Already an Admin
+                throw new RoleAlreadyExistException("User is already an Admin");
+            }
+
+            // update user
+            user.setRole(Role.MEMBER.toString());
+            userRepo.save(user);
+            return 200;
+        }
+
+        throw new UserNotFoundException("User not found (ProfileService.UpdateAccountRole)");
+    }
+
+    @Override
+    public void addReputationPoints(String username, double pts) {
+
+        Optional<User> userOptional = userRepo.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            try {
+                // User exist. Updating reputation
+                User user = userOptional.get();
+
+                int newReputation = (int) (user.getReputation() + pts);
+                user.setReputation(newReputation);
+
+                // Updating user info
+                userRepo.save(user);
+
+                return;
+            } catch (Exception e) {
+                // Error
+                throw new InternalServerErrorException("Something went wrong while adding the reputation points");
+            }
+        }
+
+        // User not found
+        throw new UserNotFoundException("User not found (ProfileService.addReputationPoints)");
     }
 }

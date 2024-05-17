@@ -3,11 +3,13 @@ package com.alfheim.aflheim_community.exception;
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistActiveRecordException;
 import com.alfheim.aflheim_community.exception.profile.AlreadyConfirmedException;
 import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.profile.RoleAlreadyExistException;
 import com.alfheim.aflheim_community.exception.publication.PublicationNotFoundException;
 import com.alfheim.aflheim_community.exception.publication.PublicationPageNotFoundException;
 import com.alfheim.aflheim_community.exception.server.BadRequestException;
 import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.stripe.InvalidChargeAmountException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.exception.user.UserPageNotFoundException;
 import com.alfheim.aflheim_community.exception.user.UserUnauthorizedRequestException;
@@ -166,6 +168,34 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleAccountAlreadyConfirmedException(AlreadyConfirmedException e) {
         // 409 Already existing active record
         HttpStatus httpStatus = HttpStatus.CONFLICT;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = RoleAlreadyExistException.class)
+    public ResponseEntity<Object> handleRoleAlreadyExistExceptionException(RoleAlreadyExistException e) {
+        // 409 Already existing role
+        HttpStatus httpStatus = HttpStatus.CONFLICT;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = InvalidChargeAmountException.class)
+    public ResponseEntity<Object> handleInvalidChargeAmountException(InvalidChargeAmountException e) {
+        // 400. Invalid charge amount
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),
                 e,

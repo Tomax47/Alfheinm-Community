@@ -42,7 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/static/**",
                         "/error",
                         "/publications/feed",
-                        "/files/**").permitAll()
+                        "/files/**",
+                        "/stripe/**",
+                        "/pricing").permitAll()
 
 //                .antMatchers("/login",
 //                        "/login/**",
@@ -54,7 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/profile",
                         "/profile/**",
                         "/logout",
-                        "/publications/view").authenticated()
+                        "/publications/view",
+                        "/checkout/**",
+                        "/payment/**").authenticated()
 
                 .and()
                 .formLogin()
