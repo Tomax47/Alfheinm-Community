@@ -32,23 +32,20 @@
                 </div>
             </div>
             <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <li class="nav-item">
                     <a href="/" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a href="/recent" class="nav-link">Recent</a>
                 </li>
                 <li class="nav-item">
                     <a href="/publications/feed" class="nav-link">Publications</a>
                 </li>
-                <li class="nav-item">
-                    <a href="/events" class="nav-link">Events</a>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a href="/pricing" class="nav-link">Pricing</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a href="/privacy" class="nav-link">Policies</a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a href="/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a href="/profile" class="nav-link">My Activities</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a href="/profile" class="nav-link">Profile</a>
@@ -119,21 +116,21 @@
             <div class="col-6 col-md-2 mb-5 mb-lg-0">
                 <span class="h5">Alfheim</span>
                 <ul class="links-vertical mt-2">
-                    <li><a target="_blank" href="/publications">Publications</a></li>
-                    <li><a target="_blank" href="/events">Events</a></li>
-                    <li><a target="_blank" href="/about">About</a></li>
-                    <li><a target="_blank" href="/register">Become a part of Alfheim</a></li>
-                    <li><a target="_blank" href="/info/fonding">Support The Community</a></li>
+                    <li><a href="/publications">Publications</a></li>
+                    <li><a href="/pricing">Pricing</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/register">Become a part of Alfheim</a></li>
+                    <li><a href="/checkout/support">Support The Community</a></li>
                 </ul>
             </div>
             <div class="col-6 col-md-2 mb-5 mb-lg-0">
                 <span class="h5">Other</span>
                 <ul class="links-vertical mt-2">
-                    <li><a href="/privacy" target="_blank">Privacy Policy</a></li>
-                    <li><a href="/terms" target="_blank">Terms & Conditions</a></li>
-                    <li><a target="_blank" href="/info/account">User Account</a>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms & Conditions</a></li>
+                    <li><a href="/info/account">User Account</a>
                     </li>
-                    <li><a target="_blank" href="/support/contact">Contact Us</a></li>
+                    <li><a href="/support/contact">Contact Us</a></li>
                 </ul>
             </div>
             <div class="col-12 col-md-4 mb-5 mb-lg-0">

@@ -2,6 +2,8 @@ package com.alfheim.aflheim_community;
 
 import com.alfheim.aflheim_community.security.filters.AdminAuthorizationFilter;
 import com.alfheim.aflheim_community.security.filters.CustomUnauthenticatedOnlyFilter;
+import com.alfheim.aflheim_community.security.filters.MembersAdminsOnlyFilter;
+import com.alfheim.aflheim_community.security.filters.VisitorsOnlyFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -38,6 +40,25 @@ public class AflheimCommunityApplication {
 		adminAuthorizationFilterRegBean.addUrlPatterns("/admin/*");
 
 		return adminAuthorizationFilterRegBean;
+	}
+
+	@Bean
+	FilterRegistrationBean<MembersAdminsOnlyFilter> membersAdminsOnlyFilterFilter() {
+		final FilterRegistrationBean<MembersAdminsOnlyFilter> membersAdminsOnlyFilterFilterRegBean = new FilterRegistrationBean<>();
+		membersAdminsOnlyFilterFilterRegBean.setFilter(new MembersAdminsOnlyFilter());
+		membersAdminsOnlyFilterFilterRegBean.addUrlPatterns("/profile/publications/new", "/profile/publication/add");
+
+		return membersAdminsOnlyFilterFilterRegBean;
+	}
+
+	@Bean
+	FilterRegistrationBean<VisitorsOnlyFilter> visitorsOnlyFilterFilter() {
+		final FilterRegistrationBean<VisitorsOnlyFilter> visitorsOnlyFilterFilterRegistrationBean = new FilterRegistrationBean<>();
+		visitorsOnlyFilterFilterRegistrationBean.setFilter(new VisitorsOnlyFilter());
+		// Preventing Admins and Members from submitting another membership tier payment
+		visitorsOnlyFilterFilterRegistrationBean.addUrlPatterns("/checkout/memberTier", "/checkout/memberTier/charge");
+
+		return visitorsOnlyFilterFilterRegistrationBean;
 	}
 
 	@Bean
