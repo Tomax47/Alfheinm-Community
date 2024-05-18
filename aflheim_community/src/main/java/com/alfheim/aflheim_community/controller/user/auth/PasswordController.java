@@ -30,27 +30,16 @@ public class PasswordController {
     }
 
     @PostMapping("/login/password/recover")
-    public String sendResetPasswordEmail(@RequestParam("email") String email) {
+    public ResponseEntity<Object> sendResetPasswordEmail(@RequestParam("email") String email) {
 
         System.out.println("SENDING PASSWORD RESET EMAIL TO: " + email + " | @CONTROLLER");
         int results = passwordResetService.sendPasswordResetEmail(email);
 
-        if (results == 0) {
-            // USER AIN'T EXIST, CREATE A NEW ACCOUNT
-            return "redirect:/register";
-        } else if (results == 2) {
-            // USER ALREADY HAS AN ACTIVE RESET REQUEST "CHECK YOUR EMAIL OR TRY AGAIN AFTER 5 MINUTES"
-            return "redirect:/login?error=already_requested";
-        }
-
-        // ELSE, SUCCESSFULLY SENT RESET EMAIL
-        return"redirect:/login";
+        return ResponseEntity.status(HttpStatus.OK).body("DONE");
     }
 
     @GetMapping("/password/reset/{reset-verification-code}")
     public String getResetPasswordPage(@PathVariable("reset-verification-code") String verificationToken, Model model) {
-
-        model.addAttribute("isAuthenticated", false);
 
         String userEmail = passwordResetService.verifyResetToken(verificationToken);
 

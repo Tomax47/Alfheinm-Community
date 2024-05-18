@@ -1,6 +1,7 @@
 package com.alfheim.aflheim_community.exception;
 
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistActiveRecordException;
+import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
 import com.alfheim.aflheim_community.exception.profile.AlreadyConfirmedException;
 import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
 import com.alfheim.aflheim_community.exception.profile.RoleAlreadyExistException;
@@ -101,6 +102,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // 500
     @ExceptionHandler(value = InternalServerErrorException.class)
     public ResponseEntity<Object> handleServerInternalErrorException(InternalServerErrorException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
@@ -114,6 +116,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // 400
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<Object> handleBadRequestException(BadRequestException e) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;;
@@ -127,6 +130,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Blacklist record not found
     @ExceptionHandler(value = UserBlacklistRecordNotFoundException.class)
     public ResponseEntity<Object> handleUserBlacklistRecordNotFoundException(UserBlacklistRecordNotFoundException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;;
@@ -140,6 +144,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Blacklist report already exist
     @ExceptionHandler(value = UserBlacklistActiveRecordException.class)
     public ResponseEntity<Object> handleUserBlacklistActiveRecordException(UserBlacklistActiveRecordException e) {
         // 409 Already existing active record
@@ -154,6 +159,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Email confirmation record not found
     @ExceptionHandler(value = ConfirmationRecordNotFoundException.class)
     public String handleEmailConfirmationRecordNotFoundException(ConfirmationRecordNotFoundException e) {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;;
@@ -167,6 +173,7 @@ public class CustomExceptionHandler {
         return "redirect:/login?error="+exception.getMessage();
     }
 
+    // Account is already confirmed
     @ExceptionHandler(value = AlreadyConfirmedException.class)
     public ResponseEntity<Object> handleAccountAlreadyConfirmedException(AlreadyConfirmedException e) {
         // 409 Already existing active record
@@ -181,6 +188,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Role already exist to user
     @ExceptionHandler(value = RoleAlreadyExistException.class)
     public ResponseEntity<Object> handleRoleAlreadyExistExceptionException(RoleAlreadyExistException e) {
         // 409 Already existing role
@@ -195,6 +203,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Invalid charge amount
     @ExceptionHandler(value = InvalidChargeAmountException.class)
     public ResponseEntity<Object> handleInvalidChargeAmountException(InvalidChargeAmountException e) {
         // 400. Invalid charge amount
@@ -209,6 +218,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Card token generating error
     @ExceptionHandler(value = CardTokenGeneratingFailureException.class)
     public ResponseEntity<Object> handleCardTokenGeneratingFailureException(CardTokenGeneratingFailureException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
@@ -222,6 +232,7 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Payment charge req error
     @ExceptionHandler(value = ChargeRequestFailureException.class)
     public ResponseEntity<Object> handleChargeRequestFailureExceptionException(ChargeRequestFailureException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
@@ -235,8 +246,23 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(exception, httpStatus);
     }
 
+    // Email or username exist already
     @ExceptionHandler(value = EmailOrUsernameAlreadyExistException.class)
     public ResponseEntity<Object> handleEmailOrUsernameAlreadyExistException(EmailOrUsernameAlreadyExistException e) {
+        HttpStatus httpStatus = HttpStatus.CONFLICT;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    // Already exist active password reset record
+    @ExceptionHandler(value = PasswordActiveRecordExistException.class)
+    public ResponseEntity<Object> handlePasswordActiveRecordExistException(PasswordActiveRecordExistException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),

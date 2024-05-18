@@ -1,5 +1,6 @@
 package com.alfheim.aflheim_community.service.user;
 
+import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
 import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.RecordState;
@@ -46,27 +47,35 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
             if (userPasswordResetRecord.isPresent() &&
             userPasswordResetRecord.get().getState().toString().equals("ACTIVE")) {
-                // There's an active password reset record. Refusing the request.
-                return 2;
+                // There's an active password reset record. Refusing the request. 409
+                log.error("Already exist an active password reset record (PasswordResetServiceImpl.sendPasswordResetEmail)");
+                throw new PasswordActiveRecordExistException("An active password reset record already exist. Try again after 5 minutes");
             }
 
             // No record, or active record found. Generate new reset code
             String resetCode = generatePasswordResetCode();
 
-            // Send mail
-            Map<String, String> tokenDetails = new HashMap<>();
-            tokenDetails.put("pass_reset_code", resetCode);
+            try {
+                // Send mail
+                Map<String, String> tokenDetails = new HashMap<>();
+                tokenDetails.put("pass_reset_code", resetCode);
 
-            mailService.configureMailSettings("passwordReset");
-            mailService.sendEmail(email, "passwordReset", tokenDetails);
+                mailService.configureMailSettings("passwordReset");
+                mailService.sendEmail(email, "passwordReset", tokenDetails);
 
-            // Save userEmail & code to the records
-            addUserPasswordResetRecord(email, resetCode);
-            return 1;
+                // Save userEmail & code to the records
+                addUserPasswordResetRecord(email, resetCode);
+                return 200;
+            } catch (Exception e) {
+                // 500
+                log.error("Internal error (PasswordResetServiceImpl.sendPasswordResetEmail). Error : " + e);
+                throw new InternalServerErrorException("Something went wrong");
+            }
         }
 
         // User ain't exist
-        return 0;
+        log.error("User not found (PasswordResetServiceImpl.sendPasswordResetEmail)");
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
