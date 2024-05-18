@@ -1,5 +1,10 @@
 package com.alfheim.aflheim_community.service.user;
 
+import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestExpiredException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestNotFoundException;
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.RecordState;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
@@ -7,6 +12,7 @@ import com.alfheim.aflheim_community.model.user.UserPasswordReset;
 import com.alfheim.aflheim_community.repository.UserPasswordResetRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.service.mail.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
     @Autowired
@@ -42,27 +49,35 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
             if (userPasswordResetRecord.isPresent() &&
             userPasswordResetRecord.get().getState().toString().equals("ACTIVE")) {
-                // There's an active password reset record. Refusing the request.
-                return 2;
+                // There's an active password reset record. Refusing the request. 409
+                log.error("Already exist an active password reset record (PasswordResetServiceImpl.sendPasswordResetEmail)");
+                throw new PasswordActiveRecordExistException("An active password reset record already exist. Try again after 5 minutes");
             }
 
             // No record, or active record found. Generate new reset code
             String resetCode = generatePasswordResetCode();
 
-            // Send mail
-            Map<String, String> tokenDetails = new HashMap<>();
-            tokenDetails.put("pass_reset_code", resetCode);
+            try {
+                // Send mail
+                Map<String, String> tokenDetails = new HashMap<>();
+                tokenDetails.put("pass_reset_code", resetCode);
 
-            mailService.configureMailSettings("passwordReset");
-            mailService.sendEmail(email, "passwordReset", tokenDetails);
+                mailService.configureMailSettings("passwordReset");
+                mailService.sendEmail(email, "passwordReset", tokenDetails);
 
-            // Save userEmail & code to the records
-            addUserPasswordResetRecord(email, resetCode);
-            return 1;
+                // Save userEmail & code to the records
+                addUserPasswordResetRecord(email, resetCode);
+                return 200;
+            } catch (Exception e) {
+                // 500
+                log.error("Internal error (PasswordResetServiceImpl.sendPasswordResetEmail). Error : " + e);
+                throw new InternalServerErrorException("Something went wrong");
+            }
         }
 
         // User ain't exist
-        return 0;
+        log.error("User not found (PasswordResetServiceImpl.sendPasswordResetEmail)");
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -85,21 +100,24 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                     userPasswordReset.setState(RecordState.EXPIRED);
                     userPasswordResetRepo.save(userPasswordReset);
 
-                    return 1;
+                    return 200;
                 } else {
                     // User can't be found, something went wrong
-                    return 3;
+                    log.error("User not found (PasswordResetServiceImpl.resetUserPassword)");
+                    throw new UserNotFoundException("User not found");
                 }
 
             } else {
                 // Record exist but is expired
-                return 2;
+                log.error("Expired password reset request (PasswordResetServiceImpl.resetUserPassword)");
+                throw new PasswordResetRequestExpiredException("Password reset request has expired");
             }
 
         }
 
         // No request has been found
-        return 0;
+        log.error("Password reset request not found (PasswordResetServiceImpl.resetUserPassword)");
+        throw new PasswordResetRequestNotFoundException("Password reset request not found");
     }
 
     @Override
@@ -115,27 +133,21 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // TODO : FIX THE ENCODED STRING AIN'T LOOK LIKE BCRYPT ISSUE
-            if (passwordEncoder.matches(user.getPassword(), oldPassword)) {
+            try {
+                // Success
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepo.save(user);
+                return 200;
 
-                try {
-                    // Success
-                    user.setPassword(passwordEncoder.encode(newPassword));
-                    userRepo.save(user);
-                    return 1;
-
-                } catch (Exception e) {
-                    // Something went wrong
-                    return 3;
-                }
+            } catch (Exception e) {
+                // Something went wrong
+                log.error("Something went wrong (PasswordResetServiceImpl.authResetUserPassword). Error : " + e);
+                throw new InternalServerErrorException("Something went wrong");
             }
-
-            // Incorrect old password
-            return 2;
         }
 
         // User not found
-        return 0;
+        throw new UserNotFoundException("user not found");
     }
 
     @Override
@@ -145,8 +157,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             // Setting the new password
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepo.save(user);
-
-            // TODO: SEND AN EMAIL TO THE USER INFORMING OF THE PASSWORD CHANGE!
 
             return 200;
         } catch (Exception e) {

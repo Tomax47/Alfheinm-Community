@@ -1,6 +1,7 @@
 package com.alfheim.aflheim_community.security.details;
 
 import com.alfheim.aflheim_community.dto.user.UserDto;
+import com.alfheim.aflheim_community.model.user.Role;
 import com.alfheim.aflheim_community.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -6,12 +6,14 @@ import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
 import com.alfheim.aflheim_community.repository.UserConfirmationRepo;
 import com.alfheim.aflheim_community.service.mail.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@Slf4j
 public class AccountConfirmationServiceImpl implements AccountConfirmationService {
 
     @Autowired
@@ -58,6 +60,7 @@ public class AccountConfirmationServiceImpl implements AccountConfirmationServic
         Optional<UserConfirmation> record = userConfirmationRepo.findByCode(code);
 
         if (!record.isPresent()) {
+            log.error("Active record has not been found (AccountConfirmationServiceImpl.deleteRecord)");
             throw new ConfirmationRecordNotFoundException("No active record been found");
         }
 

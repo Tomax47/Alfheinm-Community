@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,10 +42,8 @@ public class StripeApiController {
         StripeChargeDto chargeOperationResp = stripeService.doTransaction("MEMBER", tokenDto, user, null);
 
         if (chargeOperationResp.isSuccess()) {
-            System.out.println("\n\nSTRIPE API : IS SUCCESS!!\n\n");
             // Update user balance etc
             profileService.updateAccountRole(chargeOperationResp.getUsername());
-            System.out.println("\n\nSTRIPE API : IS SUCCESS DONE!!\n\n");
         }
 
         // Success
@@ -57,24 +56,18 @@ public class StripeApiController {
                                                                 @RequestParam(value = "amount", required = false) Double amount,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        System.out.println("\n\nCONTROLLER 11111111111");
         UserDto user = profileService.getProfileDetailsByUsername(userDetails.getUsername());
 
         StripeChargeDto chargeOperationResp = stripeService.doTransaction("SUPPORT", tokenDto, user, amount);
 
-        System.out.println("\n\nCHARGE DTO : "+chargeOperationResp.toString()+"\n\n");
-
         if (chargeOperationResp.isSuccess() && user.getRole().equals("VISITOR")) {
             // Update user to member "If visitor"
-            System.out.println("CONTROLLER API STRIPE UPGRADING USER ROLE...\n\n");
             profileService.updateAccountRole(chargeOperationResp.getUsername());
         }
 
         // Adding the reputation pts
-        System.out.println("CONTROLLER API STRIPE ADDIN REP PTS\n\n..");
         profileService.addReputationPoints(chargeOperationResp.getUsername(), chargeOperationResp.getAmount() * 2);
 
-        System.out.println("CONTROLLER API STRIPE DONE...");
         // Success
         return ResponseEntity.status(HttpStatus.OK).body(chargeOperationResp);
     }

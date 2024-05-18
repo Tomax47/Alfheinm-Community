@@ -1,7 +1,9 @@
 package com.alfheim.aflheim_community.service.file;
 
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.model.File.FileInfo;
 import com.alfheim.aflheim_community.repository.FileInfoRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class FileStorageServiceImpl implements FileStorageService {
 
     @Autowired
@@ -47,8 +50,8 @@ public class FileStorageServiceImpl implements FileStorageService {
             Files.copy(file.getInputStream(), Paths.get(storagePath, storageName));
 
         } catch (IOException e) {
-
-            throw new IllegalStateException(e);
+            log.error("Error saving the file (FileStorageServiceImpl.saveFile)");
+            throw new InternalServerErrorException("Something went wrong saving the file");
         }
 
         // Saving the file into the DB
@@ -66,7 +69,8 @@ public class FileStorageServiceImpl implements FileStorageService {
             IOUtils.copy(new FileInputStream(fileInfo.getUrl()),
                     response.getOutputStream());
         } catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            log.error("Error writing out the file (FileStorageServiceImpl.saveFile)");
+            throw new InternalServerErrorException("Something went wrong writing out the file");
         }
     }
 

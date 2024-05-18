@@ -5,6 +5,8 @@ import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.user.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,32 +26,20 @@ public class PasswordController {
     @GetMapping("/login/password/recover")
     public String getForgotPasswordPage(Model model) {
 
-        model.addAttribute("isAuthenticated", false);
         return "users/auth/forgot_password_page";
     }
 
     @PostMapping("/login/password/recover")
-    public String sendResetPasswordEmail(@RequestParam("email") String email) {
+    public ResponseEntity<Object> sendResetPasswordEmail(@RequestParam("email") String email) {
 
         System.out.println("SENDING PASSWORD RESET EMAIL TO: " + email + " | @CONTROLLER");
         int results = passwordResetService.sendPasswordResetEmail(email);
 
-        if (results == 0) {
-            // USER AIN'T EXIST, CREATE A NEW ACCOUNT
-            return "redirect:/register";
-        } else if (results == 2) {
-            // USER ALREADY HAS AN ACTIVE RESET REQUEST "CHECK YOUR EMAIL OR TRY AGAIN AFTER 5 MINUTES"
-            return "redirect:/login?error=already_requested";
-        }
-
-        // ELSE, SUCCESSFULLY SENT RESET EMAIL
-        return"redirect:/login";
+        return ResponseEntity.status(HttpStatus.OK).body("DONE");
     }
 
     @GetMapping("/password/reset/{reset-verification-code}")
     public String getResetPasswordPage(@PathVariable("reset-verification-code") String verificationToken, Model model) {
-
-        model.addAttribute("isAuthenticated", false);
 
         String userEmail = passwordResetService.verifyResetToken(verificationToken);
 
@@ -64,26 +54,16 @@ public class PasswordController {
         }
     }
 
-    @PostMapping("/password/reset/{reset-verification-code}")
-    public String resetUserPassowrd(@PathVariable("reset-verification-code") String verificationToken,
+    @PostMapping("/password/reset")
+//    @PostMapping("/password/reset/{reset-verification-code}")
+    public ResponseEntity<Object> resetUserPassword(@RequestParam("reset-verification-code") String verificationToken,
                                     @RequestParam("password") String password) {
 
-        System.out.println("PASSWORD : " + password);
+        System.out.println("\n\nPASSWORD : " + password);
+        System.out.println("TOKEN : " + verificationToken);
         int results = passwordResetService.resetUserPassword(verificationToken, password);
 
-        // TODO: HANDLE THE ERRORS IN A BETTER WAY
-        if (results == 0) {
-            // NO REQUEST HAS BEEN FOUND
-            return "redirect:/login/password/recover";
-        } else if (results == 2) {
-            // EXPIRED REQUEST
-            return "redirect:/login/password/recover";
-        } else if (results == 3) {
-            // USER CAN'T BE FOUND
-            return "redirect:/register";
-        }
-        // PASSWORD RESET SUCCESSFULLY
-        return "redirect:/login";
+        return ResponseEntity.status(HttpStatus.OK).body("DONE");
     }
 
     @GetMapping("/profile/password/reset")
@@ -98,32 +78,24 @@ public class PasswordController {
     }
 
     @PostMapping("/profile/password/reset")
-    public String doAuthPasswordReset(@Valid @ModelAttribute("passwordResetForm") AuthPasswordResetForm authPasswordResetForm,
-                                      BindingResult result,
-                                      Model model,
-                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @ResponseBody
+    public ResponseEntity<Object> doAuthPasswordReset(@Valid @ModelAttribute("passwordResetForm") AuthPasswordResetForm authPasswordResetForm,
+                                              BindingResult result,
+                                              Model model,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String username = userDetails.getUsername();
 
         if (result.hasErrors()) {
             model.addAttribute("username", username);
             model.addAttribute("passwordResetForm", authPasswordResetForm);
-            return "/users/profile/authenticated_password_reset_page";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You have mad a bad request");
         }
 
         int resp = passwordResetService.authResetUserPassword(username,
                 authPasswordResetForm.getOldPassword(),
                 authPasswordResetForm.getNewPassword());
 
-        if (resp == 1) {
-            return "redirect:/profile";
-        } else if (resp == 2){
-            return "redirect:/profile/password/reset?error=IncorrectCredentials";
-        } else if (resp == 3) {
-            return "redirect:/profile/password/reset?error=SWW";
-        } else {
-            return "redirect:/profile/password/reset?error=UserNotFound";
-        }
-
+        return ResponseEntity.status(HttpStatus.OK).body("Success!");
     }
 }

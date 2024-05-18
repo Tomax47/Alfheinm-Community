@@ -4,9 +4,10 @@ import com.alfheim.aflheim_community.dto.stripe.PaymentOperationDto;
 import com.alfheim.aflheim_community.dto.stripe.StripeChargeDto;
 import com.alfheim.aflheim_community.dto.stripe.StripeTokenDto;
 import com.alfheim.aflheim_community.dto.user.UserDto;
+import com.alfheim.aflheim_community.exception.stripe.CardTokenGeneratingFailureException;
+import com.alfheim.aflheim_community.exception.stripe.ChargeRequestFailureException;
 import com.alfheim.aflheim_community.exception.stripe.InvalidChargeAmountException;
 import com.alfheim.aflheim_community.model.payment.PaymentOperation;
-import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.repository.PaymentOperationRepo;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -68,9 +69,8 @@ public class StripeServiceImpl implements StripeService {
             return stripeTokenDto;
 
         } catch (StripeException e) {
-            log.error("StripeException Service (createdToken)", e);
-            // TODO : HANDLE THE EXCEPTION
-            return null;
+            log.error("Error generating the token (StripeServiceImpl.createCardToken). Error :", e);
+            throw new CardTokenGeneratingFailureException("Failed creating payment session");
         }
     }
 
@@ -105,9 +105,8 @@ public class StripeServiceImpl implements StripeService {
             return chargeReq;
 
         } catch (StripeException e) {
-            log.error("StripeException Service (charge)", e);
-            // TODO : HANDLE THE EXCEPTION
-            return null;
+            log.error("Error making the charge operation (StripeServiceImpl.charge). Error : ", e);
+            throw new ChargeRequestFailureException("Payment was reject");
         }
     }
 
@@ -117,22 +116,22 @@ public class StripeServiceImpl implements StripeService {
         // Generate transaction token
         StripeTokenDto token = createCardToken(tokenDto);
 
-        System.out.println("1111111111");
         Double amount = 0.0;
         if (tier.equals("MEMBER")) {
             amount = 2.0;
         } else if (tier.equals("SUPPORT")) {
-            System.out.println("33333333333333");
             amount = chargeAmount;
         }
 
         if (tier.equals("MEMBER") && amount == null) {
             // Invalid amount
+            log.error("Error, amount is null & tier is MEMBER charge request (StripeServiceImpl.doTransaction)");
             throw new InvalidChargeAmountException("Invalid payment charge amount");
         }
 
         if (amount <= 0) {
             // Invalid amount "0 or less"
+            log.error("Error, Amount is less than 0 (StripeServiceImpl.doTransaction)");
             throw new InvalidChargeAmountException("Payment must be greater than $0.00");
         }
 
@@ -172,7 +171,6 @@ public class StripeServiceImpl implements StripeService {
     public PaymentOperationDto getOperationDetails(String chargeId) {
         Optional<PaymentOperation> paymentOperationOptional = paymentOperationRepo.findByChargeId(chargeId);
 
-        // TODO: CATCH THE ERROR
         return PaymentOperationDto.from(paymentOperationOptional.get());
     }
 

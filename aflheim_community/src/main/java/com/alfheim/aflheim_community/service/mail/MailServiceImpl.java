@@ -1,9 +1,11 @@
 package com.alfheim.aflheim_community.service.mail;
 
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassRelativeResourceLoader;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class MailServiceImpl implements MailService {
 
     @Autowired
@@ -54,6 +57,7 @@ public class MailServiceImpl implements MailService {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+            log.error("Error setting mail configs up (MailServiceImpl.configureMailSettings)");
             throw new IllegalArgumentException(e);
         }
     }
@@ -102,6 +106,7 @@ public class MailServiceImpl implements MailService {
         try {
             confirmationMailTemplate.process(attr, writer);
         } catch (TemplateException | IOException e) {
+            log.error("template &| IO error (MailServiceImpl.getEmailText)");
             throw new IllegalStateException(e);
         }
 

@@ -1,11 +1,14 @@
 package com.alfheim.aflheim_community.service.user;
 
 import com.alfheim.aflheim_community.dto.user.UserRegistrationForm;
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.user.EmailOrUsernameAlreadyExistException;
 import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.Role;
 import com.alfheim.aflheim_community.model.user.State;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.repository.UserRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 @Component
+@Slf4j
 public class RegistrationServiceImpl implements RegistrationService{
 
     @Autowired
@@ -21,6 +25,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Autowired
     private AccountConfirmationService accountConfirmationService;
+
+    @Autowired
+    private ProfileService profileService;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -30,12 +37,15 @@ public class RegistrationServiceImpl implements RegistrationService{
         if (userRepo.findByEmail(userForm.getEmail()).isPresent()) {
             // User already exists "Faster than letting sql refuse the repeated email"
             System.out.println("EMAIL ALREADY EXIST -> " + userForm.getEmail());
-            return 2;
+            log.error("Email already exist (RegistrationServiceImpl.registerUser)");
+            throw new EmailOrUsernameAlreadyExistException("Email already exist");
+
         } else if (!userRepo.findByEmail(userForm.getEmail()).isPresent() &&
         userRepo.findByUsername(userForm.getUsername()).isPresent()) {
             // Username is taken
             System.out.println("REGISTRATION FAILED - USERNAME TAKEN");
-            return 3;
+            log.error("Username already exist (RegistrationServiceImpl.registerUser)");
+            throw new EmailOrUsernameAlreadyExistException("Username already exist");
         }
 
         System.out.println("REACHED REG");
@@ -63,11 +73,16 @@ public class RegistrationServiceImpl implements RegistrationService{
             // TODO : WORK ON THE VARIOUS POSSIBLE ERRORS HANDLING
             userRepo.save(user);
             accountConfirmationService.sendConfirmationEmail(user.getEmail());
-            return 1;
+            return 200;
         } catch (Exception e) {
             // Fatal error
-            System.out.println("FATAL ERROR");
-            return 0;
+            log.error("Internal error (RegistrationServiceImpl.registerUser). Error : " + e);
+            throw new InternalServerErrorException("Something went wrong");
         }
+    }
+
+    @Override
+    public boolean isUsernameUnique(String username) {
+        return profileService.isUsernameUnique(username);
     }
 }

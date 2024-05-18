@@ -16,6 +16,7 @@ import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.repository.UsersBlacklistRepo;
 import com.alfheim.aflheim_community.service.user.PasswordResetService;
 import com.alfheim.aflheim_community.service.user.ProfileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
     @Autowired
@@ -87,6 +89,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
             if (user.getRole().equals("ADMIN")) {
                 System.out.println("ADMIN SERVICE : REFUSED. IS ADMIN!");
                 // Refusing request. Can't delete an admin!
+                log.error("Unauthorized request (AdminUsersCRUDService.deleteUser)");
                 throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
@@ -96,6 +99,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                 userRepo.delete(user);
             } catch (Exception e) {
                 // Something went wrong
+                log.error("Internal error (AdminUsersCRUDService.deleteUser)");
                 throw new InternalServerErrorException("Something went wrong");
             }
 
@@ -106,6 +110,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
         System.out.println("ADMIN SERVICE : NOT FOUND!");
         // User ain't found
+        log.error("User not found (AdminUsersCRUDService.deleteUser)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -118,12 +123,14 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
 
             if (userOptional.get().getRole().equals("ADMIN")) {
                 // Forbidden. Can't change admins' passwords
+                log.error("Unauthorized request (AdminUsersCRUDService.resetUserPassword)");
                 throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
             int result = passwordResetService.adminUserResetPassword(userOptional.get(), newPassword, adminUsername);
 
             if (result != 200) {
+                log.error("INternal error (AdminUsersCRUDService.resetUserPassword)");
                 throw new InternalServerErrorException("Something went wrong");
             }
 
@@ -131,6 +138,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         }
 
         // User not found
+        log.error("User not found (AdminUsersCRUDService.resetUserPassword)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -147,12 +155,13 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                 userRepo.save(user);
                 return 200;
             } catch (Exception e) {
-
+                log.error("Internal error (AdminUsersCRUDService.confirmUserAccount)");
                 throw new InternalServerErrorException("Something went wrong");
             }
         }
 
         // User not found
+        log.error("User not found (AdminUsersCRUDService.confirmUserAccount)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -177,15 +186,18 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                     return 200;
                 } catch (Exception e) {
                     // Some error
+                    log.error("Internal error (AdminUsersCRUDService.changeBanUserAccountState)");
                     throw new InternalServerErrorException("Something went wrong");
                 }
             }
 
             // Access forbidden. not an admin
+            log.error("Unauthorized request (AdminUsersCRUDService.changeBanUserAccountState)");
             throw new UserUnauthorizedRequestException("You lack the authority required for this action");
         }
 
         // User not found
+        log.error("User not found (AdminUsersCRUDService.changeBanUserAccountState)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -212,15 +224,18 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                     return 200;
                 } catch (Exception e) {
                     // Some error
+                    log.error("Internal error (AdminUsersCRUDService.changeBanUserAccountState)");
                     throw new InternalServerErrorException("Something went wrong");
                 }
             }
 
             // Access forbidden. not an admin
+            log.error("unauthorized request (AdminUsersCRUDService.changeBanUserAccountState)");
             throw new UserUnauthorizedRequestException("You lack authority required for this action");
         }
 
         // User not found
+        log.error("User not found (AdminUsersCRUDService.changeBanUserAccountState)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -236,6 +251,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                 if (adminOptional.get().getRole().equals("ADMIN") && !userOptional.get().getRole().equals("ADMIN")) {
                     if (usersBlacklistRepo.findByUsernameAndState(userOptional.get().getUsername(), BlacklistRecordState.VALID).isPresent()) {
                         // Already existing active record error
+                        log.error("409 User is already blacklisted (AdminUsersCRUDService.addUserToBlacklist)");
                         throw new UserBlacklistActiveRecordException("User is already blacklisted");
                     }
 
@@ -267,18 +283,22 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                         return 200;
                     } catch (Exception e) {
                         // Internal error
+                        log.error("Internal error (AdminUsersCRUDService.addUserToBlacklist)");
                         throw new InternalServerErrorException("Something went wrong");
                     }
                 }
                 // Forbidden
+                log.error("Unauthorized request (AdminUsersCRUDService.addUserToBlacklist)");
                 throw new UserUnauthorizedRequestException("You lack the authority required for this action");
             }
 
             // User not found
+            log.error("User not found (AdminUsersCRUDService.addUserToBlacklist)");
             throw new UserNotFoundException("User not found");
         }
 
         // Admin not found
+        log.error("Admin not found (AdminUsersCRUDService.addUserToBlacklist)");
         throw new UserNotFoundException("Admin not found");
     }
 
@@ -315,16 +335,19 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
                     return;
                 } catch (Exception e) {
                     // Internal error
+                    log.error("Internal error (AdminUsersCRUDService.removeUserFromBlacklist)");
                     throw new InternalServerErrorException("Something went wrong!");
                 }
             }
 
             // No record has been found by this username
             String errorMsg = "No record been found for "+username;
+            log.error("Blacklist record not found (AdminUsersCRUDService.removeUserFromBlacklist)");
             throw new UserBlacklistRecordNotFoundException(errorMsg);
         }
 
         // User not found
+        log.error("User not found (AdminUsersCRUDService.removeUserFromBlacklist)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -339,6 +362,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         }
 
         // No report found
+        log.error("User not found (AdminUsersCRUDService.getUserBlacklistReportDetails)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -350,7 +374,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
         if (userOptional.isPresent()) {
 
             if (userOptional.get().getRole().equals("ADMIN")) {
-
+                log.error("Unauthorized request (AdminUsersCRUDService.updateUserProfileInfo)");
                 throw new UserUnauthorizedRequestException("Cannot change admins' details");
             }
 
@@ -360,6 +384,7 @@ public class AdminUsersCRUDServiceImpl implements AdminUsersCRUDService {
             return userDto;
         }
 
+        log.error("User not found (AdminUsersCRUDService.updateUserProfileInfo)");
         throw new UserNotFoundException("User not found");
     }
 }
