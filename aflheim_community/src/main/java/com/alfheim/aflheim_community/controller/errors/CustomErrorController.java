@@ -24,6 +24,10 @@ public class CustomErrorController implements ErrorController {
             // Internal Server Error 500
             return "error_pages/internal_server_error_page";
 
+        } else if (statusCode != null && Integer.valueOf(statusCode.toString()) == HttpStatus.BAD_REQUEST.value()) {
+            // Internal Server Error 400
+            return "error_pages/bad_request_page";
+
         }
 
         // TODO: HANDLE OTHER ERRORS

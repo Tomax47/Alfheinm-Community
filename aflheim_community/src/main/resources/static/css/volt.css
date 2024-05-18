@@ -1054,7 +1054,7 @@ body {
     line-height: var(--bs-body-line-height);
     color: var(--bs-body-color);
     text-align: var(--bs-body-text-align);
-    background-color: var(--bs-body-bg);
+    background-color: #fff0da;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(17, 24, 39, 0);
 }
@@ -22677,6 +22677,25 @@ textarea.form-control-lg {
 /**
  * = Sections
  */
+
+.section-with-wave {
+    position: relative;
+    overflow: hidden;
+}
+
+.section-with-wave::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10rem;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,160L60,176C120,192,240,224,360,213.3C480,203,600,149,720,128C840,107,960,117,1080,128C1200,139,1320,149,1380,154.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z' fill='%23fff0da'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+
 .section {
     position: relative;
     padding-top: 3rem;
