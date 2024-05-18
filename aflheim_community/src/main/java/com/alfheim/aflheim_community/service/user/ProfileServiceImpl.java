@@ -11,17 +11,15 @@ import com.alfheim.aflheim_community.model.user.Gender;
 import com.alfheim.aflheim_community.model.user.Role;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
-import com.alfheim.aflheim_community.repository.UserConfirmationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
-
 import com.alfheim.aflheim_community.service.file.FileStorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.rmi.AlreadyBoundException;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
     @Autowired
@@ -111,6 +109,7 @@ public class ProfileServiceImpl implements ProfileService {
             return UserDto.from(updatedUser);
 
         } catch (Exception e) {
+            log.error("Internal error (ProfileServiceImpl.updateAccount). Error message : " + e.getMessage());
             return null;
         }
     }
@@ -139,6 +138,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (!user.isPresent()) {
             // User not found
+            log.error("User not found (ProfileServiceImpl.getProfileDetailsByUsername)");
             throw new UserNotFoundException("User not found");
         }
 
@@ -155,10 +155,12 @@ public class ProfileServiceImpl implements ProfileService {
                 return 200;
             } catch (Exception e) {
                 // Something went wrong
+                log.error("Internal error (ProfileServiceImpl.deleteUserProfile)");
                 throw new InternalServerErrorException("Something went wrong");
             }
         }
         // User not found
+        log.error("User not found (ProfileServiceImpl.deleteUserProfile)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -184,6 +186,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         } else {
             // No record found or not active
+            log.error("Not active confirmation record been found (ProfileServiceImpl.confirmAccount)");
             throw new ConfirmationRecordNotFoundException("No active confirmation record been found");
         }
     }
@@ -200,10 +203,12 @@ public class ProfileServiceImpl implements ProfileService {
                 return 200;
             } else {
                 // User is already confirmed
+                log.error("UAccount is already confirmed (ProfileServiceImpl.resendConfirmationEmail)");
                 throw new AlreadyConfirmedException("Account is already confirmed");
             }
         }
         // User ain't found
+        log.error("User not found (ProfileServiceImpl.resendConfirmationEmail)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -218,9 +223,11 @@ public class ProfileServiceImpl implements ProfileService {
 
             if (user.getRole().equals("MEMBER")) {
                 // Already a member
+                log.error("User is already a member (ProfileServiceImpl.updateAccountRole)");
                 throw new RoleAlreadyExistException("User is already a Member");
             } else if (user.getRole().equals("ADMIN")) {
                 // Already an Admin
+                log.error("User is already an admin (ProfileServiceImpl.updateAccountRole)");
                 throw new RoleAlreadyExistException("User is already an Admin");
             }
 
@@ -230,6 +237,7 @@ public class ProfileServiceImpl implements ProfileService {
             return 200;
         }
 
+        log.error("User not found (ProfileServiceImpl.updateAccountRole)");
         throw new UserNotFoundException("User not found (ProfileService.UpdateAccountRole)");
     }
 
@@ -252,11 +260,13 @@ public class ProfileServiceImpl implements ProfileService {
                 return;
             } catch (Exception e) {
                 // Error
+                log.error("Internal error (ProfileServiceImpl.addReputationPoints)");
                 throw new InternalServerErrorException("Something went wrong while adding the reputation points");
             }
         }
 
         // User not found
+        log.error("User not found (ProfileServiceImpl.addReputationPoints)");
         throw new UserNotFoundException("User not found (ProfileService.addReputationPoints)");
     }
 }

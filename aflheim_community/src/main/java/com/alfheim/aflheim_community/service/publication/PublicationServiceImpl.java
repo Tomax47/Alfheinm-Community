@@ -14,6 +14,7 @@ import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.repository.PublicationRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.service.file.FileStorageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class PublicationServiceImpl implements PublicationService {
 
     @Autowired
@@ -52,6 +54,7 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         // Publication not found
+        log.error("Publication not found (PublicationServiceImpl.getPublicationById)");
         throw new PublicationPageNotFoundException("Publication not found");
     }
 
@@ -88,15 +91,18 @@ public class PublicationServiceImpl implements PublicationService {
 
                 } catch (Exception e) {
                     // Error 500
+                    log.error("Internal error (PublicationServiceImpl.addPublication)");
                     throw new InternalServerErrorException("Something went seriously wrong!");
                 }
             }
 
             // Bad request. Invalid image type
+            log.error("Bad request (PublicationServiceImpl.addPublication)");
             throw new BadRequestException("You have made a bad request");
         }
 
         // User not found
+        log.error("User not found (PublicationServiceImpl.addPublication)");
         throw new UserNotFoundException("User not found");
     }
 
@@ -145,14 +151,17 @@ public class PublicationServiceImpl implements PublicationService {
                 }
 
                 // Unauthorized
+                log.error("Unauthorized request (PublicationServiceImpl.deletePublication)");
                 throw new UserUnauthorizedRequestException("Unauthorized request");
             }
 
             // User not found
+            log.error("User not found (PublicationServiceImpl.deletePublication)");
             throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
+        log.error("Publication not found (PublicationServiceImpl.deletePublication)");
         throw new PublicationNotFoundException("Publication not found");
     }
 
@@ -217,10 +226,12 @@ public class PublicationServiceImpl implements PublicationService {
             }
 
             // User not found
+            log.error("User not found (PublicationServiceImpl.changeUpVoteStatus)");
             throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
+        log.error("Publication not found (PublicationServiceImpl.changeUpVoteStatus)");
         throw new PublicationNotFoundException("Publication not found");
     }
 
@@ -282,10 +293,12 @@ public class PublicationServiceImpl implements PublicationService {
             }
 
             // User not found
+            log.error("User not found (PublicationServiceImpl.changeDownVoteStatus)");
             throw new UserNotFoundException("User not found");
         }
 
         // Publication not found
+        log.error("Publication not found (PublicationServiceImpl.changeDownVoteStatus)");
         throw new PublicationNotFoundException("Publication not found");
 
     }
@@ -357,6 +370,7 @@ public class PublicationServiceImpl implements PublicationService {
         if (publicationDtos.size() == 0) {
             // Catching error
             String errorMsg = "No publications been found for " + category;
+            log.error("No publications found by this category (PublicationServiceImpl.searchByCategory)");
             throw new PublicationNotFoundException(errorMsg);
         }
 

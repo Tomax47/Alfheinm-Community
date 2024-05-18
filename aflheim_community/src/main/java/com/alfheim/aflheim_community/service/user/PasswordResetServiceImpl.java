@@ -7,6 +7,7 @@ import com.alfheim.aflheim_community.model.user.UserPasswordReset;
 import com.alfheim.aflheim_community.repository.UserPasswordResetRepo;
 import com.alfheim.aflheim_community.repository.UserRepo;
 import com.alfheim.aflheim_community.service.mail.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
     @Autowired
