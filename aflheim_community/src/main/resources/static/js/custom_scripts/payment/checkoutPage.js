@@ -1,23 +1,4 @@
 
-// Modals & Notifications
-const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-        confirmButton: 'btn btn-primary',
-        cancelButton: 'btn btn-gray'
-    },
-    buttonsStyling: false
-});
-
-function handleSuccessModal(messageData) {
-    swalWithBootstrapButtons.fire({
-        icon: 'success',
-        title: messageData.title,
-        text: messageData.text,
-        showConfirmButton: true,
-        timer: 1500
-    });
-};
-
 // Error handling
 function handleError(errorData) {
     const notyf = new Notyf({
@@ -104,6 +85,8 @@ function SubmitPayment() {
 
             const errorData = response.responseJSON.message;
             handleError(errorData);
+
+            submitPaymentBtn.disabled = false;
         },
         dataType: "json",
         contentType: "application/json"
@@ -112,7 +95,7 @@ function SubmitPayment() {
 
 submitPaymentBtn.addEventListener('click', function () {
 
-    console.log("CLICKED");
+    submitPaymentBtn.disabled = true;
     SubmitPayment();
 });
 

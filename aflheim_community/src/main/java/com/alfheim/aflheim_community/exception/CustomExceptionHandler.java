@@ -9,6 +9,8 @@ import com.alfheim.aflheim_community.exception.publication.PublicationPageNotFou
 import com.alfheim.aflheim_community.exception.server.BadRequestException;
 import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistRecordNotFoundException;
+import com.alfheim.aflheim_community.exception.stripe.CardTokenGeneratingFailureException;
+import com.alfheim.aflheim_community.exception.stripe.ChargeRequestFailureException;
 import com.alfheim.aflheim_community.exception.stripe.InvalidChargeAmountException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.exception.user.UserPageNotFoundException;
@@ -196,6 +198,32 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleInvalidChargeAmountException(InvalidChargeAmountException e) {
         // 400. Invalid charge amount
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = CardTokenGeneratingFailureException.class)
+    public ResponseEntity<Object> handleCardTokenGeneratingFailureException(CardTokenGeneratingFailureException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = ChargeRequestFailureException.class)
+    public ResponseEntity<Object> handleChargeRequestFailureExceptionException(ChargeRequestFailureException e) {
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),
                 e,
