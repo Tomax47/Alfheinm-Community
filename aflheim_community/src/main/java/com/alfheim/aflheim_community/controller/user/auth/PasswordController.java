@@ -54,26 +54,16 @@ public class PasswordController {
         }
     }
 
-    @PostMapping("/password/reset/{reset-verification-code}")
-    public String resetUserPassowrd(@PathVariable("reset-verification-code") String verificationToken,
+    @PostMapping("/password/reset")
+//    @PostMapping("/password/reset/{reset-verification-code}")
+    public ResponseEntity<Object> resetUserPassword(@RequestParam("reset-verification-code") String verificationToken,
                                     @RequestParam("password") String password) {
 
-        System.out.println("PASSWORD : " + password);
+        System.out.println("\n\nPASSWORD : " + password);
+        System.out.println("TOKEN : " + verificationToken);
         int results = passwordResetService.resetUserPassword(verificationToken, password);
 
-        // TODO: HANDLE THE ERRORS IN A BETTER WAY
-        if (results == 0) {
-            // NO REQUEST HAS BEEN FOUND
-            return "redirect:/login/password/recover";
-        } else if (results == 2) {
-            // EXPIRED REQUEST
-            return "redirect:/login/password/recover";
-        } else if (results == 3) {
-            // USER CAN'T BE FOUND
-            return "redirect:/register";
-        }
-        // PASSWORD RESET SUCCESSFULLY
-        return "redirect:/login";
+        return ResponseEntity.status(HttpStatus.OK).body("DONE");
     }
 
     @GetMapping("/profile/password/reset")

@@ -1,6 +1,8 @@
 package com.alfheim.aflheim_community.service.user;
 
 import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestExpiredException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestNotFoundException;
 import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.RecordState;
@@ -98,21 +100,24 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                     userPasswordReset.setState(RecordState.EXPIRED);
                     userPasswordResetRepo.save(userPasswordReset);
 
-                    return 1;
+                    return 200;
                 } else {
                     // User can't be found, something went wrong
-                    return 3;
+                    log.error("User not found (PasswordResetServiceImpl.resetUserPassword)");
+                    throw new UserNotFoundException("User not found");
                 }
 
             } else {
                 // Record exist but is expired
-                return 2;
+                log.error("Expired password reset request (PasswordResetServiceImpl.resetUserPassword)");
+                throw new PasswordResetRequestExpiredException("Password reset request has expired");
             }
 
         }
 
         // No request has been found
-        return 0;
+        log.error("Password reset request not found (PasswordResetServiceImpl.resetUserPassword)");
+        throw new PasswordResetRequestNotFoundException("Password reset request not found");
     }
 
     @Override
@@ -152,8 +157,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             // Setting the new password
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepo.save(user);
-
-            // TODO: SEND AN EMAIL TO THE USER INFORMING OF THE PASSWORD CHANGE!
 
             return 200;
         } catch (Exception e) {

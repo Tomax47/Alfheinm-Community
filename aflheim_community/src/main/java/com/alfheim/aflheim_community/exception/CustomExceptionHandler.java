@@ -2,6 +2,8 @@ package com.alfheim.aflheim_community.exception;
 
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistActiveRecordException;
 import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestExpiredException;
+import com.alfheim.aflheim_community.exception.password.PasswordResetRequestNotFoundException;
 import com.alfheim.aflheim_community.exception.profile.AlreadyConfirmedException;
 import com.alfheim.aflheim_community.exception.profile.ConfirmationRecordNotFoundException;
 import com.alfheim.aflheim_community.exception.profile.RoleAlreadyExistException;
@@ -264,6 +266,34 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = PasswordActiveRecordExistException.class)
     public ResponseEntity<Object> handlePasswordActiveRecordExistException(PasswordActiveRecordExistException e) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    // Password reset request not found
+    @ExceptionHandler(value = PasswordResetRequestNotFoundException.class)
+    public ResponseEntity<Object> handlePasswordResetRequestNotFoundException(PasswordResetRequestNotFoundException e) {
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = PasswordResetRequestExpiredException.class)
+    public ResponseEntity<Object> handlePasswordResetRequestExpiredException(PasswordResetRequestExpiredException e) {
+        // 410, not anymore available 'record has expired'
+        HttpStatus httpStatus = HttpStatus.GONE;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),
                 e,
