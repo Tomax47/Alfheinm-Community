@@ -46,19 +46,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/stripe/**",
                         "/pricing").permitAll()
 
-//                .antMatchers("/login",
-//                        "/login/**",
-//                        "/register",
-//                        "/password/reset/**",
-//                        "/confirm/**",
-//                        "/account/confirm/**").anonymous()
-
                 .antMatchers("/profile",
                         "/profile/**",
                         "/logout",
                         "/publications/view",
                         "/checkout/**",
-                        "/payment/**").authenticated()
+                        "/payment/**",
+                        "/newsletter/**").authenticated()
 
                 .and()
                 .formLogin()

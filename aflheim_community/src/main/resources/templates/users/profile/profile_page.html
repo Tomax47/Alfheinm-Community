@@ -50,7 +50,7 @@
                     <li th:if="${!userDto.getRole().equals('ADMIN') and !userDto.getRole().equals('MEMBER')}"><a class="dropdown-item" href="/pricing">Upgrade Plan</a></li>
                     <li th:if="${!userDto.getRole().equals('ADMIN') and userDto.getRole().equals('MEMBER')}"><a class="dropdown-item" href="/profile/publications/new">Publish</a></li>
                     <li th:if="${!userDto.getRole().equals('ADMIN')}"><a class="dropdown-item rounded-bottom" href="#">Submit Request</a></li>
-                    <li th:if="${userDto.getRole().equals('ADMIN')}"><a class="dropdown-item rounded-bottom" href="/admin/dashboard">Admin Dashboard</a></li>
+                    <li th:if="${userDto.getRole().equals('ADMIN')}"><a class="dropdown-item rounded-bottom" href="/admin/users">Admin Dashboard</a></li>
                     <li><a class="dropdown-item-danger text-white" th:href="@{/profile/{username}/deleteAccount(username=${userDto.getUsername()})}">Delete My Account</a></li>
                 </ul>
             </div>

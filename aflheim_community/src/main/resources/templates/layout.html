@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <link href="/css/volt.css" rel="stylesheet">
-  <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Alfheim</title>
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Alfheim</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 </head>
 
 <!-- ### NAVIGATION BAR ### -->
@@ -135,19 +136,20 @@
             </div>
             <div class="col-12 col-md-4 mb-5 mb-lg-0">
                 <!-- ###### NEWS LETTER OR SOMETHING ALIKE HERE ####### -->
-                <span class="h5 mb-3 d-block">Subscribe</span>
-                <form action="#">
-                    <div class="form-row mb-2">
-                        <div class="col-12">
-                            <input type="email" class="form-control mb-2" placeholder="example@company.com" name="email" aria-label="Subscribe form" required>
-                        </div>
-                        <div class="col-12 d-grid">
-                            <button type="submit" class="btn btn-secondary" data-loading-text="Sending">
-                                <span>Subscribe</span>
-                            </button>
-                        </div>
+                <span class="h5 mb-3 d-block">Subscribe to Newsletter</span>
+                <div class="form-row mb-2">
+                    <div class="col-12">
+                        <input type="text" class="form-control mb-2" placeholder="8-000-000-00-00" id="newsletterPhoneNumber" aria-label="Subscribe form" required>
                     </div>
-                </form>
+                    <div class="col-12 d-grid">
+                        <button sec:authorize="isAuthenticated()" type="submit" class="btn btn-secondary" data-loading-text="Sending" id="subscribeBtn">
+                            <span>Subscribe</span>
+                        </button>
+                        <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-secondary" data-loading-text="Sending">
+                            <span>Login & Subscribe</span>
+                        </a>
+                    </div>
+                </div>
                 <p class="text-muted font-small m-0">We’ll never share your details. See our <a class="text-white" href="/privacy">Privacy Policy</a></p>
             </div>
         </div>
@@ -165,14 +167,20 @@
     </div>
 </footer>
 
-<!-- CUSTOM LAYOUT -->
-<script src="/js/custom_scripts/layout.js"></script>
-
 <!-- SWEET ALERT LIB -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <!-- NOTIFY -->
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<!-- JQUERY -->
+<script
+        src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+
+<!-- CUSTOM LAYOUT -->
+<script src="/js/custom_scripts/layout.js"></script>
 
 <!-- Include SmoothScroll library from a CDN -->
 <script src="https://cdn.jsdelivr.net/npm/smooth-scroll/dist/smooth-scroll.min.js"></script>

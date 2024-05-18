@@ -171,7 +171,6 @@ public class StripeServiceImpl implements StripeService {
     public PaymentOperationDto getOperationDetails(String chargeId) {
         Optional<PaymentOperation> paymentOperationOptional = paymentOperationRepo.findByChargeId(chargeId);
 
-        // TODO: CATCH THE ERROR
         return PaymentOperationDto.from(paymentOperationOptional.get());
     }
 

@@ -1,7 +1,6 @@
 package com.alfheim.aflheim_community.controller.admin;
 
 import com.alfheim.aflheim_community.dto.user.*;
-import com.alfheim.aflheim_community.model.CustomError;
 import com.alfheim.aflheim_community.security.details.UserDetailsImpl;
 import com.alfheim.aflheim_community.service.admin.AdminUsersCRUDService;
 import com.alfheim.aflheim_community.service.user.ProfileService;
@@ -13,10 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -212,16 +207,5 @@ public class AdminUserActionsController {
         UserDto userDto = adminUsersCRUDService.updateUserProfileInfo(username, userUpdateForm);
 
         return ResponseEntity.status(HttpStatus.OK).body(userDto);
-    }
-
-    // Admin user search page
-    @GetMapping("/admin/users/search")
-    public String getAdminUserSearchPage(Model model,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        UserDto admin = profileService.getProfileDetails(userDetails.getUserEmail());
-        model.addAttribute("admin", admin);
-
-        return "admins/admin_users_publications_page";
     }
 }

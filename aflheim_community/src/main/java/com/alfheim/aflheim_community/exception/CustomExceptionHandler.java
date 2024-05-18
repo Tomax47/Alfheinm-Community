@@ -1,6 +1,7 @@
 package com.alfheim.aflheim_community.exception;
 
 import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistActiveRecordException;
+import com.alfheim.aflheim_community.exception.newsletter.NewsletterAlreadySubscribedException;
 import com.alfheim.aflheim_community.exception.password.PasswordActiveRecordExistException;
 import com.alfheim.aflheim_community.exception.password.PasswordResetRequestExpiredException;
 import com.alfheim.aflheim_community.exception.password.PasswordResetRequestNotFoundException;
@@ -294,6 +295,20 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handlePasswordResetRequestExpiredException(PasswordResetRequestExpiredException e) {
         // 410, not anymore available 'record has expired'
         HttpStatus httpStatus = HttpStatus.GONE;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = NewsletterAlreadySubscribedException.class)
+    public ResponseEntity<Object> handleNewsletterAlreadySubscribedException(NewsletterAlreadySubscribedException e) {
+        // 409
+        HttpStatus httpStatus = HttpStatus.CONFLICT;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),
                 e,
