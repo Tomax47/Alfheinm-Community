@@ -1,5 +1,7 @@
 package com.alfheim.aflheim_community.service.user;
 
+import com.alfheim.aflheim_community.exception.server.InternalServerErrorException;
+import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.model.user.RecordState;
 import com.alfheim.aflheim_community.model.user.User;
 import com.alfheim.aflheim_community.model.user.UserConfirmation;
@@ -117,27 +119,21 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            // TODO : FIX THE ENCODED STRING AIN'T LOOK LIKE BCRYPT ISSUE
-            if (passwordEncoder.matches(user.getPassword(), oldPassword)) {
+            try {
+                // Success
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepo.save(user);
+                return 200;
 
-                try {
-                    // Success
-                    user.setPassword(passwordEncoder.encode(newPassword));
-                    userRepo.save(user);
-                    return 1;
-
-                } catch (Exception e) {
-                    // Something went wrong
-                    return 3;
-                }
+            } catch (Exception e) {
+                // Something went wrong
+                log.error("Something went wrong (PasswordResetServiceImpl.authResetUserPassword). Error : " + e);
+                throw new InternalServerErrorException("Something went wrong");
             }
-
-            // Incorrect old password
-            return 2;
         }
 
         // User not found
-        return 0;
+        throw new UserNotFoundException("user not found");
     }
 
     @Override
