@@ -10,21 +10,22 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Data
-public record PublicationDto(Long id,
-                             String title,
-                             String content,
-                             String categories,
-                             String description,
-                             String coverImageUrl,
-                             String authorUsername,
-                             String authorRole,
-                             String authorEmail,
-                             String authorProfilePictureUrl,
-                             Integer authorReputation,
-                             LocalDateTime createdAt,
-                             LocalDateTime updatedAt,
-                             Integer upVotesCount,
-                             Integer downVotesCount,
-                             List<String> upVoteUsernames,
-                             List<String> downVoteUsernames) {
+public class PublicationDto {
+    private Long id;
+    private String title;
+    private String content;
+    private String categories;
+    private String description;
+    private String coverImageUrl;
+    private String authorUsername;
+    private String authorRole;
+    private String authorEmail;
+    private String authorProfilePictureUrl;
+    private Integer authorReputation;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private Integer upVotesCount;
+    private Integer downVotesCount;
+    private List<String> upVoteUsernames;
+    private List<String> downVoteUsernames;
 }

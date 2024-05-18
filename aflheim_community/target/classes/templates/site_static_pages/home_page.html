@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+<section>
+
+    <!-- Page Content-->
+    <main layout:fragment="body" class="d-flex flex-column h-100">
+
+        <main class="flex-shrink-0">
+
+            <!-- Header-->
+            <header class="bg-primary py-5">
+                <div class="container px-5">
+                    <div class="row gx-5 align-items-center justify-content-center">
+                        <div class="col-lg-8 col-xl-7 col-xxl-6">
+                            <div class="my-5 text-center text-xl-start">
+                                <h1 class="h1 fw-bolder text-white mb-2">Welcome to Alfheim</h1>
+                                <p class="lead fw-normal text-white-50 mb-4">The place where the Nordic wisdom summons up, and a cozy community to share vikings history and knowledge</p>
+                                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                    <a class="btn btn-primary px-4 me-sm-3" href="/register">Join the community</a>
+                                    <a class="btn btn-outline-secondary w-8 px-4" href="/about">About</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="/assets/img/homeImage.png" alt="..." /></div>
+                    </div>
+                </div>
+            </header>
+            <!-- Features section-->
+            <section class="py-5" id="features" style="background-color: #fff0da">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5">
+                        <div class="col-lg-4 mb-5 mb-lg-0">
+                            <h2 class="fw-bolder mb-0">Discover Alfheim</h2>
+                            <img class="card-img-top" src="/assets/img/prints.png" alt="..." />
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row gx-5 row-cols-1 row-cols-md-2">
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-secondary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                                    <h2 class="h5 fw-black">Enrich your knowledge</h2>
+                                    <p class="mb-0">Have access to the free content on Alfheim, and enrich you Nordic knowledge base</p>
+                                </div>
+                                <div class="col mb-5 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                                    <h2 class="h5 fw-black">Share Publications</h2>
+                                    <p class="mb-0">Share your knowledge with others in a type of publications on Alfheim</p>
+                                </div>
+                                <div class="col mb-5 mb-md-0 h-100">
+                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                    <h2 class="h5 fw-black">Make Connections</h2>
+                                    <p class="mb-0">Connect with alike-minded people who share your interests</p>
+                                </div>
+                                <div class="col h-100">
+                                    <div class="feature bg-secondary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                    <h2 class="h5 fw-black">Build Reputation</h2>
+                                    <p class="mb-0">Build your reputation by interacting with others and sharing knowledge</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Testimonial section-->
+            <div class="py-5 bg-primary">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5 justify-content-center">
+                        <div class="col-lg-10 col-xl-7">
+                            <div class="text-center">
+                                <div class="fs-4 mb-4 fst-italic text-white">"Always rise to an early meal, but eat your fill before a feast. If you’re hungry you have no time to talk at the table"</div>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <img class="avatar rounded-circle me-3" src="/assets/img/default-avatar.jpg" alt="Avatar">
+                                    <div class="fw-black text-white">
+                                        @The Havamal
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Blog preview section-->
+            <section class="py-5" style="background: #fff0da">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5 justify-content-center">
+                        <div class="col-lg-8 col-xl-6">
+                            <div class="text-center">
+                                <h2 class="fw-bolder">Alfheim's Tiers</h2>
+                                <p class="lead fw-normal text-muted mb-5">Alfheim community's tiers & plans</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gx-5">
+                        <div class="col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                <img class="card-img-top" src="/assets/img/horns.png" alt="..." />
+                                <div class="card-body p-4">
+                                    <div class="badge bg-primary bg-gradient rounded-pill mb-2">VISITOR</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="/pricing"><h5 class="card-title mb-3">Visitor</h5></a>
+                                    <p class="card-text mb-0">This tier is free for all, and forever. Just register ;)</p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="align-items-center">
+                                            <div class="small">
+                                                <button class="btn btn-outline-primary">
+                                                    Check it out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                <img class="card-img-top" src="/assets/img/deerSparkle.png" alt="..." />
+                                <div class="card-body p-4">
+                                    <div class="badge bg-secondary bg-gradient rounded-pill mb-2">MEMEBER</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="/pricing"><h5 class="card-title mb-3">Member</h5></a>
+                                    <p class="card-text mb-0">The Member's tier grants you the authority to share your knowledge with Alfheim's community unlimitedly, all with a single-time payment</p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="align-items-center">
+                                            <div class="small">
+                                                <button class="btn btn-primary">
+                                                    Check it out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                <img class="card-img-top" src="/assets/img/deer.png" alt="..." />
+                                <div class="card-body p-4">
+                                    <div class="badge bg-danger bg-gradient rounded-pill mb-2">SUPPORTER</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="/pricing"><h5 class="card-title mb-3">Supporter</h5></a>
+                                    <p class="card-text mb-0">SNot a tier on its own, but a custom community support with reputation rewards and extras...</p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="align-items-center">
+                                            <div class="small">
+                                                <button class="btn btn-outline-secondary">
+                                                    Check it out
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Call to action-->
+                    <aside class="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+                        <div class="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+                            <div class="mb-4 mb-xl-0">
+                                <div class="fs-3 fw-bold text-white">New knowledge, between your hands</div>
+                                <div class="text-white-50">Join and support the community to help it keep going</div>
+                            </div>
+                            <div class="ms-xl-4">
+                                <div class="input-group mb-2">
+                                    <button class="btn btn-outline-secondary w-100" id="button-newsletter" type="button">Sign up</button>
+                                </div>
+                                <div class="small text-white-50">We care about privacy, and will never share your data.</div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+
+        <!-- CUSTOM SCRIPT -->
+        <script src="/js/custom_scripts/home.js"></script>
+    </main>
+</section>
+
+</html>

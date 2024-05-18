@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/volt.css" rel="stylesheet">
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">Alfheim</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+</head>
+
+<!-- ### NAVIGATION BAR ### -->
+<nav class="navbar navbar-expand-lg navbar-transparent navbar-dark navbar-theme-primary">
+    <div class="container position-relative">
+        <a class="navbar-brand me-lg-3" href="#">
+            <!--            <img class="navbar-brand-dark" src="/assets/img/logo-temp.png" alt="menuimage">-->
+            <!--            <img class="navbar-brand-light" src="/assets/img/logo-temp.png" alt="menuimage">-->
+            <a class="navbar-brand navbar-brand-a" href="/">Alfheim</a>
+        </a>
+        <div class="navbar-collapse collapse w-100" id="navbar-default-primary">
+            <div class="navbar-collapse-header">
+                <div class="row">
+                    <div class="col-6 collapse-brand">
+                        <a href="#">
+                            <!--                            <img src="../../assets/img/brand/dark.svg" alt="menuimage">-->
+                        </a>
+                    </div>
+                    <div class="col-6 collapse-close">
+                        <i class="fas fa-times" data-toggle="collapse" role="button"
+                           data-target="#navbar-default-primary" aria-controls="navbar-default-primary"
+                           aria-expanded="false" aria-label="Toggle navigation"></i>
+                    </div>
+                </div>
+            </div>
+            <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+                <li class="nav-item">
+                    <a href="/" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/publications/feed" class="nav-link">Publications</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a href="/pricing" class="nav-link">Pricing</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a href="/privacy" class="nav-link">Policies</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a href="/about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a href="/profile" class="nav-link">Profile</a>
+                </li>
+            </ul>
+        </div>
+
+        <a href="/login" sec:authorize="!isAuthenticated()">
+            <button class="btn btn-outline-secondary w-6" type="button">Sign In</button>
+        </a>
+        <a href="/logout" sec:authorize="isAuthenticated()">
+            <button class="btn btn-outline-secondary w-6" type="button">Logout</button>
+        </a>
+
+        <a href="/profile/publications/new">
+            <button class="btn btn-secondary w-6 ml-1" type="button">Publish</button>
+        </a>
+
+        <div class="d-flex align-items-center">
+            <button class="navbar-toggler ms-2" type="button" data-toggle="collapse"
+                    data-target="#navbar-default-primary" aria-controls="navbar-default-primary"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ### Main CONTENT ### -->
+<center>
+    <body layout:fragment="body">
+    </body>
+</center>
+
+<!-- ### FOOTER ### -->
+<footer class="footer py-6 bg-gray-800 text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img class="navbar-brand-dark mb-4" height="35" src="/assets/img/logo-temp.png" alt="Logo light">
+                <p>Alfheim is a community fond of the Old Nordic methodologies & history,
+                    and aims for spreading the Nordic wisdom among those who are keen on it.</p>
+                <ul class="social-buttons mb-5 mb-lg-0">
+
+                    <!-- ########3 SOCIAL LINKS ######### -->
+                    <li>
+                        <a href="/#" aria-label="twitter social link" class="icon-white me-2">
+                            <span class="fab fa-twitter"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-white me-2" aria-label="facebook social link">
+                            <span class="fab fa-facebook"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" aria-label="github social link" class="icon-white me-2">
+                            <span class="fab fa-github"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="icon-white" aria-label="dribbble social link" >
+                            <span class="fab fa-dribbble"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-2 mb-5 mb-lg-0">
+                <span class="h5">Alfheim</span>
+                <ul class="links-vertical mt-2">
+                    <li><a href="/publications">Publications</a></li>
+                    <li><a href="/pricing">Pricing</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/register">Become a part of Alfheim</a></li>
+                    <li><a href="/checkout/support">Support The Community</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-2 mb-5 mb-lg-0">
+                <span class="h5">Other</span>
+                <ul class="links-vertical mt-2">
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms & Conditions</a></li>
+                    <li><a href="/info/account">User Account</a>
+                    </li>
+                    <li><a href="/support/contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-12 col-md-4 mb-5 mb-lg-0">
+                <!-- ###### NEWS LETTER OR SOMETHING ALIKE HERE ####### -->
+                <span class="h5 mb-3 d-block">Subscribe to Newsletter</span>
+                <div class="form-row mb-2">
+                    <div class="col-12">
+                        <input type="text" class="form-control mb-2" placeholder="8-000-000-00-00" id="newsletterPhoneNumber" aria-label="Subscribe form" required>
+                    </div>
+                    <div class="col-12 d-grid">
+                        <button sec:authorize="isAuthenticated()" type="submit" class="btn btn-secondary" data-loading-text="Sending" id="subscribeBtn">
+                            <span>Subscribe</span>
+                        </button>
+                        <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-secondary" data-loading-text="Sending">
+                            <span>Login & Subscribe</span>
+                        </a>
+                    </div>
+                </div>
+                <p class="text-muted font-small m-0">We’ll never share your details. See our <a class="text-white" href="/privacy">Privacy Policy</a></p>
+            </div>
+        </div>
+        <hr class="bg-gray-700 my-5">
+        <div class="row">
+            <div class="col mb-md-0">
+                <a href="/" target="_blank" class="d-flex justify-content-center">
+                    <img src="/assets/img/logo-light.png" height="35" class="mb-4" alt="Alfheim Logo">
+                </a>
+                <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
+                    <p class="fw-normal font-small mb-0">Copyright &#169; Alfheim 2024-<span class="current-year">2024</span>. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- SWEET ALERT LIB -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- NOTIFY -->
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<!-- JQUERY -->
+<script
+        src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+
+<!-- CUSTOM LAYOUT -->
+<script src="/js/custom_scripts/layout.js"></script>
+
+<!-- Include SmoothScroll library from a CDN -->
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll/dist/smooth-scroll.min.js"></script>
+
+<!-- Include noUiSlider JavaScript from a CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+
+<!-- Core -->
+<script src="/js/vendor/@popperjs/core/dist/umd/popper.min.js"></script>
+<script src="/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Vendor JS -->
+<script src="/js/vendor/onscreen/dist/on-screen.umd.min.js"></script>
+
+<!-- Charts -->
+<script src="/js/vendor/chartist/dist/chartist.min.js"></script>
+<script src="/js/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
+
+<!-- Datepicker -->
+<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Sweet Alerts 2 -->
+<script src="/js/vendor/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+<!-- Moment JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+<!-- Vanilla JS Datepicker -->
+<script src="/js/vendor/vanillajs-datepicker/dist/js/datepicker.min.js"></script>
+
+<!-- Notyf -->
+<script src="/js/vendor/notyf/notyf.min.js"></script>
+
+<!-- Simplebar -->
+<script src="/js/vendor/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Volt JS -->
+<script src="/js/volt.js"></script>
+</html>

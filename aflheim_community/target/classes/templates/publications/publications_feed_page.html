@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Publications Feed</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+  <link href="css/volt.css" rel="stylesheet" />
+</head>
+<body>
+<main layout:fragment="body">
+  <!-- Page header with logo and tagline-->
+  <header class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+      <div class="text-center my-5">
+        <h1 class="fw-black">Publications Feed</h1>
+        <p class="lead mb-0">Search For A Specific Publication</p>
+        <div class="display-flex justify-content-center w-100">
+          <input type="text" class="form-control w-50 mt-3" placeholder="Search publications" id="searchQueryInput">
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Page content-->
+  <div class="container">
+    <div class="row">
+      <!-- Blog entries-->
+      <div class="col-lg-8">
+        <!-- Featured blog post-->
+        <div class="card mb-4">
+          <a href="#!"><img class="card-img-top" th:src="${featuredPublication.coverImageUrl()}" alt="..." /></a>
+          <div class="card-body">
+
+            <a class="d-flex align-items-center">
+              <img class="avatar rounded-circle me-1" th:src="${featuredPublication.authorProfilePictureUrl()}" alt="Avatar">
+              <div class="d-block">
+                <span class="fw-black" th:text="${'@'+featuredPublication.authorUsername()}"></span>
+              </div>
+            </a>
+            <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+featuredPublication.createdAt()}"></div>
+
+            <h2 class="card-title fw-black">
+              <span th:utext="${featuredPublication.title()}"></span>
+              <svg class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+            </h2>
+            <p class="card-text" th:text="${featuredPublication.description()}"></p>
+            <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${featuredPublication.id()}}">Read more</a>
+          </div>
+        </div>
+
+        <!-- Nested row for non-featured blog posts-->
+        <div class="row" id="publicationsBody">
+          <div class="col-lg-6" th:each="publication: ${publications}">
+            <!-- Blog post-->
+            <div class="card mb-4">
+              <a href="#!"><img class="card-img-top" th:src="${publication.coverImageUrl()}" alt="..." /></a>
+              <div class="card-body">
+                <a class="d-flex align-items-center">
+                  <img class="avatar rounded-circle me-1" th:src="${publication.authorProfilePictureUrl()}" alt="Avatar">
+                  <div class="d-block">
+                    <span class="fw-black" th:text="${'@'+publication.authorUsername()}"></span>
+                  </div>
+                </a>
+                <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+publication.createdAt()}"></div>
+                <h2 class="card-title h4 fw-black" th:text="${publication.title()}">
+                  <svg th:if="${(publication.upVotesCount() + publication.downVotesCount() > 4) && ((publication.upVotesCount() * 100) / (publication.upVotesCount() + publication.downVotesCount())) > 80.0}"
+                          class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+                </h2>
+                <p class="card-text" th:text="${publication.description()}"></p>
+                <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${publication.id()}}">Read more</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Pagination-->
+        <nav aria-label="Pagination">
+          <hr class="my-0" />
+          <ul class="pagination justify-content-center my-4">
+            <li class="page-item disabled" id="previousBtnPageItem">
+              <a class="page-link" id="previousPage" tabindex="-1" aria-disabled="flase">Previous</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" id="currentPage">0</a>
+            </li>
+            <li class="page-item" id="nextBtnPageItem">
+              <a class="page-link" id="nextPage">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Side widgets-->
+      <div class="col-lg-4">
+        <!-- Categories widget-->
+        <div class="card mb-4">
+          <div class="card-header fw-black">Categories</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a>
+                    <span class="badge bg-tertiary">History</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-warning">Methodology</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-success">Religion</span>
+                  </a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a>
+                    <span class="badge bg-secondary">Runes</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-indigo">Letters</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-danger">Old Norse</span>
+                  </a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a>
+                    <span class="badge bg-blue">Sagas</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-primary">Language</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-purple">Traditions</span>
+                  </a></li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled mb-0">
+                  <li><a>
+                    <span class="badge bg-info">Food</span>
+                  </a></li>
+                  <li><a>
+                    <span class="badge bg-gray-400">Habits</span>
+                  </a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Side widget-->
+        <div class="card mb-4">
+          <div class="card-header fw-black text-warning">Get Featured</div>
+          <div class="card-body">Feature widget here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SWEET ALERT LIB -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- NOTIFY -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+  <!-- JQUERY -->
+  <script
+          src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+
+  <!-- CUSTOM SCRIPT -->
+  <script src="/js/custom_scripts/publication/publicationsFeed.js"></script>
+
+</main>
+</body>
+</html>
