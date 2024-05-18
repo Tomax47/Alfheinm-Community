@@ -31,7 +31,7 @@ const passwordInput = document.getElementById('password');
 const passwordInvalidField = document.getElementById('passwordInvalidField');
 const emailInput = document.getElementById('email');
 const emailInvalidField = document.getElementById('emailInvalidField');
-const signInBtn = document.getElementById('signInBtn')
+const signInBtn = document.getElementById('signInBtn');
 
 // Regex form check
 var emailRegex = /^[^\s'""` ]+@[^\s'""` ]+\.[^\s'""` ]+$/

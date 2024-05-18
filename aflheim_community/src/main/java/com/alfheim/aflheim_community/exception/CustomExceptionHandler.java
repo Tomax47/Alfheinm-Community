@@ -12,6 +12,7 @@ import com.alfheim.aflheim_community.exception.blacklist_record.UserBlacklistRec
 import com.alfheim.aflheim_community.exception.stripe.CardTokenGeneratingFailureException;
 import com.alfheim.aflheim_community.exception.stripe.ChargeRequestFailureException;
 import com.alfheim.aflheim_community.exception.stripe.InvalidChargeAmountException;
+import com.alfheim.aflheim_community.exception.user.EmailOrUsernameAlreadyExistException;
 import com.alfheim.aflheim_community.exception.user.UserNotFoundException;
 import com.alfheim.aflheim_community.exception.user.UserPageNotFoundException;
 import com.alfheim.aflheim_community.exception.user.UserUnauthorizedRequestException;
@@ -224,6 +225,19 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = ChargeRequestFailureException.class)
     public ResponseEntity<Object> handleChargeRequestFailureExceptionException(ChargeRequestFailureException e) {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
+        ExceptionPayload exception = new ExceptionPayload(
+                e.getMessage(),
+                e,
+                httpStatus,
+                ZonedDateTime.now(ZoneId.systemDefault())
+        );
+
+        return new ResponseEntity<>(exception, httpStatus);
+    }
+
+    @ExceptionHandler(value = EmailOrUsernameAlreadyExistException.class)
+    public ResponseEntity<Object> handleEmailOrUsernameAlreadyExistException(EmailOrUsernameAlreadyExistException e) {
+        HttpStatus httpStatus = HttpStatus.CONFLICT;;
         ExceptionPayload exception = new ExceptionPayload(
                 e.getMessage(),
                 e,

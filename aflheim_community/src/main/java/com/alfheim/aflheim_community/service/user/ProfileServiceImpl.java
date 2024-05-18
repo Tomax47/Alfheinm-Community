@@ -116,13 +116,19 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public boolean isUsernameUnique(String username) {
-        User user = userRepo.findByUsername(username).get();
+        try {
+            Optional<User> user = userRepo.findByUsername(username);
 
-        if (user.getUsername().isEmpty() || user.getUsername().isEmpty()) {
-            return true;
+            if (!user.isPresent()) {
+                return true;
+            }
+
+            return false;
+        } catch (Exception e) {
+            // Something went wrong
+            log.error("Internal error (ProfileServiceImpl.deleteUserProfile). Error : " + e);
+            throw new InternalServerErrorException("Something went wrong");
         }
-
-        return false;
     }
 
     @Override
