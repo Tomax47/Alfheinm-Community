@@ -92,7 +92,6 @@ function handleInfoModal(messageData) {
 
 // Const
 let username = document.getElementById('username').textContent.trim().slice(1);
-let REFRESH_DELAY = 1500;
 
 // Update form
 let nameInput = document.getElementById('first_name');
