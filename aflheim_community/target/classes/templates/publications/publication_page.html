@@ -19,21 +19,21 @@
                     <!-- Post header-->
                     <header>
                         <!-- Post title-->
-                        <h1 class="d-flex fw-bolder mb-1" th:text="${publication.title()}"></h1>
+                        <h1 class="d-flex fw-bolder mb-1" th:text="${publication.getTitle()}"></h1>
                         <!-- Post meta content-->
-                        <div class="d-flex text-muted fst-italic mb-2" th:text="${'Created on '+publication.createdAt()}"></div>
+                        <div class="d-flex text-muted fst-italic mb-2" th:text="${'Created on '+publication.getCreatedAt()}"></div>
 
                         <!-- Post categories-->
                         <div class="d-flex">
-                            <span class="badge bg-secondary text-decoration-none link-light mt-n-1" th:text="${publication.categories()}"></span>
-                            <p id="publicationId" class="visually-hidden" th:text="${publication.id()}"></p>
+                            <span class="badge bg-secondary text-decoration-none link-light mt-n-1" th:text="${publication.getCategories()}"></span>
+                            <p id="publicationId" class="visually-hidden" th:text="${publication.getId()}"></p>
                         </div>
                     </header>
                     <!-- Preview image figure-->
-                    <figure><img class="img-fluid rounded" th:src="${publication.coverImageUrl()}" alt="publicationImage" /></figure>
+                    <figure><img class="img-fluid rounded" th:src="${publication.getCoverImageUrl()}" alt="publicationImage" /></figure>
                     <!-- Post content-->
                     <section class="mb-5">
-                        <div class="content-div" id="contentDiv" th:utext="${publication.content()}">
+                        <div class="content-div" id="contentDiv" th:utext="${publication.getContent()}">
 
                         </div>
                     </section>
@@ -45,36 +45,36 @@
                 <div class="card mb-4 mt-8">
                     <div class="card-header fw-black"></div>
                     <div class="card-body">
-                        <img th:src="${publication.authorProfilePictureUrl()}" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                        <img th:src="${publication.getAuthorProfilePictureUrl()}" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
                         <h5 class="fw-black text-tertiary">About Author</h5>
-                        <h4 class="h3" th:text="${'@' + publication.authorUsername()}" id="username"></h4>
-                        <h5 class="fw-normal" th:text="${publication.authorEmail()}"></h5>
-                        <div class="mb-3" th:switch="${publication.authorRole()}" id="userRole">
+                        <h4 class="h3" th:text="${'@' + publication.getAuthorUsername()}" id="username"></h4>
+                        <h5 class="fw-normal" th:text="${publication.getAuthorEmail()}"></h5>
+                        <div class="mb-3" th:switch="${publication.getAuthorRole()}" id="userRole">
                             <!-- ## ROLE PART ##-->
                             <!--                Role Badge-->
-                            <span th:case="'VISITOR'" th:class="${'badge bg-primary'}" th:text="${publication.authorRole()}"></span>
-                            <span th:case="'MEMBER'" th:class="${'badge bg-secondary'}" th:text="${publication.authorRole()}"></span>
-                            <span th:case="'ADMIN'" th:class="${'badge bg-success'}" th:text="${publication.authorRole()}"></span>
+                            <span th:case="'VISITOR'" th:class="${'badge bg-primary'}" th:text="${publication.getAuthorRole()}"></span>
+                            <span th:case="'MEMBER'" th:class="${'badge bg-secondary'}" th:text="${publication.getAuthorRole()}"></span>
+                            <span th:case="'ADMIN'" th:class="${'badge bg-success'}" th:text="${publication.getAuthorRole()}"></span>
                             <!--                Reputation Badge -->
-                            <span th:if="${publication.authorReputation() >= 0 and publication.authorReputation() <= 500}" class="badge bg-tertiary" th:text="${publication.authorReputation()}"></span>
-                            <span th:if="${publication.authorReputation() < 0}" class="badge bg-danger" th:text="${publication.authorReputation()}"></span>
-                            <span th:if="${publication.authorReputation() > 500}" class="badge bg-warning" th:text="${publication.authorReputation()}"></span>
+                            <span th:if="${publication.getAuthorReputation() >= 0 and publication.getAuthorReputation() <= 500}" class="badge bg-tertiary" th:text="${publication.getAuthorReputation()}"></span>
+                            <span th:if="${publication.getAuthorReputation() < 0}" class="badge bg-danger" th:text="${publication.getAuthorReputation()}"></span>
+                            <span th:if="${publication.getAuthorReputation() > 500}" class="badge bg-warning" th:text="${publication.getAuthorReputation()}"></span>
                         </div>
                         <div>
-                            <button th:if="${!user.getRole().equals('ADMIN') and !publication.authorUsername().equals(user.getUsername())}" class="btn btn-sm btn-danger d-inline-flex align-items-center me-2" id="reportBtn">
+                            <button th:if="${!user.getRole().equals('ADMIN') and !publication.getAuthorUsername().equals(user.getUsername())}" class="btn btn-sm btn-danger d-inline-flex align-items-center me-2" id="reportBtn">
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                                 Report
                             </button>
-                            <a th:if="${user.getRole().equals('ADMIN') and !publication.authorUsername().equals(user.getUsername())}" th:href="@{/admin/users/{username}(username=${publication.authorUsername()})}" class="btn btn-sm btn-indigo d-inline-flex align-items-center me-2" id="viewInAdminDashboardBtn">
+                            <a th:if="${user.getRole().equals('ADMIN') and !publication.getAuthorUsername().equals(user.getUsername())}" th:href="@{/admin/users/{username}(username=${publication.getAuthorUsername()})}" class="btn btn-sm btn-indigo d-inline-flex align-items-center me-2" id="viewInAdminDashboardBtn">
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                                 View In Dashboard
                             </a>
-                            <a th:if="${publication.authorUsername().equals(user.getUsername())}" href="/profile" class="btn btn-sm btn-indigo d-inline-flex align-items-center me-2" id="viewInAdminDashboardBtn">
+                            <a th:if="${publication.getAuthorUsername().equals(user.getUsername())}" href="/profile" class="btn btn-sm btn-indigo d-inline-flex align-items-center me-2" id="viewInAdminDashboardBtn">
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path></svg>
                                 My Profile
                             </a>
-                            <a th:if="${!publication.authorUsername().equals(user.getUsername())}" class="btn btn-sm btn-secondary" href="#" id="contactBtn">Contact</a>
-                            <a th:if="${publication.authorUsername().equals(user.getUsername())}" class="btn btn-sm btn-secondary" href="/profile/publications/new" id="newPublicationBtn">Publish</a>
+                            <a th:if="${!publication.getAuthorUsername().equals(user.getUsername())}" class="btn btn-sm btn-secondary" href="#" id="contactBtn">Contact</a>
+                            <a th:if="${publication.getAuthorUsername().equals(user.getUsername())}" class="btn btn-sm btn-secondary" href="/profile/publications/new" id="newPublicationBtn">Publish</a>
                         </div>
                     </div>
                 </div>
@@ -137,42 +137,42 @@
                 </div>
                 <!-- STATS AND ANALYTICS -->
                 <div class="card mb-4">
-                    <div class="card-header fw-black text-success" th:if="${publication.upVotesCount() > publication.downVotesCount()}">Positive Impressions</div>
-                    <div class="card-header fw-black text-danger" th:if="${publication.upVotesCount() < publication.downVotesCount()}">Negative Impressions</div>
-                    <div class="card-header fw-black text-indigo" th:if="${publication.upVotesCount() == publication.downVotesCount() and publication.downVotesCount() != 0}">neutral Impressions</div>
-                    <div class="card-header" th:if="${publication.upVotesCount() == 0 and publication.downVotesCount() == 0}">
+                    <div class="card-header fw-black text-success" th:if="${publication.getUpVotesCount() > publication.getDownVotesCount()}">Positive Impressions</div>
+                    <div class="card-header fw-black text-danger" th:if="${publication.getUpVotesCount() < publication.getDownVotesCount()}">Negative Impressions</div>
+                    <div class="card-header fw-black text-indigo" th:if="${publication.getUpVotesCount() == publication.getDownVotesCount() and publication.getDownVotesCount() != 0}">neutral Impressions</div>
+                    <div class="card-header" th:if="${publication.getUpVotesCount() == 0 and publication.getDownVotesCount() == 0}">
                         <a class="text-primary fw-black" id="noReviewsYet">No Reviews Yet</a>
                     </div>
                     <div class="card-body">
                         <div class="mb-3 mt-1">
                             <h6 class="h6 text-primary fw-black mb-1">What do you think of this publication?</h6>
                             <!-- UP VOTE BTN -->
-                            <button id="upVoteBtn" type="button" class="btn btn-outline-indigo d-inline-flex align-items-center w-7" th:if="${!publication.upVoteUsernames().contains(user.getUsername())}">
+                            <button id="upVoteBtn" type="button" class="btn btn-outline-indigo d-inline-flex align-items-center w-7" th:if="${!publication.getUpVoteUsernames().contains(user.getUsername())}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M20 8h-5.612l1.123-3.367c.202-.608.1-1.282-.275-1.802S14.253 2 13.612 2H12c-.297 0-.578.132-.769.36L6.531 8H4c-1.103 0-2 .897-2 2v9c0 1.103.897 2 2 2h13.307a2.01 2.01 0 0 0 1.873-1.298l2.757-7.351A1 1 0 0 0 22 12v-2c0-1.103-.897-2-2-2zM4 10h2v9H4v-9zm16 1.819L17.307 19H8V9.362L12.468 4h1.146l-1.562 4.683A.998.998 0 0 0 13 10h7v1.819z"></path></svg>                            </button>
 
-                            <button id="upVoteBtn" type="button" class="btn btn-indigo d-inline-flex align-items-center w-6" th:if="${publication.upVoteUsernames().contains(user.getUsername())}">
-                                <i th:text="${publication.upVotesCount()}"></i>
+                            <button id="upVoteBtn" type="button" class="btn btn-indigo d-inline-flex align-items-center w-6" th:if="${publication.getUpVoteUsernames().contains(user.getUsername())}">
+                                <i th:text="${publication.getUpVotesCount()}"></i>
                                 <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M4 21h1V8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2zM20 8h-7l1.122-3.368A2 2 0 0 0 12.225 2H12L7 7.438V21h11l3.912-8.596L22 12v-2a2 2 0 0 0-2-2z"></path></svg>
                             </button>
                             <!-- /UP VOTE BTN -->
 
                             <!-- DOWN VOTE BTN -->
-                            <button id="downVoteBtn" type="button" class="btn btn-outline-danger d-inline-flex align-items-center w-7" th:if="${!publication.downVoteUsernames().contains(user.getUsername())}">
+                            <button id="downVoteBtn" type="button" class="btn btn-outline-danger d-inline-flex align-items-center w-7" th:if="${!publication.getDownVoteUsernames().contains(user.getUsername())}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M20 3H6.693A2.01 2.01 0 0 0 4.82 4.298l-2.757 7.351A1 1 0 0 0 2 12v2c0 1.103.897 2 2 2h5.612L8.49 19.367a2.004 2.004 0 0 0 .274 1.802c.376.52.982.831 1.624.831H12c.297 0 .578-.132.769-.36l4.7-5.64H20c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zm-8.469 17h-1.145l1.562-4.684A1 1 0 0 0 11 14H4v-1.819L6.693 5H16v9.638L11.531 20zM18 14V5h2l.001 9H18z"></path></svg>
                             </button>
 
-                            <button id="downVoteBtn" type="button" class="btn btn-danger d-inline-flex align-items-center w-7" th:if="${publication.downVoteUsernames().contains(user.getUsername())}">
+                            <button id="downVoteBtn" type="button" class="btn btn-danger d-inline-flex align-items-center w-7" th:if="${publication.getDownVoteUsernames().contains(user.getUsername())}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M20 3h-1v13h1a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM4 16h7l-1.122 3.368A2 2 0 0 0 11.775 22H12l5-5.438V3H6l-3.937 8.649-.063.293V14a2 2 0 0 0 2 2z"></path></svg>
                             </button>
                             <!-- /DOWN VOTE BTN -->
                         </div>
 
-                        <p class="text-primary" th:if="${publication.upVotesCount() > 0 or publication.downVotesCount() > 0}" th:text="${(publication.upVotesCount() * 100.0)/(publication.downVotesCount() + publication.upVotesCount()) + '% upvotes out of ' + (publication.downVotesCount() + publication.upVotesCount()) + ' votes'}"></p>
+                        <p class="text-primary" th:if="${publication.getUpVotesCount() > 0 or publication.getDownVotesCount() > 0}" th:text="${(publication.getUpVotesCount() * 100.0)/(publication.getDownVotesCount() + publication.getUpVotesCount()) + '% upvotes out of ' + (publication.getDownVotesCount() + publication.getUpVotesCount()) + ' votes'}"></p>
                     </div>
                 </div>
 
                 <!-- OWNER/ADMIN INTERACTION-->
-                <div class="card mb-4" th:if="${user.getRole().equals('ADMIN') or user.getUsername().equals(publication.authorUsername())}">
+                <div class="card mb-4" th:if="${user.getRole().equals('ADMIN') or user.getUsername().equals(publication.getAuthorUsername())}">
                     <div class="card-header fw-black">Post's Interactions</div>
                     <div class="card-body">
                         <button class="btn btn-danger" id="deletePublicationBtn">

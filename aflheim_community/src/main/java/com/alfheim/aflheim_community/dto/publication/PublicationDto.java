@@ -1,8 +1,7 @@
 package com.alfheim.aflheim_community.dto.publication;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,6 +9,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Data
+@Getter
+@Setter
 public class PublicationDto {
     private Long id;
     private String title;

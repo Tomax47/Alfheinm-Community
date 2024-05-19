@@ -30,23 +30,23 @@
       <div class="col-lg-8">
         <!-- Featured blog post-->
         <div class="card mb-4">
-          <a href="#!"><img class="card-img-top" th:src="${featuredPublication.coverImageUrl()}" alt="..." /></a>
+          <a href="#!"><img class="card-img-top" th:src="${featuredPublication.getCoverImageUrl()}" alt="..." /></a>
           <div class="card-body">
 
             <a class="d-flex align-items-center">
-              <img class="avatar rounded-circle me-1" th:src="${featuredPublication.authorProfilePictureUrl()}" alt="Avatar">
+              <img class="avatar rounded-circle me-1" th:src="${featuredPublication.getAuthorProfilePictureUrl()}" alt="Avatar">
               <div class="d-block">
-                <span class="fw-black" th:text="${'@'+featuredPublication.authorUsername()}"></span>
+                <span class="fw-black" th:text="${'@'+featuredPublication.getAuthorUsername()}"></span>
               </div>
             </a>
-            <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+featuredPublication.createdAt()}"></div>
+            <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+featuredPublication.getCreatedAt()}"></div>
 
             <h2 class="card-title fw-black">
-              <span th:utext="${featuredPublication.title()}"></span>
+              <span th:utext="${featuredPublication.getTitle()}"></span>
               <svg class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
             </h2>
-            <p class="card-text" th:text="${featuredPublication.description()}"></p>
-            <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${featuredPublication.id()}}">Read more</a>
+            <p class="card-text" th:text="${featuredPublication.getDescription()}"></p>
+            <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${featuredPublication.getId()}}">Read more</a>
           </div>
         </div>
 
@@ -55,21 +55,21 @@
           <div class="col-lg-6" th:each="publication: ${publications}">
             <!-- Blog post-->
             <div class="card mb-4">
-              <a href="#!"><img class="card-img-top" th:src="${publication.coverImageUrl()}" alt="..." /></a>
+              <a href="#!"><img class="card-img-top" th:src="${publication.getCoverImageUrl()}" alt="..." /></a>
               <div class="card-body">
                 <a class="d-flex align-items-center">
-                  <img class="avatar rounded-circle me-1" th:src="${publication.authorProfilePictureUrl()}" alt="Avatar">
+                  <img class="avatar rounded-circle me-1" th:src="${publication.getAuthorProfilePictureUrl()}" alt="Avatar">
                   <div class="d-block">
-                    <span class="fw-black" th:text="${'@'+publication.authorUsername()}"></span>
+                    <span class="fw-black" th:text="${'@'+publication.getAuthorUsername()}"></span>
                   </div>
                 </a>
-                <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+publication.createdAt()}"></div>
-                <h2 class="card-title h4 fw-black" th:text="${publication.title()}">
-                  <svg th:if="${(publication.upVotesCount() + publication.downVotesCount() > 4) && ((publication.upVotesCount() * 100) / (publication.upVotesCount() + publication.downVotesCount())) > 80.0}"
+                <div class=" d-flex ml-2 small text-muted mb-3" th:text="${'Posted on '+publication.getCreatedAt()}"></div>
+                <h2 class="card-title h4 fw-black" th:text="${publication.getTitle()}">
+                  <svg th:if="${(publication.getUpVotesCount() + publication.getDownVotesCount() > 4) && ((publication.getUpVotesCount() * 100) / (publication.getUpVotesCount() + publication.getDownVotesCount())) > 80.0}"
                           class="text-danger card-body-svg" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
                 </h2>
-                <p class="card-text" th:text="${publication.description()}"></p>
-                <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${publication.id()}}">Read more</a>
+                <p class="card-text" th:text="${publication.getDescription()}"></p>
+                <a class="btn btn-outline-gray-500" th:href="@{'/publications/view?publicationId=' + ${publication.getId()}}">Read more</a>
               </div>
             </div>
           </div>
