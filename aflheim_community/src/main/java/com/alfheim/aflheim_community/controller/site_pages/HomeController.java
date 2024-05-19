@@ -98,4 +98,10 @@ public class HomeController {
         return "payment/payment_submitted_thanks_page";
     }
 
+    @GetMapping("/support/contactUs")
+    public String getSupportContactUsPage() {
+
+        return "site_static_pages/support_page";
+    }
+
 }

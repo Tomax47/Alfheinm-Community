@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Support</title>
+</head>
+<body>
+<main layout:fragment="body" class="container px-4 px-lg-5">
+
+    <!-- FORM JS -->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!-- Page content-->
+    <section class="py-5">
+        <div class="container px-5">
+            <!-- Contact form-->
+            <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-5">
+                <div class="text-center">
+                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-envelope"></i></div>
+                    <h1 class="fw-bolder">Alfheim's Support</h1>
+                    <p class="lead fw-normal text-muted mb-0">Get in touch with Alfheim's team</p>
+                </div>
+                <div class="row gx-5 justify-content-center d-flex">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="container px-5 my-5">
+                            <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="/assets/img/cowRight.png" alt="..." /></div>
+                            <form id="contactForm" th:data-sb-form-api-token="${@environment.getProperty('contact.api.key')}">
+                                <div class="mb-3">
+                                    <label class="text-primary fw-black" for="email">Email</label>
+                                    <input class="form-control" id="email" type="email" placeholder="Email" data-sb-validations="required,email" />
+                                    <div class="invalid-feedback" data-sb-feedback="email:required">Email is required.</div>
+                                    <div class="invalid-feedback" data-sb-feedback="email:email">Email Email is not valid.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-black" for="selectYourIssue">Select Your Issue</label>
+                                    <select class="form-select" id="selectYourIssue" aria-label="Select Your Issue">
+                                        <option value="Registration">Registration</option>
+                                        <option value="Lost access to my account">Lost access to my account</option>
+                                        <option value="Payment issues">Payment issues</option>
+                                        <option value="Cant&#x27; reset my password">Cant&#x27; reset my password</option>
+                                        <option value="Something else">Other 'Please Specify'</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-black" for="describeYourIssue">Describe Your Issue </label>
+                                    <input class="form-control" id="describeYourIssue" type="text" placeholder="Describe Your Issue " data-sb-validations="" />
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <label class="form-label" for="message">Message</label>
+                                    <textarea class="form-control" id="message" type="text" placeholder="Message" style="height: 10rem;" data-sb-validations="required"></textarea>
+                                    <div class="invalid-feedback" data-sb-feedback="message:required">Message is required.</div>
+                                </div>
+                                <div class="d-none" id="submitSuccessMessage">
+                                    <div class="text-center mb-3">
+                                        <div class="fw-bolder text-success">Email has been sent!</div>
+                                        <p>We will get back to you as soon as possible.</p>
+                                        <a class="text-primary" href="/">← Back Home</a>
+                                    </div>
+                                </div>
+                                <div class="d-none" id="submitErrorMessage">
+                                    <div class="text-center text-danger mb-3">Something went wrong!</div>
+                                    <a class="text-primary" href="/">← Back Home</a>
+                                </div>
+                                <div class="d-grid display-flex justify-content-center">
+                                    <button class="btn btn-outline-primary w-8 disabled" id="submitButton" type="submit">Send Email</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
