@@ -585,8 +585,8 @@ function isCorrectReason(selectedReason) {
 
 // Check reputation strike pts
 function isInRangeStrike(strikeValue) {
-    console.log(`Is in range ? ${strikeValue > 1 && strikeValue < 200}`)
-    if (strikeValue > 1 && strikeValue < 200) {
+
+    if (strikeValue >= 1 && strikeValue <= 200) {
         return true;
     } else {
         return false;
