@@ -225,6 +225,9 @@ formSubmitBtn.addEventListener('click', function (event) {
         ValidateUsername(usernameInput)) {
 
         if (termsCheckbox.checked) {
+
+            formSubmitBtn.disabled = true;
+            
             // Submitting form
             let formData = new FormData(form);
 
