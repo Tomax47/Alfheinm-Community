@@ -22,6 +22,10 @@
                 <span th:if="${userDto.getRole().equals('VISITOR')}" class="badge bg-primary" th:text="${userDto.getRole()}"></span>
                 <span th:if="${userDto.getRole().equals('MEMBER')}" class="badge bg-secondary"  th:text="${userDto.getRole()}"></span>
                 <span th:if="${userDto.getRole().equals('ADMIN')}" class="badge bg-success"  th:text="${userDto.getRole()}"></span>
+
+                <span th:if="${userDto.getReputation() >= 0 and userDto.getReputation() <= 500}" class="badge bg-tertiary" th:text="${userDto.getReputation()}"></span>
+                <span th:if="${userDto.getReputation() < 0}" class="badge bg-danger" th:text="${userDto.getReputation()}"></span>
+                <span th:if="${userDto.getReputation() > 500}" class="badge bg-warning" th:text="${userDto.getReputation()}"></span>
             </div>
 
             <!-- TODO: SHOW ONLY IN CASE THIS IS A VISITOR ACCOUNT -->

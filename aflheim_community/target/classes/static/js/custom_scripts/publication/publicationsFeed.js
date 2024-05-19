@@ -107,7 +107,7 @@ function PagSearchPublications(page, query) {
             addPublications(response);
         },
         error: function (response) {
-            const errorData = JSON.parse(response.responseText);
+            const errorData = response.responseJSON.message;
 
             if (currentPageNumber > 0) {
                 currentPageNumber -= 1;
@@ -294,7 +294,7 @@ categories.forEach(category => {
         if (checkCategorySelectionInput(categoryName)) {
             CategorySearch(currentPageNumber, categoryName);
         } else {
-            handleError({ errorMessage: "No such category!" });
+            handleError("No such category!");
         }
 
     });
