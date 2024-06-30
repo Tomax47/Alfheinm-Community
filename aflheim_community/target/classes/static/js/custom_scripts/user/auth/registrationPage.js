@@ -227,7 +227,7 @@ formSubmitBtn.addEventListener('click', function (event) {
         if (termsCheckbox.checked) {
 
             formSubmitBtn.disabled = true;
-            
+
             // Submitting form
             let formData = new FormData(form);
 

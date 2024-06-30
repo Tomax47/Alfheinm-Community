@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="alfheim_community_db@localhost" uuid="92ba5649-a098-47e5-bed8-9a9eaa792704">
+    <data-source source="LOCAL" name="alfheim_community_db@localhost" uuid="26501567-e104-4e2d-a986-5f898c88a3b5">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
